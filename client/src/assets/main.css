@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+	font-family: "Lato", sans-serif !important;
+}
+.v-btn {
+  text-transform: unset !important;
+  font-family:"Lato", sans-serif !important;
+  letter-spacing: 0 !important; 
+}
+
+/* width */
+/* ::-webkit-scrollbar { */
+/*   width: 2px; */
+/*   height: 5px; */
+/* } */
+
+/* Track */
+/* ::-webkit-scrollbar-track { */
+/*   background: #f1f1f1; */
+/* } */
+
+/* Handle */
+/* ::-webkit-scrollbar-thumb { */
+/*   background: rgba(var(--v-theme-primary), 0.9); */
+
+/* } */
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover { */
+/*   background: #555; */
+/* } */
+
+@layer base {
+  h1 {
+    @apply text-3xl lg:text-3xl font-black;
+  }
+  h2 {
+    @apply text-2xl lg:text-2xl font-bold;
+  }
+  h3 {
+    @apply text-xl lg:text-xl font-bold;
+  }
+  h4{
+    @apply text-lg lg:text-lg font-bold;
+  }
+}
+
+/* Toast style */
+.Vue-Toastification__toast--success{
+  background-color: rgba(var(--v-theme-background), 1) !important;
+  color: rgba(var(--v-theme-success), 1) !important;
+}
+.Vue-Toastification__close-button {
+  color: rgba(var(--v-theme-success), 1) !important;
+}
+
+.Vue-Toastification__toast--error{
+  background-color: rgba(var(--v-theme-background), 1) !important;
+  color: rgba(var(--v-theme-error), 1) !important;
+}
+.Vue-Toastification__close-button {
+  color: rgba(var(--v-theme-error), 1) !important;
+}
+/* #app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+} */

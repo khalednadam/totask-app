@@ -1,0 +1,12 @@
+# Dependencies
+node_modules
+
+# yarn error logs
+yarn-error.log
+
+# Environment varibales
+.env*
+!.env*.example
+totask-418519-ec8ce2c94795.json
+# Code coverage
+coverage

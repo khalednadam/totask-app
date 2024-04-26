@@ -1,0 +1,97 @@
+<script setup>
+import { Icon } from "@iconify/vue";
+import AddBoardModal from "./Modals/AddBoardModal.vue";
+import { useDisplay } from "vuetify";
+import ModeSwitcher from "../components/ModeSwitcher.vue";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useCardSearchStore } from "../stores/cardSearch"
+import Logo from "./Logo.vue";
+
+const { lgAndUp, mdAndDown } = useDisplay();
+const route = useRoute();
+const props = defineProps({
+  drawer: Boolean,
+});
+const emits = defineEmits(["toggleDrawer"]);
+const addNewBoardDialog = ref(false);
+const cardSearch = useCardSearchStore();
+
+const { searchWord } = storeToRefs(cardSearch);
+
+</script>
+
+<template>
+  <v-app-bar density="compact" elevation="0">
+    <v-row no-gutters class="items-center my-auto px-5 !py-0 !m-0">
+      <v-col md="9" cols="10" class="flex flex-col justify-center ">
+        <div class="md:space-x-5 space-x-2 flex items-center">
+          <v-btn size="small" v-if="mdAndDown || route.name === 'Board'" variant="text" icon rounded="lg"
+            @click="$emit('toggleDrawer')">
+            <Icon icon="ph:list" width="25"></Icon>
+          </v-btn>
+
+          <!-- board search  -->
+          <v-dialog v-if="mdAndDown">
+            <template v-slot:activator="{ props }">
+              <v-btn v-bind="props" variant="text" icon size="small" rounded="lg">
+                <Icon icon="ph:magnifying-glass" width="25"></Icon>
+              </v-btn>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <v-card>
+                <v-card-title>
+                  Search for cards
+                </v-card-title>
+                <v-card-text>
+                  <v-text-field clearable v-model="searchWord" variant="outlined" color="primary" rounded
+                    placeholder="Search" hide-details density="compact">
+                    <template #append-inner>
+                      <Icon icon="ph:magnifying-glass" width="25"></Icon>
+                    </template>
+                  </v-text-field>
+                  <div class="flex mt-2 justify-end justify-self-end gap-2">
+                    <v-btn color="primary" @click="() => { searchWord = ''; isActive.value = false }" variant="outlined">
+                      Cancel
+                    </v-btn>
+                    <v-btn color="primary" @click="isActive.value = false">
+                      Done
+                    </v-btn>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
+          <v-text-field v-else clearable v-model="searchWord" variant="outlined" color="primary" rounded
+            placeholder="Search" class="max-w-[40%]" hide-details density="compact">
+            <template #append-inner>
+              <Icon icon="ph:magnifying-glass" width="25"></Icon>
+            </template>
+          </v-text-field>
+          <!-- <v-btn color="onbackground" size="small" variant="outlined" rounded> -->
+          <!--   <p class="flex justify-center items-center text-primary font-bold"> -->
+          <!--     Filter -->
+          <!--     <Icon icon="ph:caret-down" width="25"></Icon> -->
+          <!--   </p> -->
+          <!-- </v-btn> -->
+          <!-- <v-btn variant="text" icon rounded="lg" size="small"> -->
+          <!--   <Icon icon="ph:bell" width="25" color="#79AC78"></Icon> -->
+          <!-- </v-btn> -->
+        </div>
+      </v-col>
+      <v-col md="3" cols="2">
+        <div class="flex justify-end items-center">
+          <ModeSwitcher />
+          <Logo />
+        </div>
+      </v-col>
+      <v-col>
+      </v-col>
+    </v-row>
+
+  </v-app-bar>
+  <v-dialog v-model="addNewBoardDialog">
+    <AddBoardModal :members="undefined" :workspace="undefined" @toggle-modal="() => (addNewBoardDialog = false)" />
+  </v-dialog>
+</template>

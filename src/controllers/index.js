@@ -1,0 +1,10 @@
+module.exports.authController = require("./auth.controller");
+module.exports.userController = require("./user.controller");
+module.exports.workspaceController = require("./workspace.controller");
+module.exports.boardController = require("./board.controller");
+module.exports.listController = require("./list.contorller");
+module.exports.cardController = require("./card.controller");
+module.exports.checklistController = require("./checklist.controller");
+module.exports.labelController = require("./label.controller");
+module.exports.commentController = require("./comment.controller");
+module.exports.blogController = require("./blog.controller");

@@ -1,0 +1,10 @@
+module.exports.User = require("./user.model");
+module.exports.Token = require("./token.model");
+module.exports.Workspace = require("./workspace.model");
+module.exports.Board = require("./board.model");
+module.exports.List = require("./list.model");
+module.exports.Card = require("./card.model");
+module.exports.Checklist = require("./checklist.model");
+module.exports.Label = require("./label.model");
+module.exports.Comment = require("./comment.model");
+module.exports.Blog = require("./blog.model");

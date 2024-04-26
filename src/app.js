@@ -15,6 +15,7 @@ const app = express();
 const localStrategy = require("passport-local");
 // const Redis = require('ioredis');
 
+app.use(passport.initialize());
 app.use(express.json());
 app.use(compression());
 // Create a Redis client instance
@@ -75,19 +76,18 @@ app.use(
 
 
 
-app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-const frontendPath = path.join(__dirname, "../client/dist/");
-app.use(express.static(frontendPath));
-// Serve index.html for all non-static routes
-// app.get('/*', function(req, res) {
-//   res.sendFile(frontendPath);
-// });
-
-
 app.use("/v1", routes);
+const frontendPath = path.join(__dirname, "../client/dist/");
+// Serve index.html for all non-static routes
+app.use(express.static(frontendPath));
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(frontendPath));
+});
+
+
 
 module.exports = app;

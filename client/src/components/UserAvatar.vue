@@ -5,13 +5,11 @@ const props = defineProps({
 })
 </script>
 <template>
-  <div v-if="user">
-    <v-avatar class="" :size="size || 'small'" color="primary"
-      v-if="user.profilePhotoUrl === null || !user.profilePhotoUrl">
-      {{ user.name[0].toUpperCase() }}
-    </v-avatar>
-    <v-avatar class="" size="small" color="primary" v-else>
-      <v-img :src="user.profilePhotoUrl"> </v-img>
-    </v-avatar>
-  </div>
+  <v-avatar class="" :size="size || 'small'" color="primary"
+    v-if="user.profilePhotoUrl === null || !user.profilePhotoUrl">
+    {{ user.name[0].toUpperCase() }}
+  </v-avatar>
+  <v-avatar class="" size="small" color="primary" v-else>
+    <v-img :src="user.profilePhotoUrl"> </v-img>
+  </v-avatar>
 </template>

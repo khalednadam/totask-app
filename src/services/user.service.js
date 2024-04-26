@@ -150,20 +150,7 @@ const addBoardToFavorite = async (userId, boardId) => {
   if (!userId) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
   }
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User was not found");
-  }
-  if (user.favoriteBoards.some((favoriteBoard) => favoriteBoard.id === boardId)) {
-    throw new ApiError(httpStatus.FORBIDDEN, "Board is already in the favorite list");
-  }
-  function addBoard() {
-    if (!user.favoriteBoards.includes(boardId)) {
-      user.favoriteBoards.push(boardId);
-    }
-    return user.favoriteBoards;
-  }
-  await updateUserById(userId, { favoriteBoards: addBoard() });
+  await User.findByIdAndUpdate(userId, { $addToSet: { favoriteBoards: { _id: boardId } } });
   const favoriteBoard = await Board.findOne({ _id: boardId });
   return favoriteBoard;
 };
@@ -178,21 +165,7 @@ const removeBoardFromFavorite = async (userId, boardToRemove) => {
   if (!userId) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
   }
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User was not found");
-  }
-  if (!user.favoriteBoards.some((favoriteBoard) => favoriteBoard.id === boardToRemove)) {
-    throw new ApiError(httpStatus.FORBIDDEN, "Board is not in the favorite list");
-  }
-  function removeBoard() {
-    let newBoards = user.favoriteBoards.filter(
-      (board) => board.id != boardToRemove
-    );
-    user.favoriteBoards = newBoards;
-    return user.favoriteBoards;
-  }
-  await updateUserById(userId, { favoriteBoards: removeBoard() });
+  await User.findByIdAndUpdate(userId, { $pull: { favoriteBoards: boardToRemove } });
   const favoriteBoards = await getCurrentUserFavBoards(userId);
   return favoriteBoards;
 };

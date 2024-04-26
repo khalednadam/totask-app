@@ -1,8 +1,18 @@
 <script setup>
 import { useRouter, useRoute } from "vue-router";
-import { onClickOutside } from '@vueuse/core'
-import { getWorkspaceMembersByBoardId, getBoardById, useBoards } from "../composables/utils"
-import { watch, defineAsyncComponent, computed, ref, onMounted, reactive } from "vue";
+import {
+  getWorkspaceMembersByBoardId,
+  getBoardById,
+  useBoards,
+} from "../composables/utils";
+import {
+  watch,
+  defineAsyncComponent,
+  computed,
+  ref,
+  onMounted,
+  reactive,
+} from "vue";
 import { Icon } from "@iconify/vue";
 import { useToast } from "vue-toastification";
 import { useFavoriteBoardsStore } from "@/stores/favoriteBoards";
@@ -14,25 +24,32 @@ import SidebarWorkspaceBoardItem from "../components/SidebarWorkspaceBoardItem.v
 import UserProfile from "../components/UserProfile.vue";
 import { useCardDetailsStore } from "../stores/cardDetails";
 import { useDisplay, useTheme } from "vuetify/lib/framework.mjs";
-import '@vuepic/vue-datepicker/dist/main.css'
-import VueDatePicker from '@vuepic/vue-datepicker';
+import "@vuepic/vue-datepicker/dist/main.css";
+import VueDatePicker from "@vuepic/vue-datepicker";
 import { useCardSearchStore } from "../stores/cardSearch";
 import axiosInstance from "../composables/axios";
 
-const DangerDeleteModal = defineAsyncComponent(() => import("../components/Modals/DangerDeleteModal.vue"));
-const DraggableLists = defineAsyncComponent(() => import("../components/DraggableLists.vue"));
-
-const BoardSettings = defineAsyncComponent(() =>
-  import('../components/BoardSettings.vue')
+const DangerDeleteModal = defineAsyncComponent(
+  () => import("../components/Modals/DangerDeleteModal.vue")
+);
+const DraggableLists = defineAsyncComponent(
+  () => import("../components/DraggableLists.vue")
 );
 
-const BoardInfo = defineAsyncComponent(() =>
-  import('../components/BoardInfo.vue')
+const BoardSettings = defineAsyncComponent(
+  () => import("../components/BoardSettings.vue")
 );
 
-const CardDetails = defineAsyncComponent(() => import('../components/Modals/CardDetails.vue'))
+const BoardInfo = defineAsyncComponent(
+  () => import("../components/BoardInfo.vue")
+);
+
+const CardDetails = defineAsyncComponent(
+  () => import("../components/Modals/CardDetails.vue")
+);
 const cardSearch = useCardSearchStore();
-const { searchAssignees, searchDate, searchLabels, isFilter } = storeToRefs(cardSearch)
+const { searchAssignees, searchDate, searchLabels, isFilter } =
+  storeToRefs(cardSearch);
 const theme = useTheme();
 const { mdAndUp } = useDisplay();
 const favoriteBoardsStore = useFavoriteBoardsStore();
@@ -40,21 +57,19 @@ const route = useRoute();
 const toast = useToast();
 const workspaceAllMembers = ref();
 const isAdmin = ref(false);
-const { favoriteBoards } = storeToRefs(favoriteBoardsStore)
+const { favoriteBoards } = storeToRefs(favoriteBoardsStore);
 const { addToFavorite, removeFromFavorite } = favoriteBoardsStore;
 const router = useRouter();
-const { board, status, isLoading } = getBoardById(route.params.boardId)
+const { board, status, isLoading } = getBoardById(route.params.boardId);
 const showAddList = ref(false);
 const newListName = ref("");
-const newTarget = ref(null);
 // const isFavorite = computed(() => favoriteBoards.value.some((favoriteBoard) => favoriteBoard.id === route.params.boardId));
-const boardSettingsDialog = ref(false)
+const boardSettingsDialog = ref(false);
 const isAddingListLoading = ref(false);
 const deleteBoardDialog = ref(false);
 const cardDetailsStore = useCardDetailsStore();
 
 const { isActive } = storeToRefs(cardDetailsStore);
-onClickOutside(newTarget, () => showAddList.value = false);
 
 let boardCopy = reactive(board);
 const drawer = ref(false);
@@ -63,75 +78,98 @@ const drawer = ref(false);
 
 const reopenBoard = (workspaceId) => {
   isLoading.value = true;
-  axiosInstance.put(`/b/${route.params.boardId}`,
-    {
-      workspace: workspaceId,
-      closed: false
-    }
-    ,
-    { withCredentials: true }).then((res) => {
+  axiosInstance
+    .put(
+      `/b/${route.params.boardId}`,
+      {
+        workspace: workspaceId,
+        closed: false,
+      },
+      { withCredentials: true }
+    )
+    .then((res) => {
       success();
-      socket.emit("change-board-info", route.params.boardId)
-    }).catch((err) => {
-      console.log(err)
-    }).finally(() => {
-      isLoading.value = false;
+      socket.emit("change-board-info", route.params.boardId);
     })
-}
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 const deleteBoard = () => {
   isLoading.value = true;
-  axiosInstance.delete(`/b/${route.params.boardId}`,
-    { withCredentials: true }).then((res) => {
-      emit("success")
-      socket.emit("change-board-info", route.params.boardId)
-      router.push("/")
-    }).catch((err) => {
-      console.log(err)
-    }).finally(() => {
-      isLoading.value = false;
+  axiosInstance
+    .delete(`/b/${route.params.boardId}`, { withCredentials: true })
+    .then((res) => {
+      emit("success");
+      socket.emit("change-board-info", route.params.boardId);
+      router.push("/");
     })
-}
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 const addList = () => {
   isAddingListLoading.value = true;
-  axiosInstance.post(`/list/create`, {
-    board: route.params.boardId,
-    name: newListName.value
-  }, {
-    withCredentials: true
-  }).then(() => {
-    socket.emit("update-lists", route.params.boardId);
-    newListName.value = "";
-    toast.success("List created");
-  }).catch((err) => {
-    console.log(err)
-  }).finally(() => {
-    isAddingListLoading.value = false;
-  })
-}
+  axiosInstance
+    .post(
+      `/list/create`,
+      {
+        board: route.params.boardId,
+        name: newListName.value,
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then(() => {
+      socket.emit("update-lists", route.params.boardId);
+      newListName.value = "";
+      toast.success("List created");
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      isAddingListLoading.value = false;
+    });
+};
 
 const success = () => {
   boardSettingsDialog.value = false;
   toast.success("Board updated");
-}
+};
 
 const toggleDrawer = () => {
   drawer.value = !drawer.value;
   localStorage.setItem("board-sidebar", drawer.value);
-}
+};
 
 onMounted(async () => {
   socket.emit("subscribe", route.params.boardId);
   await favoriteBoardsStore.getFavoriteBoards();
-  drawer.value = localStorage.getItem("board-sidebar") === "true" && mdAndUp.value ? true : false;
+  drawer.value =
+    localStorage.getItem("board-sidebar") === "true" && mdAndUp.value
+      ? true
+      : false;
 });
 
 watch(board, () => {
   isAdmin.value = board.value.isAdmin;
-})
+});
 
-const isFavorite = computed(() => favoriteBoards.value.some(favoriteBoard => favoriteBoard.id === route.params.boardId));
+const isFavorite = computed(() =>
+  favoriteBoards.value.some(
+    (favoriteBoard) => favoriteBoard.id === route.params.boardId
+  )
+);
 const toggleFavorite = (boardId) => {
   if (board.value.isFavorite) {
     removeFromFavorite(route.params.boardId);
@@ -140,9 +178,7 @@ const toggleFavorite = (boardId) => {
     addToFavorite(route.params.boardId);
     board.value.isFavorite = true;
   }
-
-}
-
+};
 </script>
 
 <template>
@@ -170,8 +206,8 @@ const toggleFavorite = (boardId) => {
           </v-list-item>
         </router-link>
         <router-link :to="`/w/${board?.workspace.id}`">
-          <v-list-item :active="router.currentRoute.value.fullPath === `/w/${board?.workspace.id}`" color="primary"
-            title="Boards">
+          <v-list-item :active="router.currentRoute.value.fullPath === `/w/${board?.workspace.id}`
+            " color="primary" title="Boards">
             <template #prepend>
               <Icon icon="ph:columns" width="20"> </Icon>
             </template>
@@ -200,29 +236,23 @@ const toggleFavorite = (boardId) => {
         <v-row>
           <v-col>
             <div class="flex flex-col gap-3 justify-center items-center">
-              <h1 class="text-center text-3xl">
-                Board not found
-              </h1>
+              <h1 class="text-center text-3xl">Board not found</h1>
               <p class="md:w-2/6 w-full mx-auto text-center">
-                This board may be private. If someone gave you this link, they may need to
-                invite you to their Workspace.
+                This board may be private. If someone gave you this link, they
+                may need to invite you to their Workspace.
               </p>
               <router-link to="/">
-                <v-btn color="primary" class="w-max">
-                  Home
-                </v-btn>
+                <v-btn color="primary" class="w-max"> Home </v-btn>
               </router-link>
             </div>
           </v-col>
         </v-row>
       </div>
     </v-main>
-    <v-main v-if="status < 205" :style="{ backgroundColor: board?.backgroundColor }" class="h-screen overflow-x-auto ">
+    <v-main v-if="status < 205" :style="{ backgroundColor: board?.backgroundColor }" class="h-screen overflow-x-auto">
       <div v-if="board?.closed" class="w-full h-full gap-2 flex flex-col justify-center items-center">
-        <h1>
-          This Board is closed
-        </h1>
-        <div class="flex flex-col justify-center  items-center gap-2">
+        <h1>This Board is closed</h1>
+        <div class="flex flex-col justify-center items-center gap-2">
           <v-btn variant="flat" color="primary" @click="() => reopenBoard(board?.workspace.id)">
             Reopen board
           </v-btn>
@@ -232,8 +262,8 @@ const toggleFavorite = (boardId) => {
         </div>
       </div>
       <div class="flex flex-col items-start justify-start" v-else>
-        <v-app-bar :elevation="0" density="compact" class="flex items-center px-10 "
-          style="background-color: rgba(0, 0, 0, 0.3);">
+        <v-app-bar :elevation="0" density="compact" class="flex items-center px-10"
+          style="background-color: rgba(0, 0, 0, 0.3)">
           <!-- <div class="flex justify-start items-center w-max cursor-pointer "> -->
           <v-row>
             <v-col md="5" cols="5">
@@ -246,7 +276,7 @@ const toggleFavorite = (boardId) => {
                   </template>
                 </v-tooltip>
                 <v-btn @click="() => toggleFavorite(board?.id)" icon variant="text" size="x-small"
-                  class="ml-3 group/fav z-50 " :ripple="false">
+                  class="ml-3 group/fav z-50" :ripple="false">
                   <Icon :icon="isFavorite ? 'ph:star-fill' : 'ph:star'" width="25" class=""
                     :class="isFavorite ? 'text-yellow-400' : 'text-white'" />
                 </v-btn>
@@ -304,15 +334,13 @@ const toggleFavorite = (boardId) => {
                                 @click="searchDate = []">
                                 Delete
                               </v-btn>
-                              <v-btn class="select-button w-1/2" color="primary" @click="selectDate">Select
-                                Date</v-btn>
+                              <v-btn class="select-button w-1/2" color="primary" @click="selectDate">Select Date</v-btn>
                             </div>
                           </template>
                         </VueDatePicker>
                       </v-card-text>
                     </v-card>
                   </v-menu>
-
                 </div>
                 <div class="-space-x-2 flex">
                   <UserAvatar class="z-50" v-for="user in board?.members.slice(0, 1)" :user v-if="mdAndUp" />
@@ -326,10 +354,8 @@ const toggleFavorite = (boardId) => {
                       <v-card class="md:max-w-[500px] md:min-w-[300px] mx-auto">
                         <v-card-text>
                           <div class="flex justify-between items-center">
-                            <p class="text-lg">
-                              Board Members
-                            </p>
-                            <v-btn variant="text" class="" icon size="35" @click="() => isActive.value = false">
+                            <p class="text-lg">Board Members</p>
+                            <v-btn variant="text" class="" icon size="35" @click="() => (isActive.value = false)">
                               <Icon icon="ph:x"></Icon>
                             </v-btn>
                           </div>
@@ -341,7 +367,7 @@ const toggleFavorite = (boardId) => {
                     </template>
                   </v-dialog>
                 </div>
-                <v-btn variant="text" icon @click="() => boardSettingsDialog = true">
+                <v-btn variant="text" icon @click="() => (boardSettingsDialog = true)">
                   <Icon icon="ph:gear" width="30" color="white" v-if="isAdmin === true" />
                   <Icon icon="ph:info" width="30" color="white" v-else />
                 </v-btn>
@@ -350,19 +376,20 @@ const toggleFavorite = (boardId) => {
           </v-row>
         </v-app-bar>
 
-        <div class="flex h-[80vh] mb-4 ">
+        <div class="flex h-[80vh] mb-4">
           <Suspense v-if="board">
             <DraggableLists v-model="board.lists" />
           </Suspense>
           <div class="min-w-[350px] mt-3">
-            <v-btn text="Add a new list" color="list" class="flex w-[272px] font-bold justify-start text-start rounded "
-              height="60" rounded="lg" v-if="!showAddList" @click="() => showAddList = true" variant="flat" elevation="1">
+            <v-btn text="Add a new list" color="list" class="flex w-[272px] font-bold justify-start text-start rounded"
+              height="60" rounded="lg" v-if="!showAddList" @click="() => (showAddList = true)" variant="flat"
+              elevation="1">
               <template v-slot:prepend>
                 <Icon icon="ph:plus" class=""></Icon>
               </template>
             </v-btn>
-            <v-card color="list" rounded="lg" class="w-[272px]" v-else ref="newTarget" @keypress.enter="addList()"
-              @keydown.esc="showAddList = false">
+            <v-card color="list" rounded="lg" class="w-[272px]" v-else v-click-outside="() => (showAddList = false)"
+              @keypress.enter="addList()" @keydown.esc="showAddList = false">
               <div class="px-2 py-2">
                 <v-text-field autofocus placeholder="List name" hide-details v-model="newListName">
                 </v-text-field>
@@ -371,7 +398,7 @@ const toggleFavorite = (boardId) => {
                     :loading="isAddingListLoading" @click="() => addList()">
                     Add list
                   </v-btn>
-                  <v-btn variant="text" class="" icon size="35" @click="() => showAddList = false">
+                  <v-btn variant="text" class="" icon size="35" @click="() => (showAddList = false)">
                     <Icon icon="ph:x"></Icon>
                   </v-btn>
                 </div>
@@ -391,14 +418,13 @@ const toggleFavorite = (boardId) => {
         </v-list>
       </v-navigation-drawer>
 
-
       <v-dialog transition="dialog-bottom-transition" class="md:max-w-[90vw] w-full mx-auto" v-model="isActive"
         :close-on-back="false" persistent>
         <Suspense>
           <CardDetails />
           <template #fallback>
             <v-card class="2xl:w-[35vw] min-h-[60vh] xl:w-[50vw] w-full mx-auto flex justify-center items-center">
-              <v-card-text class="mx-auto justify-center flex items-center ">
+              <v-card-text class="mx-auto justify-center flex items-center">
                 <v-progress-circular color="primary" indeterminate="disable-shrink" size="50"
                   width="5"></v-progress-circular>
               </v-card-text>
@@ -435,5 +461,5 @@ const toggleFavorite = (boardId) => {
 }
 </style>
 <style>
-@import url('../assets/override.css');
+@import url("../assets/override.css");
 </style>

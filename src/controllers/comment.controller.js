@@ -2,17 +2,16 @@ const httpStatus = require("http-status");
 const pick = require("../utils/pick");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
-const { commentService, cardService } = require("../services");
+const { commentService, cardService, boardService } = require("../services");
 const { Card } = require("../models");
 
 const createComment = catchAsync(async (req, res) => {
-  const comment = await commentService.createComment(req.body);
-  const card = await cardService.getCardById(req.params.cardId, req.session.user.id);
-  if (!card) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Card was not found");
+  const comment = await commentService.createComment({ ...req.body, user: req.session.user.id });
+  const isMember = await boardService.checkIfUserIsMember(req.body.boardId, req.session.user.id);
+  if (!isMember) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
   }
-  card.comments.push(comment.id);
-  await card.save();
+  const card = await Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { comments: { _id: comment.id } } })
   res.status(httpStatus.OK).send(comment);
 })
 
@@ -39,12 +38,7 @@ const deleteCommentById = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.UNAUTHORIZED, "You are not allowed to delete this comment");
   }
   const deletedComment = await commentService.deleteComment(req.params.commentId);
-  const card = await Card.findOne({ comments: req.params.commentId })
-  if (!card) {
-    throw new ApiError(httpStatus.NOT_FOUND, "Card was not found");
-  }
-  card.comments = card.comments.filter(comment => comment != req.params.commentId);
-  await cardService.updateCardById(card.id, { comments: card.comments }, req.session.user.id);
+  const card = await Card.findOneAndUpdate({ comment: req.params.commentId }, { $pull: { comments: { _id: req.params.commentId } } })
   res.status(httpStatus.OK).send(deletedComment);
 })
 

@@ -128,7 +128,7 @@ const deleteUser = catchAsync(async (req, res) => {
  * get currently logged in user from the session
  */
 const getCurrentUser = catchAsync(async (req, res) => {
-  res.status(httpStatus.OK).send(req.session.user);
+  res.send(req.session.user);
 });
 
 const addBoardToFavorite = catchAsync(async (req, res) => {

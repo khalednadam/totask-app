@@ -162,7 +162,7 @@ const router = createRouter({
       name: "Board",
       component: () => import("../views/Board.vue"),
       meta: {
-        // layout: BoardLayout,
+        layout: BoardLayout,
         auth: true
       },
     },
@@ -187,21 +187,18 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const ss = await currentUserStore.getUser();
   try {
-    const isAuth = !!currentUserStore.user?.id;
-    const isAdmin = currentUserStore.user && currentUserStore.user?.role === 'admin';
+    await currentUserStore.getUser();
+    const isAuth = !!currentUserStore.user.id;
+    const isAdmin = currentUserStore.user && currentUserStore.user.role === 'admin';
     // Redirect unauthenticated users to the home page if the route requires authentication
     if (to.meta.auth && !isAuth) {
-      console.log(ss);
-      // console.log(currentUserStore.user.id);
       next({ name: "home" });
       return;
     }
 
     // Redirect authenticated users away from non-auth pages
     if (!to.meta.auth && isAuth) {
-      console.log('authenticated')
       next({ name: "boards" });
       return;
     }

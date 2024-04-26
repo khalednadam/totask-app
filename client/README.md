@@ -45,4 +45,3 @@ npm run build
 npm run test:unit
 ```
 # totask-vue-client
-# totask-app

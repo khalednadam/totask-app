@@ -1,43 +1,40 @@
 <script setup>
-import { Icon } from '@iconify/vue';
-import { ref, onMounted, computed, watch } from "vue"
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import { QuillEditor } from '@vueup/vue-quill'
-import { onClickOutside } from '@vueuse/core'
-import axios from 'axios';
-import { getMembersOfBoard, useCard } from '../../composables/utils';
-import UserAvatar from '../UserAvatar.vue';
-import DatePicker from '../DatePicker.vue';
-import CardMembersInput from '../CardMembersInput.vue';
-import Checklist from '../Checklist.vue';
-import AddChecklistCard from '../AddChecklistCard.vue';
+import { Icon } from "@iconify/vue";
+import { ref, onMounted, computed, watch } from "vue";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import { QuillEditor } from "@vueup/vue-quill";
+import { getMembersOfBoard, useCard } from "../../composables/utils";
+import UserAvatar from "../UserAvatar.vue";
+import DatePicker from "../DatePicker.vue";
+import CardMembersInput from "../CardMembersInput.vue";
+import Checklist from "../Checklist.vue";
+import AddChecklistCard from "../AddChecklistCard.vue";
 import { socket } from "../../composables/socket";
-import { onUnmounted } from 'vue';
-import { useCardDetailsStore } from "../../stores/cardDetails"
-import { storeToRefs } from 'pinia';
-import DeleteModal from "./DeleteModal.vue"
-import { useToast } from "vue-toastification"
-import LabelsMenu from '../LabelsMenu.vue';
-import Comment from '../Comment.vue';
+import { onUnmounted } from "vue";
+import { useCardDetailsStore } from "../../stores/cardDetails";
+import { storeToRefs } from "pinia";
+import DeleteModal from "./DeleteModal.vue";
+import { useToast } from "vue-toastification";
+import Comment from "../Comment.vue";
 import { useCurrentUser } from "../../stores/auth";
-import Attachment from '../Attachment.vue';
-import axiosInstance from '../../composables/axios';
+import Attachment from "../Attachment.vue";
+import axiosInstance from "../../composables/axios";
 // INITS
 const props = defineProps({
   isDateDue: Boolean,
   isInLessThanDay: Boolean,
 });
-const emit = defineEmits(["closeModal", "updateCard", "deleteCard"])
+const emit = defineEmits(["closeModal", "updateCard", "deleteCard"]);
 const cardDetails = useCardDetailsStore();
 const labelsMenu = ref(false);
 const { isActive, cardId } = storeToRefs(cardDetails);
 const deleteDialog = ref(false);
-const quill = ref("")
-const text = ref("")
+const quill = ref("");
+const text = ref("");
 // set the quill text
 const setText = () => {
-  text.value = quill.value.getText()
-}
+  text.value = quill.value.getText();
+};
 const { card, isCardLoading } = await useCard(cardId.value);
 const currentUser = useCurrentUser();
 // CONST
@@ -61,8 +58,6 @@ const changeCardDescription = ref(false);
 const datesMenu = ref(false);
 const newLabelColor = ref();
 const newLabelTitle = ref();
-const titleInputTarget = ref(null)
-const descriptionInputTarget = ref(null);
 const newLabelMenu = ref(false);
 const { members } = getMembersOfBoard(card?.value.board.id);
 const labelToEdit = ref(null);
@@ -73,87 +68,115 @@ const isLoading = ref(false);
 
 // Funcitons
 const updateCard = (newCard) => {
-  emit('updateCard', newCard);
+  emit("updateCard", newCard);
   card.value = newCard;
-  socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-}
+  socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+};
 
 const updateCardChecklist = (newChecklist) => {
   card.value.checklist = newChecklist;
-  emit('updateCard', card.value);
-}
+  emit("updateCard", card.value);
+};
 
 const updateCardIsComplete = () => {
-  axiosInstance.put(`/card/isComplete/${cardId.value}`, {
-    isComplete: card.value.isComplete
-  }, {
-    withCredentials: true
-  }).then((res) => {
-    card.value.isComplete = res.data.isComplete;
-    isCompleteToChange.value = res.data.isComplete
-    emit("updateCard", res.data);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-    socket.emit("update-card", card.value.id);
-  }).catch((err) => {
-    console.log(err);
-  })
-}
+  axiosInstance
+    .put(
+      `/card/isComplete/${cardId.value}`,
+      {
+        isComplete: card.value.isComplete,
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      card.value.isComplete = res.data.isComplete;
+      isCompleteToChange.value = res.data.isComplete;
+      emit("updateCard", res.data);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+      socket.emit("update-card", card.value.id);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const updateCardTitle = () => {
-  axiosInstance.put(`/card/title/${cardId.value}`, {
-    title: titleToChange.value
-  }, {
-    withCredentials: true
-  }).then((res) => {
-    changeCardTitle.value = false;
-    card.value.title = res.data.title;
-    emit("updateCard", res.data);
-    socket.emit("update-card", card.value.id);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-  }).catch((err) => {
-    console.log(err);
-  })
-}
+  axiosInstance
+    .put(
+      `/card/title/${cardId.value}`,
+      {
+        title: titleToChange.value,
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      changeCardTitle.value = false;
+      card.value.title = res.data.title;
+      emit("updateCard", res.data);
+      socket.emit("update-card", card.value.id);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const updateCardDescription = () => {
   if (text.value.trim().length < 1) {
     changeCardDescription.value = false;
     descriptionToChange.value = null;
   }
-  axiosInstance.put(`/card/description/${cardId.value}`, {
-    description: descriptionToChange.value
-  }, {
-    withCredentials: true
-  }).then((res) => {
-    changeCardDescription.value = false;
-    card.value.description = res.data.description;
-    emit("updateCard", res.data);
-    socket.emit("update-card", card.value.id);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-  }).catch((err) => {
-    console.log(err);
-  })
-}
+  axiosInstance
+    .put(
+      `/card/description/${cardId.value}`,
+      {
+        description: descriptionToChange.value,
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      changeCardDescription.value = false;
+      card.value.description = res.data.description;
+      emit("updateCard", res.data);
+      socket.emit("update-card", card.value.id);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const updateCardDates = () => {
-  axiosInstance.put(`/card/dates/${cardId.value}`, {
-    startDate: date.value[0],
-    endDate: date.value[1]
-  }, {
-    withCredentials: true
-  }).then((res) => {
-    datesMenu.value = false;
-    card.value.startDate = (date.value[0]);
-    card.value.endDate = (date.value[1]);
-    startDateToChange.value = (date.value[0]);
-    endDateToChange.value = (date.value[1]);
-    emit("updateCard", res.data);
-    socket.emit("update-card", card.value.id);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-  }).catch((err) => {
-    console.log(err);
-  })
-}
+  axiosInstance
+    .put(
+      `/card/dates/${cardId.value}`,
+      {
+        startDate: date.value[0],
+        endDate: date.value[1],
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      datesMenu.value = false;
+      card.value.startDate = date.value[0];
+      card.value.endDate = date.value[1];
+      startDateToChange.value = date.value[0];
+      endDateToChange.value = date.value[1];
+      emit("updateCard", res.data);
+      socket.emit("update-card", card.value.id);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const onDeleteDate = () => {
   date.value = [null, null];
@@ -166,43 +189,58 @@ const onDeleteDate = () => {
   card.value.isComplete = false;
   startDateToChange.value = new Date();
   endDateToChange.value = new Date();
-}
+};
 
 const addCardCover = () => {
   isLoading.value = true;
-  axiosInstance.put(`/card/cover/${cardId.value}`, {
-    file: cardCover.value[0]
-  }, {
-    headers: {
-      "Content-Type": "multipart/form-data"
-    },
-    withCredentials: true
-  }).then((res) => {
-    emit("updateCard", res.data);
-    socket.emit("update-card", card.value.id);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-  }).catch((err) => {
-    console.log(err);
-  }).finally(() => {
-    isLoading.value = false;
-  })
-}
+  axiosInstance
+    .put(
+      `/card/cover/${cardId.value}`,
+      {
+        file: cardCover.value[0],
+      },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      emit("updateCard", res.data);
+      socket.emit("update-card", card.value.id);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 const deleteCardCover = () => {
   isLoading.value = true;
-  axiosInstance.put(`/card/deleteCover/${cardId.value}`, {
-  }, {
-    withCredentials: true
-  }).then((res) => {
-    emit("updateCard", res.data);
-    socket.emit("update-card", card.value.id);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-  }).catch((err) => {
-    console.log(err);
-  }).finally(() => {
-    isLoading.value = false;
-  })
-}
+  axiosInstance
+    .put(
+      `/card/deleteCover/${cardId.value}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      emit("updateCard", res.data);
+      socket.emit("update-card", card.value.id);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 // const addFileToAttachments = (e) => {
 //   attachments = Object.values(e.target.files).map((val) => (val));
@@ -216,171 +254,208 @@ const addAttachments = () => {
 
   // Append each file to FormData
   attachments.value.forEach((attachment) => {
-    formData.append('files', attachment); // Append the file directly, assuming 'files' is the expected field name by Multer
+    formData.append("files", attachment); // Append the file directly, assuming 'files' is the expected field name by Multer
   });
-  axiosInstance.put(`/card/attachments/${cardId.value}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data"
-    },
-    withCredentials: true
-  }).then((res) => {
-    emit("updateCard", res.data);
-    socket.emit("update-card", card.value.id);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-    attachments.value = [];
-  }).catch((err) => {
-    console.log(err);
-  }).finally(() => {
-    isLoading.value = false;
-  })
-}
-
+  axiosInstance
+    .put(`/card/attachments/${cardId.value}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    })
+    .then((res) => {
+      emit("updateCard", res.data);
+      socket.emit("update-card", card.value.id);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+      attachments.value = [];
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 // computed
 const timeDifference = computed(() => {
   return new Date(card?.value.endDate) - new Date();
-})
+});
 const hoursDifference = computed(() => {
   return timeDifference.value / (1000 * 60 * 60);
-})
+});
 const isDateDue = computed(() => {
-  return (new Date() > endDateToChange.value && !card.value.isComplete);
-})
+  return new Date() > endDateToChange.value && !card.value.isComplete;
+});
 const isInLessThanDay = computed(() => {
-  return (hoursDifference.value < 24 && hoursDifference.value > 0) && !card.value.isComplete;
-})
+  return (
+    hoursDifference.value < 24 &&
+    hoursDifference.value > 0 &&
+    !card.value.isComplete
+  );
+});
 const pastDay = computed(() => {
-  return (hoursDifference.value < -24) && !card.value.isComplete;
-})
-// Listeners 
-onClickOutside(titleInputTarget, () => {
+  return hoursDifference.value < -24 && !card.value.isComplete;
+});
+
+const onClickOutsideTitle = () => {
   changeCardTitle.value = false;
   updateCardTitle();
-});
-onClickOutside(descriptionInputTarget, () => {
+};
+
+const onClickOutsideDescription = () => {
   changeCardDescription.value = false;
   updateCardDescription();
-});
+};
 
 const deleteCard = () => {
-  axiosInstance.delete(`/card/${cardId.value}`,
-    {
-      withCredentials: true
-    }).then(() => {
-      socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-      toast.success("card was deleted")
-      socket.emit('delete-card', cardId.value);
-    }).catch((err) => {
-      console.log(err);
+  axiosInstance
+    .delete(`/card/${cardId.value}`, {
+      withCredentials: true,
     })
-}
+    .then(() => {
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+      toast.success("card was deleted");
+      socket.emit("delete-card", cardId.value);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const updateCardLabels = () => {
-  axiosInstance.put(`/card/labels/${card.value.id}`, {
-    labels: cardLabels.value.map((label) => label.id)
-  }, {
-    withCredentials: true
-  }).then((res) => {
-    emit("updateCard", res.data);
-    cardLabels.value = res.data.labels
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-    socket.emit("update-card", card.value.id);
-  }).catch((err) => {
-    console.log(err);
-  })
-}
+  axiosInstance
+    .put(
+      `/card/labels/${card.value.id}`,
+      {
+        labels: cardLabels.value.map((label) => label.id),
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      emit("updateCard", res.data);
+      cardLabels.value = res.data.labels;
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+      socket.emit("update-card", card.value.id);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const createLabel = () => {
-  axiosInstance.post(`/label/create`, {
-    title: newLabelTitle.value,
-    color: newLabelColor.value,
-  }, {
-    params: {
-      boardId: card.value.board.id
-    },
-    withCredentials: true
-  }).then((res) => {
-    card.value.board.labels.push(res.data);
-    socket.emit("update-cards", card.value.board.id, [card.value.list.id])
-    socket.emit("update-card", card.value.id);
-    newLabelMenu.value = false;
-    newLabelTitle.value = null;
-    newLabelColor.value = null;
-  }).catch(err => {
-    console.log(err);
-  })
-}
-
+  axiosInstance
+    .post(
+      `/label/create`,
+      {
+        title: newLabelTitle.value,
+        color: newLabelColor.value,
+      },
+      {
+        params: {
+          boardId: card.value.board.id,
+        },
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      card.value.board.labels.push(res.data);
+      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
+      socket.emit("update-card", card.value.id);
+      newLabelMenu.value = false;
+      newLabelTitle.value = null;
+      newLabelColor.value = null;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const updateLabel = (labelId) => {
-  axiosInstance.put(`/label/${labelId}`,
-    {
-      title: labelToEdit.value.title,
-      color: labelToEdit.value.color
-    },
-    {
+  axiosInstance
+    .put(
+      `/label/${labelId}`,
+      {
+        title: labelToEdit.value.title,
+        color: labelToEdit.value.color,
+      },
+      {
+        params: {
+          boardId: card.value.board.id,
+        },
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      editLabel.value = false;
+      labelToEdit.value = null;
+      socket.emit("update-cards", card.value.board.id, null);
+      socket.emit("update-card", card.value.id);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const deleteLabel = (labelId) => {
+  axiosInstance
+    .delete(`/label/${labelId}`, {
       params: {
         boardId: card.value.board.id,
       },
-      withCredentials: true
-    }).then((res) => {
+      withCredentials: true,
+    })
+    .then((res) => {
       editLabel.value = false;
       labelToEdit.value = null;
-      socket.emit("update-cards", card.value.board.id, null)
+      card.value.board.labels = card.value.board.labels.filter(
+        (label) => label.id !== labelId
+      );
+      card.value.labels = card.value.labels.filter(
+        (label) => label.id !== labelId
+      );
+      socket.emit("update-cards", card.value.board.id, null);
       socket.emit("update-card", card.value.id);
-    }).catch(err => {
-      console.log(err);
     })
-}
-
-const deleteLabel = (labelId) => {
-  axiosInstance.delete(`/label/${labelId}`,
-    {
-      params: {
-        boardId: card.value.board.id
-      },
-      withCredentials: true
-    }).then((res) => {
-      editLabel.value = false
-      labelToEdit.value = null;
-      card.value.board.labels = card.value.board.labels.filter(label => label.id !== labelId);
-      card.value.labels = card.value.labels.filter(label => label.id !== labelId);
-      socket.emit("update-cards", card.value.board.id, null)
-      socket.emit("update-card", card.value.id);
-    }).catch(err => {
+    .catch((err) => {
       console.log(err);
-    })
-}
+    });
+};
 const openEditLabel = (label) => {
-  editLabel.value = true
-  labelToEdit.value = label
-}
+  editLabel.value = true;
+  labelToEdit.value = label;
+};
 
 watch(editLabel, () => {
   if (!editLabel.value) {
     labelToEdit.value = null;
   }
-})
-
+});
 
 const addComment = () => {
-  axiosInstance.post(`/comment/${card.value.id}/create`,
-    {
-      text: newCommentText.value,
-      user: currentUser.user.id,
-      boardId: card.value.board.id
-    },
-    {
-      withCredentials: true
-    }
-  ).then((res) => {
-    newCommentText.value = "";
-    socket.emit("update-cards", card.value.board.id, null)
-    socket.emit("update-card", card.value.id);
-  }).catch(err => {
-    console.log(err);
-  })
-}
+  axiosInstance
+    .post(
+      `/comment/${card.value.id}/create`,
+      {
+        text: newCommentText.value,
+        // user: currentUser.user.id,
+        boardId: card.value.board.id,
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then((res) => {
+      newCommentText.value = "";
+      socket.emit("update-cards", card.value.board.id, null);
+      socket.emit("update-card", card.value.id);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 // Life cycle
 onMounted(() => {
@@ -397,10 +472,10 @@ onMounted(() => {
     startDateToChange.value = new Date();
   }
   date.value = [startDateToChange.value, endDateToChange.value];
-})
+});
 onUnmounted(() => {
-  socket.emit('unsubscribe', card.value.id);
-})
+  socket.emit("unsubscribe", card.value.id);
+});
 const changeCoverMenu = ref(false);
 </script>
 
@@ -446,12 +521,13 @@ const changeCoverMenu = ref(false);
           <p class="font-bold text-2xl px-4 py-2" @click="changeCardTitle = true" v-if="!changeCardTitle">
             {{ card?.title }}
           </p>
-          <v-text-field ref="titleInputTarget" hide-details :autofocus="changeCardTitle" v-model="titleToChange"
-            class="input" v-else>
+          <v-text-field v-click-outside="onClickOutsideTitle" hide-details :autofocus="changeCardTitle"
+            v-model="titleToChange" class="input" v-else>
           </v-text-field>
         </div>
         <p class="!text-sm px-4">
-          in list <span class="underline font-bold"> {{ card.list.name }} </span>
+          in list
+          <span class="underline font-bold"> {{ card.list.name }} </span>
         </p>
       </div>
       <div>
@@ -460,14 +536,12 @@ const changeCoverMenu = ref(false);
         </v-btn>
       </div>
     </v-card-title>
-    <v-card-text class="px-14">
+    <v-card-text>
       <v-row>
         <v-col cols="12" md="8">
-          <p class="mb-2">
-            Labels
-          </p>
+          <p class="mb-2">Labels</p>
           <div class="pb-3 flex">
-            <div class=" flex items-center flex-wrap gap-2" v-if="card.labels.length > 0">
+            <div class="flex items-center flex-wrap gap-2" v-if="card.labels.length > 0">
               <template v-for="label in card.labels">
                 <v-btn :color="label.color" variant="flat">
                   <p v-if="label.title">
@@ -490,7 +564,11 @@ const changeCoverMenu = ref(false);
                   <v-item-group v-model="cardLabels" multiple class="space-y-2 my-2 w-96">
                     <v-item v-for="label in card.board.labels" :value="label" v-slot="{ isSelected, toggle }">
                       <div class="flex items-center">
-                        <v-btn class="w-11/12" :color="label.color" @click="() => { toggle(); updateCardLabels() }">
+                        <v-btn class="w-11/12" :color="label.color" @click="() => {
+                          toggle();
+                          updateCardLabels();
+                        }
+                          ">
                           <p v-if="label.title">
                             {{ label.title.toUpperCase() }}
                           </p>
@@ -525,10 +603,8 @@ const changeCoverMenu = ref(false);
                 @update-card-dates="() => updateCardDates()" @on-delete-date="() => onDeleteDate()" />
             </div>
           </div>
-          <div class=" pb-3" v-if="card?.assignees.length > 0">
-            <p>
-              Members
-            </p>
+          <div class="pb-3" v-if="card?.assignees.length > 0">
+            <p>Members</p>
             <div class="flex pt-2 p-1 -space-x-2 overflow-hidden">
               <v-tooltip :text="assignee.name" v-for="assignee in card?.assignees" :key="assignee.id">
                 <template v-slot:activator="{ props }">
@@ -543,18 +619,20 @@ const changeCoverMenu = ref(false);
             <Icon icon="ph:text-align-left" width="25" />
             Description
           </div>
-          <v-card v-if="(!card?.description || (card.description.length === 0)) && !changeCardDescription" class="mt-2"
-            variant="tonal" @click="changeCardDescription = true">
-            <v-card-text>
-              Add a more detailed description...
-            </v-card-text>
+          <v-card v-if="(!card?.description || card.description.length === 0) &&
+            !changeCardDescription
+            " class="mt-2" variant="tonal" @click="changeCardDescription = true">
+            <v-card-text> Add a more detailed description... </v-card-text>
           </v-card>
-          <div class="h-32 mt-2 my-20" v-if="changeCardDescription" ref="descriptionInputTarget">
+          <div class="h-32 mt-2 my-20" v-if="changeCardDescription" v-click-outside="onClickOutsideDescription">
             <QuillEditor ref="quill" toolbar="essential" v-model:content="descriptionToChange" @text-change="setText"
               contentType="html" theme="snow" />
             <div class="flex gap-3 justify-end mt-3">
-              <v-btn color="primary" variant="outlined"
-                @click="() => { changeCardDescription = false, descriptionToChange = card?.description }">
+              <v-btn color="primary" variant="outlined" @click="() => {
+                (changeCardDescription = false),
+                  (descriptionToChange = card?.description);
+              }
+                ">
                 Cancel
               </v-btn>
               <v-btn color="primary" @click="() => updateCardDescription()">
@@ -563,8 +641,7 @@ const changeCoverMenu = ref(false);
             </div>
           </div>
           <div class="pt-2" v-if="card?.description && !changeCardDescription" @click="changeCardDescription = true"
-            v-html="card?.description">
-          </div>
+            v-html="card?.description"></div>
 
           <div class="flex items-center gap-1 mt-5" v-if="card.attachments && card.attachments.length > 0">
             <Icon icon="ph:paperclip" width="25" />
@@ -578,8 +655,8 @@ const changeCoverMenu = ref(false);
           </div>
 
           <Checklist v-if="card.checklist" :card-id="card.id" :list-id="card?.list.id" :board-id="card.board.id"
-            class="mt-5" v-model="card.checklist" @update-card="(newCard) => updateCard(newCard)"
-            @update-card-checklist="(newChecklist) => updateCardChecklist(newChecklist)" />
+            class="mt-5" v-model="card.checklist" @update-card="(newCard) => updateCard(newCard)" @update-card-checklist="(newChecklist) => updateCardChecklist(newChecklist)
+              " />
 
           <div class="flex items-center mt-6 gap-1">
             <Icon icon="ph:chat" width="25" />
@@ -590,16 +667,12 @@ const changeCoverMenu = ref(false);
           </template>
           <v-text-field @keydown.enter="addComment" v-model="newCommentText" class="mt-4" hide-details density="compact"
             placeholder="write a comment">
-            <template v-slot:prepend>
-              <UserAvatar :user="currentUser.user" />
-            </template>
             <template v-slot:append>
               <v-btn variant="tonal" color="primary" @click="addComment">
                 send
               </v-btn>
             </template>
           </v-text-field>
-
         </v-col>
 
         <!------------------->
@@ -607,9 +680,7 @@ const changeCoverMenu = ref(false);
         <!------------------->
         <v-col cols="12" md="4">
           <div class="w-full space-y-2">
-            <p class="text-md">
-              Add to card
-            </p>
+            <p class="text-md">Add to card</p>
 
             <CardMembersInput :card-id="card.id" :members v-model="assigneesToChange"
               @update-card="(newCard) => updateCard(newCard)" />
@@ -631,7 +702,11 @@ const changeCoverMenu = ref(false);
                   <v-item-group v-model="cardLabels" multiple class="space-y-2 my-2 w-96">
                     <v-item v-for="label in card.board.labels" :value="label" v-slot="{ isSelected, toggle }">
                       <div class="flex items-center">
-                        <v-btn class="w-11/12" :color="label.color" @click="() => { toggle(); updateCardLabels() }">
+                        <v-btn class="w-11/12" :color="label.color" @click="() => {
+                          toggle();
+                          updateCardLabels();
+                        }
+                          ">
                           <p v-if="label.title">
                             {{ label.title.toUpperCase() }}
                           </p>
@@ -723,20 +798,18 @@ const changeCoverMenu = ref(false);
           </div>
         </v-col>
       </v-row>
-      <br>
+      <br />
     </v-card-text>
     <v-dialog width="500" v-model="deleteDialog">
       <DeleteModal title="Are you sure you want to delete this card?"
         text="All progress and information in this card will be deleted" action-btn-text="Delete"
-        @cancel="() => deleteDialog = false" @delete="() => deleteCard()" />
+        @cancel="() => (deleteDialog = false)" @delete="() => deleteCard()" />
     </v-dialog>
   </v-card>
   <v-dialog v-model="newLabelMenu" width="350" class="w-max bg-red mx-auto" :scrim="false"
     :close-on-content-click="false">
     <v-card class="mx-auto" width="350">
-      <v-card-title class="text-center">
-        Add label
-      </v-card-title>
+      <v-card-title class="text-center"> Add label </v-card-title>
       <div class="bg-list mb-2 h-20 w-full flex justify-center items-center px-4">
         <v-btn :color="newLabelColor" variant="flat" class="w-full">
           <p v-if="newLabelTitle">
@@ -745,8 +818,7 @@ const changeCoverMenu = ref(false);
         </v-btn>
       </div>
       <v-card-text>
-        <v-text-field label="Title" v-model="newLabelTitle">
-        </v-text-field>
+        <v-text-field label="Title" v-model="newLabelTitle"> </v-text-field>
         <v-color-picker class="min-w-full" hide-inputs v-model="newLabelColor" hide-canvas show-swatches
           elevation="0"></v-color-picker>
         <v-btn @click="createLabel" :disabled="!newLabelColor" color="primary" class="mt-2">
@@ -757,9 +829,7 @@ const changeCoverMenu = ref(false);
   </v-dialog>
   <v-dialog v-model="editLabel" :key="editLabel" width="350" class="w-max bg-red mx-auto">
     <v-card class="mx-auto" width="350">
-      <v-card-title class="text-center">
-        Edit label
-      </v-card-title>
+      <v-card-title class="text-center"> Edit label </v-card-title>
       <div class="bg-list mb-2 h-20 w-full flex justify-center items-center px-4">
         <v-btn :color="labelToEdit.color" variant="flat" class="w-full">
           <p v-if="labelToEdit.title">
@@ -768,8 +838,7 @@ const changeCoverMenu = ref(false);
         </v-btn>
       </div>
       <v-card-text>
-        <v-text-field label="Title" v-model="labelToEdit.title">
-        </v-text-field>
+        <v-text-field label="Title" v-model="labelToEdit.title"> </v-text-field>
         <v-color-picker class="min-w-full" hide-inputs v-model="labelToEdit.color" hide-canvas show-swatches
           elevation="0"></v-color-picker>
         <div class="flex items-center gap-2">

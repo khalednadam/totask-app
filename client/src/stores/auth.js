@@ -12,9 +12,14 @@ export const useCurrentUser = defineStore("currentUser", () => {
   }
   async function getUser() {
     isLoading.value = true;
-    await axiosInstance(`/users/user`)
+    await axiosInstance(`/users/user`, {
+      headers: {
+        "Access-Control-Allow-Origin": "https://totask-server.onrender.com"
+      },
+      method: "GET",
+      withCredentials: true,
+    })
       .then((res) => {
-        console.log(res.data);
         user.value = res.data;
       })
       .catch((err) => {

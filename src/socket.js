@@ -8,6 +8,7 @@ const logger = require("./config/logger");
 
 const io = require("socket.io")(3002, {
   cors: {
+    origin: "*"
   },
 });
 // io.adapter(redisAdapter({

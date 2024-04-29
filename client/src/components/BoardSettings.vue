@@ -1,5 +1,4 @@
 <script setup>
-import axios from "axios";
 import { ref } from "vue"
 import { useRoute, useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
@@ -14,8 +13,6 @@ const props = defineProps({
 
 const boardSettingsDialog = defineModel();
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
-
 const emit = defineEmits(["success"])
 
 const deleteBoardDialog = ref(false);
@@ -27,7 +24,6 @@ const newIsPrivate = ref(props.board.isPrivate);
 const newMembers = ref(props.board.members);
 const nameOfBoardToDelete = ref("");
 const router = useRouter();
-const closed = ref(false);
 const closeBoardDialog = ref(false);
 const isLoading = ref(false);
 

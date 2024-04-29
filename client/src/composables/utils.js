@@ -291,7 +291,7 @@ export const useLists = async (boardId) => {
   async function getLists() {
     isLoading.value = true;
     try {
-      const response = await axiosInstance.get(`/list/listsOf/${boardId}`, { params: { sortBy: "position:asc" } });
+      const response = await axiosInstance.get(`/list/listsOf/${boardId}`, { params: { sortBy: "position:asc", limit: 100 } });
       lists.value = response.data.results;
     } catch (err) {
       console.log(err);

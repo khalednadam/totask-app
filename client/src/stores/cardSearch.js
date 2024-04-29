@@ -1,14 +1,16 @@
 import { computed, ref, watch } from "vue";
 import { defineStore } from "pinia";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import debounce from 'lodash.debounce'
 
 export const useCardSearchStore = defineStore("cardSearch", () => {
   const router = useRouter();
-  const searchWord = ref("");
-  const searchLabels = ref([]);
-  const searchDate = ref([]);
-  const searchAssignees = ref([]);
+  const route = useRoute();
+  const searchWord = ref(route.query.title || "");
+  const searchLabels = ref(route.query.labels || []);
+  const searchDate = ref(route.query.date || []);
+  const searchAssignees = ref(route.query.assignees || []);
+  console.log(route.query);
   const isFilter = computed(() => {
     if (searchWord.value.length > 0) {
       return true;

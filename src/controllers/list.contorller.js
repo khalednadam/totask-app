@@ -23,7 +23,7 @@ const createList = catchAsync(async (req, res) => {
   const highestPosList = await listService.queryLists({ board: req.body.board }, { sortBy: "position:desc", limit: 1 });
   const position = (highestPosList.results[0]?.position || 0) + parseFloat(config.POSITION_GAP);
   const list = await listService.createList({ ...req.body, position: position }, req.session.user.id);
-  await Board.updateOne({ _id: req.body.board }, { $push: { lists: { _id: list.id } } })
+  // await Board.updateOne({ _id: req.body.board }, { $push: { lists: { _id: list.id } } })
   res.status(httpStatus.CREATED).send(list);
 });
 

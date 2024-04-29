@@ -73,6 +73,10 @@ const getBoardById = async (boardId) => {
         path: 'boards',
         model: Board
       },
+      populate: {
+        path: 'members',
+        model: User
+      }
     });
 };
 

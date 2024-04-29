@@ -1,15 +1,16 @@
+const app = require("./app");
 const logger = require("./config/logger");
+const http = require("http");
 
 // const redisAdapter = require('socket.io-redis');
 // const Redis = require('ioredis');
 // const redis = require('redis');
 // const redisClient = redis.createClient();
 // const redisClient = new Redis(/* Redis configuration */);
-
+const server = http.Server(app);
+console.log(server);
 const io = require("socket.io")(3002, {
-  cors: {
-    origin: "*"
-  },
+  cors: "*"
 });
 // io.adapter(redisAdapter({
 //   pubClient: redisClient,

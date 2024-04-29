@@ -47,6 +47,11 @@ const BoardInfo = defineAsyncComponent(
 const CardDetails = defineAsyncComponent(
   () => import("../components/Modals/CardDetails.vue")
 );
+
+const InBoardWorkspaceBoards = defineAsyncComponent(
+  () => import("../components/InBoardWorkspaceBoards.vue")
+)
+
 const cardSearch = useCardSearchStore();
 const { searchAssignees, searchDate, searchLabels, isFilter } =
   storeToRefs(cardSearch);
@@ -68,7 +73,7 @@ const boardSettingsDialog = ref(false);
 const isAddingListLoading = ref(false);
 const deleteBoardDialog = ref(false);
 const cardDetailsStore = useCardDetailsStore();
-
+// const { boards } = useBoards(route.params.boardId.workspace);
 const { isActive } = storeToRefs(cardDetailsStore);
 
 let boardCopy = reactive(board);
@@ -179,6 +184,7 @@ const toggleFavorite = (boardId) => {
     board.value.isFavorite = true;
   }
 };
+
 </script>
 
 <template>
@@ -186,7 +192,7 @@ const toggleFavorite = (boardId) => {
     <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular>
   </v-main>
   <div v-else>
-    <v-navigation-drawer v-model="drawer" location="left" color="base" v-if="status < 205">
+    <v-navigation-drawer v-model="drawer" location="left" color="base" v-if="status < 205 && board">
       <template v-slot:prepend>
         <v-list-item lines="two" :title="board?.workspace.name">
           <template v-slot:prepend>
@@ -221,13 +227,9 @@ const toggleFavorite = (boardId) => {
           </v-list-item>
         </router-link>
         <v-divider class="border-2 dark:border-white border-black"></v-divider>
-        <v-list-item-subtitle class="">
-          This workspace's boards
-        </v-list-item-subtitle>
-        <div class="mt-2 space-y-2">
-          <SidebarWorkspaceBoardItem v-for="board in board?.workspace.boards" :board-id="board.id"
-            :board-background-color="board.backgroundColor" :board-name="board.name" />
-        </div>
+        <Suspense>
+          <InBoardWorkspaceBoards :workspace-id="board.workspace.id" />
+        </Suspense>
       </v-list>
     </v-navigation-drawer>
     <BoardHeader @toggle-drawer="() => toggleDrawer()" :drawer="drawer" />
@@ -378,7 +380,7 @@ const toggleFavorite = (boardId) => {
 
         <div class="flex h-[80vh] mb-4">
           <Suspense v-if="board">
-            <DraggableLists v-model="board.lists" />
+            <DraggableLists />
           </Suspense>
           <div class="min-w-[350px] mt-3">
             <v-btn text="Add a new list" color="list" class="flex w-[272px] font-bold justify-start text-start rounded"
@@ -411,7 +413,8 @@ const toggleFavorite = (boardId) => {
       <!-- Board Settings  -->
       <v-navigation-drawer v-if="boardCopy" location="right" temporary v-model="boardSettingsDialog" width="500">
         <v-list v-if="isAdmin">
-          <BoardSettings :workspaceAllMembers v-model="boardSettingsDialog" :board="board" @success="() => success()" />
+          <BoardSettings :workspaceAllMembers="board.workspace.members" v-model="boardSettingsDialog" :board="board"
+            @success="() => success()" />
         </v-list>
         <v-list v-else>
           <BoardInfo :board />

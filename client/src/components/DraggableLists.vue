@@ -6,15 +6,16 @@ import { useRoute } from "vue-router";
 // import { useLists } from "../composables/utils";
 import { useToast } from "vue-toastification";
 import axiosInstance from "../composables/axios";
+import { useLists } from "../composables/utils";
 
-const lists = defineModel();
+// const lists = defineModel();
 
 
 const List = defineAsyncComponent(() => import("./List.vue"))
 
 const route = useRoute();
 const toast = useToast();
-// const { lists, isLoading } = await useLists(route.params.boardId)
+const { lists, isLoading } = await useLists(route.params.boardId)
 const updateListPosition = (listId, newPosition) => {
   axiosInstance.put(`/list/${listId}`, {
     position: newPosition

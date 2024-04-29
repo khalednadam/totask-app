@@ -69,9 +69,9 @@ watch(addMembersDialog, () => {
 
       <v-list class="w-11/12 mx-auto space-y-2">
         <router-link to="/">
-          <v-list-item :active="router.currentRoute.value.fullPath === '/'" color="primary" title="Boards">
+          <v-list-item :active="router.currentRoute.value.fullPath === '/'" color="primary" title="Home">
             <template #prepend>
-              <Icon icon="ph:columns" width="20"> </Icon>
+              <Icon icon="ph:house" width="20"> </Icon>
             </template>
           </v-list-item>
         </router-link>

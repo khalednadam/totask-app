@@ -35,9 +35,8 @@ const sendEmail = async (to, subject, html) => {
 const sendResetPasswordEmail = async (to, token) => {
   // console.log(config.baseURL);
   // TODO: add frontend app URL in config
-  const frontendURL = `http://localhost:5173`
   const subject = "Reset password";
-  const resetPasswordURL = `${frontendURL}/reset-password?token=${token}`;
+  const resetPasswordURL = `${config.baseURL}/reset-password?token=${token}`;
   const text = `Dear user, 
   To reset your password, click this link: ${resetPasswordURL}
   If you did not request any password reset, then ignore this email.`;

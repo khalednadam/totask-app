@@ -2,7 +2,7 @@ const httpStatus = require("http-status");
 const nodemailer = require("nodemailer");
 const ApiError = require("../utils/ApiError");
 const userService = require("./user.service");
-const { Token } = require("../models");
+const { Token, User } = require("../models");
 const { tokenTypes } = require("../config/tokens");
 const { tokenService } = require(".");
 const config = require("../config/config");
@@ -124,11 +124,14 @@ const verifyEmail = async (verifyEmailToken) => {
     if (!user) {
       throw new Error();
     }
-    await userService.updateUserById(user.id, { isEmailVerified: true });
+    console.log(user)
+    // await userService.updateUserById(user.id, { isEmailVerified: true });
+    await User.findByIdAndUpdate(user.id, { isEmailVerified: true });
   } catch (err) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Email verification failed");
   }
 };
+
 module.exports = {
   loginUserWithEmailAndPassword,
   logout,

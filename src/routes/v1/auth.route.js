@@ -40,7 +40,6 @@ router.post(
 
 router.post(
   "/send-verification-email",
-  auth(),
   authController.sendVerificationEmail
 );
 

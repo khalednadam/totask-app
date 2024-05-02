@@ -24,6 +24,10 @@ const register = catchAsync(async (req, res) => {
   );
   // user.workspaces = [workspace._id];
   // console.log(workspace);
+  const verifyEmailToken = await tokenService.generateVerifyEmailToken(
+    user.id
+  );
+  await emailService.sendVerificationEmail(user.email, verifyEmailToken);
   res.status(httpStatus.CREATED).send({ user });
 });
 
@@ -48,6 +52,7 @@ const emailAndPasswordLogin = catchAsync(async (req, res) => {
     accessToken: tokens.access.token,
     profilePhotoUrl: user.profilePhotoUrl,
     favoriteBoards: user.favoriteBoards,
+    isEmailVerified: user.isEmailVerified
   };
   req.session.user = sessionUser;
   // req.session.save();
@@ -129,9 +134,9 @@ const changePassword = catchAsync(async (req, res) => {
  */
 const sendVerificationEmail = catchAsync(async (req, res) => {
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(
-    req.user
+    req.session.user.id
   );
-  await emailService.sendVerificationEmail(req.body.email, verifyEmailToken);
+  await emailService.sendVerificationEmail(req.session.user.email, verifyEmailToken);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
@@ -140,6 +145,12 @@ const sendVerificationEmail = catchAsync(async (req, res) => {
  */
 const verifyEmail = catchAsync(async (req, res) => {
   await authService.verifyEmail(req.query.token);
+  const sessionUser = {
+    ...req.session.user,
+    isEmailVerified: true
+  };
+  req.session.user = sessionUser;
+  req.session.save();
   res.status(httpStatus.NO_CONTENT).send();
 });
 

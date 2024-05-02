@@ -1,13 +1,10 @@
 <script setup>
-import axios from "axios";
 import { computed, ref } from "vue";
 import { useCurrentUser } from "@/stores/auth";
 import { useRouter } from "vue-router";
-import { useUser } from "../composables/utils"
 import { onMounted } from "vue";
-import { storeToRefs } from "pinia";
 import { useToast } from "vue-toastification"
-import { Form, Field, useForm, useField } from "vee-validate";
+import { useForm, useField } from "vee-validate";
 import { Icon } from "@iconify/vue";
 import DeleteModal from "../components/Modals/DeleteModal.vue";
 import axiosInstance from "../composables/axios";
@@ -15,7 +12,6 @@ import axiosInstance from "../composables/axios";
 const authStore = useCurrentUser();
 const router = useRouter()
 const toast = useToast();
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 const changePasswordDialog = ref(false);
 const currentUser = useCurrentUser();
@@ -31,6 +27,7 @@ const deleteAvatarDialog = ref(false);
 const isLoading = ref(false);
 const deleteAccountDialog = ref(false);
 const passwordForDeletion = ref("");
+const emailVerificationLoading = ref(false);
 
 const isDisabled = computed(() => {
   return password.value.length > 7 && confirmPassword.value.length > 7 && oldPassword.value.length > 7 ? true : false;
@@ -123,6 +120,9 @@ const name = useField("name");
 const username = useField("username");
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+
+const deleteAccountShowPassowrd = ref(false);
+
 onMounted(async () => {
   await currentUser.getUser()
   user.value = { ...authStore.user }
@@ -175,7 +175,7 @@ const updateProfilePic = handleSubmit(() => {
       isLoading.value = false;
     })
 })
-// TODO: add email verification
+
 const updateProfile = handleSubmit(() => {
   isLoading.value = true
   axiosInstance.put(`/users/${user.value.id}`, {
@@ -201,6 +201,21 @@ const updateProfile = handleSubmit(() => {
       isLoading.value = false;
     })
 })
+
+const sendVerificationEmail = async () => {
+  emailVerificationLoading.value = true;
+  try {
+    const response = await axiosInstance.post('/auth/send-verification-email');
+    toast.success("Verification email was sent");
+    console.log(response.data);
+  } catch (err) {
+    toast.error("something went wrong!");
+    console.log(err);
+  } finally {
+    emailVerificationLoading.value = false;
+  }
+}
+
 </script>
 
 <template>
@@ -261,7 +276,12 @@ const updateProfile = handleSubmit(() => {
           </p>
         </v-col>
         <v-col md="8" cols="12">
-          <v-text-field v-model="email.value.value" :error-messages="email.errorMessage.value"></v-text-field>
+          <v-text-field readonly disabled v-model="email.value.value"
+            :error-messages="email.errorMessage.value"></v-text-field>
+          <v-btn :disabled="emailVerificationLoading" :loading="emailVerificationLoading" @click="sendVerificationEmail"
+            v-if="!authStore.user.isEmailVerified" color="primary" variant="flat">
+            Verify
+          </v-btn>
         </v-col>
       </v-row>
       <v-row class=" items-center">
@@ -375,7 +395,14 @@ const updateProfile = handleSubmit(() => {
       </v-card-title>
       <v-card-text>
         Are you sure you want to delete you account?
-        <v-text-field v-model="passwordForDeletion" label="password">
+        <v-text-field :type="deleteAccountShowPassowrd ? 'text' : 'password'" class="mt-2" v-model="passwordForDeletion"
+          label="password">
+          <template #append-inner>
+            <Icon @click="() => (deleteAccountShowPassowrd = !deleteAccountShowPassowrd)" icon="ph:eye-closed-bold"
+              width="30" class="cursor-pointer" v-if="deleteAccountShowPassowrd" />
+            <Icon @click="() => (deleteAccountShowPassowrd = !deleteAccountShowPassowrd)" icon="ph:eye-bold" width="30"
+              class="cursor-pointer" v-else />
+          </template>
         </v-text-field>
       </v-card-text>
       <v-card-actions class="self-end">

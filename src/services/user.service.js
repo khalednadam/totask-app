@@ -40,7 +40,8 @@ const queryUsers = async (filter, options) => {
 const searchForUserByEmail = async (email, limit = 5) => {
   try {
     const users = await User.find({
-      email: { $regex: email, $options: 'i' }
+      email: { $regex: email, $options: 'i' },
+      isEmailVerified: true
     }).limit(limit);
     return users;
   } catch (error) {
@@ -87,6 +88,9 @@ const updateUserById = async (id, updateBody, file) => {
   if (file) {
     const imgUrl = await googleStorage.uploadToGoogleStorage(file.originalname, file.buffer);
     user.profilePhotoUrl = imgUrl;
+  }
+  if (user.email !== updateBody.email) {
+    user.isEmailVerified = false;
   }
   user.updatedAt = new Date();
   Object.assign(user, updateBody);

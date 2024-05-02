@@ -121,6 +121,9 @@ const addMemberToWorkspace = async (workspaceId, emailOfUserToAdd, adminId) => {
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "user is not fount");
   }
+  if (!user.isEmailVerified) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User is not verified")
+  }
   const userToAddId = user.id;
   if (workspace.members.some((user) => user.id === userToAddId)) {
     throw new ApiError(

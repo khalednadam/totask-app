@@ -36,11 +36,12 @@ const openAddMemberDialog = (workspace) => {
 const toggleShowWorkspaces = () => {
   showWorkspaces.value = !showWorkspaces.value;
   localStorage.setItem("show-workspaces", showWorkspaces.value);
-}
+};
 
 onMounted(() => {
-  authStore.getUser()
-  showWorkspaces.value = localStorage.getItem("show-workspaces") === "true" ? true : false;
+  authStore.getUser();
+  showWorkspaces.value =
+    localStorage.getItem("show-workspaces") === "true" ? true : false;
 });
 watch(addMembersDialog, () => {
   if (!addMembersDialog.value) {
@@ -120,11 +121,14 @@ watch(addMembersDialog, () => {
       </v-list>
     </v-navigation-drawer>
     <Header @toggle-drawer="() => (drawer = !drawer)" :drawer="drawer" />
-    <v-main>
+    <v-main v-if="authStore.user">
       <!-- <v-container> -->
       <div class="mx-10">
         <slot></slot>
       </div>
+      <v-alert v-if="!authStore.user.isEmailVerified" color="warning" icon="$warning" variant="elevated" border="start"
+        density="compact" class="w-[400px] !fixed bottom-2 right-2"
+        text="Your email is not verified you cannot be added to any workspace. please verify it from settings"></v-alert>
       <!-- </v-container> -->
       <v-dialog v-model="createWorkspaceDialog">
         <CreateWorkspace @toggle-modal="() => (createWorkspaceDialog = false)" />

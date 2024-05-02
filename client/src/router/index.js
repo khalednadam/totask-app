@@ -176,6 +176,14 @@ const router = createRouter({
       },
     },
     {
+      path: "/verify-email",
+      name: "verify-email",
+      component: () => import("../views/VerifyEmail.vue"),
+      meta: {
+        auth: null
+      },
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "ErrorView",
       component: () => import("../views/Error.vue"),
@@ -198,7 +206,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Redirect authenticated users away from non-auth pages
-    if (!to.meta.auth && isAuth) {
+    if (to.meta.auth === false && isAuth) {
       next({ name: "boards" });
       return;
     }

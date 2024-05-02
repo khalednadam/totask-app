@@ -1,7 +1,7 @@
-import { computed, ref, watch } from "vue";
+import debounce from "lodash.debounce";
 import { defineStore } from "pinia";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import debounce from 'lodash.debounce'
 
 export const useCardSearchStore = defineStore("cardSearch", () => {
   const router = useRouter();
@@ -25,9 +25,19 @@ export const useCardSearchStore = defineStore("cardSearch", () => {
       return true;
     }
     return false;
-  })
-  watch([searchWord, searchDate, searchLabels, searchAssignees], debounce(() => {
-    router.replace({ query: { title: searchWord.value, assignees: searchAssignees.value, labels: searchLabels.value, date: searchDate.value } })
-  }, 500))
-  return { searchWord, searchLabels, searchDate, searchAssignees, isFilter }
-})
+  });
+  watch(
+    [searchWord, searchDate, searchLabels, searchAssignees],
+    debounce(() => {
+      router.replace({
+        query: {
+          title: searchWord.value,
+          assignees: searchAssignees.value,
+          labels: searchLabels.value,
+          date: searchDate.value,
+        },
+      });
+    }, 500),
+  );
+  return { searchWord, searchLabels, searchDate, searchAssignees, isFilter };
+});

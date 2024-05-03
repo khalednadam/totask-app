@@ -205,12 +205,10 @@ const updateProfile = handleSubmit(() => {
 const sendVerificationEmail = async () => {
   emailVerificationLoading.value = true;
   try {
-    const response = await axiosInstance.post('/auth/send-verification-email');
+    await axiosInstance.post('/auth/send-verification-email');
     toast.success("Verification email was sent");
-    console.log(response.data);
   } catch (err) {
     toast.error("something went wrong!");
-    console.log(err);
   } finally {
     emailVerificationLoading.value = false;
   }

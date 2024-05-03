@@ -38,6 +38,7 @@ const closeBoard = () => {
     { withCredentials: true }).then((res) => {
       emit("success");
       socket.emit("change-board-info", props.board.id)
+      router.go(`/workspace/${props.board.workspace.id}`);
     }).catch((err) => {
       console.log(err)
     }).finally(() => {

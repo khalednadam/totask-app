@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axiosInstance from '../composables/axios';
 import { onMounted } from 'vue';
+import { Icon } from '@iconify/vue';
 
 
 const route = useRoute();
@@ -33,16 +34,27 @@ onMounted(async () => {
 
 </script>
 <template>
-  <div class="w-full flex h-[100vh] flex-col justify-center items-center ">
+  <div class="w-full flex h-[100vh] flex-col justify-center items-center" v-if="loading">
     <h1 class="text-primary">
       Verifying email
     </h1>
     <p>
       You are being redirected to home page...
     </p>
+  </div>
+  <div class="w-full flex h-[100vh] flex-col justify-center items-center gap-5">
+    <h1 class="text-error">
+      Email verification failed
+    </h1>
     <p>
-      {{ token }}
+      This can heppen if the verification token is timed out. Try re-sending the verification email from setings
     </p>
+    <router-link to="/settings">
+      <v-btn flat color="primary">
+        <Icon icon="ph:gear" />
+        Settings
+      </v-btn>
+    </router-link>
   </div>
 </template>
 

@@ -376,13 +376,12 @@ export const useCard = async (cardId) => {
   })
   return { card, isCardLoading };
 }
-
 export const useCardsOfList = (listId, boardId) => {
-  const route = useRoute();
   const cards = ref([]);
   const isLoading = ref(false);
   const cardSearch = useCardSearchStore();
-  const { searchWord, searchAssignees, searchLabels, searchDate } = storeToRefs(cardSearch)
+  const { searchWord, searchAssignees, searchLabels, searchDate } = storeToRefs(cardSearch);
+
   const getCards = () => {
     isLoading.value = true;
     axiosInstance.get(`/card/cardsOf/${listId}`, {
@@ -390,10 +389,10 @@ export const useCardsOfList = (listId, boardId) => {
       params: {
         sortBy: "position:asc",
         limit: 100,
-        title: route.query.title || " ",
-        assignees: route.query.assignees || "",
-        labels: route.query.labels || "",
-        date: route.query.date || "",
+        title: searchWord.value || " ",
+        assignees: searchAssignees.value,
+        labels: searchLabels.value,
+        date: searchDate.value,
         board: boardId,
       }
     }).then((res) => {
@@ -404,20 +403,21 @@ export const useCardsOfList = (listId, boardId) => {
       isLoading.value = false;
     })
   }
-  socket.on('update-cards', (updatedListId) => {
-    if (updatedListId?.includes(listId) || !updatedListId) {
-      getCards();
-    }
-  });
+
+  const debouncedGetCards = debounce(getCards, 500);
+
+  const handleCardSearchChange = () => {
+    debouncedGetCards();
+  };
+
   onMounted(() => {
     getCards();
-  })
-  watch([searchWord, searchAssignees, searchLabels, searchDate], debounce(() => {
-    getCards();
-  }, 500))
-  return { cards, isLoading };
-}
+  });
 
+  watch([searchWord, searchAssignees, searchLabels, searchDate], handleCardSearchChange, { deep: true });
+
+  return { cards, isLoading };
+};
 export const getMembersOfBoard = (boardId) => {
   const members = ref([]);
   axiosInstance.get(`/b/membersOf/${boardId}`, {

@@ -12,7 +12,7 @@ const io = require("socket.io")(server, {
   cors: { origin: "*" }
 });
 server.listen(3002, () => {
-  console.log('listening on *:3000');
+  console.log('listening on *:3002');
 });
 // io.adapter(redisAdapter({
 //   pubClient: redisClient,

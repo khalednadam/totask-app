@@ -4,8 +4,7 @@ import BoardCard from "./BoardCard.vue";
 import { useCurrentUser } from "../stores/auth";
 import { amIAdmin, useBoards } from "../composables/utils";
 import { RouterLink } from "vue-router";
-import { ref } from "vue";
-const authStore = useCurrentUser();
+
 
 // PROPS & EMITS
 const props = defineProps({
@@ -13,9 +12,9 @@ const props = defineProps({
   favoriteBoards: Array,
 });
 
+const authStore = useCurrentUser();
+
 const { boards, isLoading } = useBoards(props.workspace.id, "updatedAt:desc", 4)
-// const boards = ref(props.workspace.boards);
-console.log(boards.value);
 
 </script>
 <template>

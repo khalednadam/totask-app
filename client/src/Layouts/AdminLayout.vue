@@ -5,13 +5,10 @@ import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "@/stores/auth";
-import { useWorkspaces } from "@/stores/workspaces";
 import CreateWorkspace from "@/components/Modals/CreateWorkspaceModal.vue";
 import AddMemberToWorkspaceModal from "@/components/Modals/AddMemberToWorkspaceModal.vue";
-import WorkspaceListItem from "../components/WorkspaceListItem.vue";
 import Header from "../components/Admin/Header.vue";
 import LogoutBtn from "../components/LogoutBtn.vue";
-import { getWorkspaces, useUser } from "../composables/utils";
 
 // env
 

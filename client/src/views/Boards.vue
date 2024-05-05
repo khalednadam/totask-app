@@ -6,13 +6,17 @@ import WorkspaceSummary from "../components/WorkspaceSummary.vue";
 import { getRecentWorkspaces } from "../composables/utils";
 import { useFavoriteBoardsStore } from "@/stores/favoriteBoards";
 import CreateWorkspace from "../components/Modals/CreateWorkspaceModal.vue"
+import { storeToRefs } from "pinia";
+import { useWorkspaces } from "../stores/workspaces";
 
 // INITS
 const favoriteBoardsStore = useFavoriteBoardsStore();
+const workspacesStore = useWorkspaces();
 
 // REFS
 const createWorkspaceDialog = ref(false);
-const { recentWorkspaces, isLoading } = getRecentWorkspaces();
+// const { recentWorkspaces, isLoading } = getRecentWorkspaces();
+const { recentWorkspaces, isLoading } = storeToRefs(workspacesStore);
 const favoriteBoards = ref([]);
 onMounted(async () => {
   await favoriteBoardsStore.getFavoriteBoards();

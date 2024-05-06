@@ -8,11 +8,8 @@ const http = require("http");
 // const redisClient = redis.createClient();
 // const redisClient = new Redis(/* Redis configuration */);
 const server = http.createServer(app);
-const io = require("socket.io")(server, {
+const io = require("socket.io")(3002, {
   cors: { origin: "*" }
-});
-server.listen(3002, () => {
-  console.log('listening on *:3002');
 });
 // io.adapter(redisAdapter({
 //   pubClient: redisClient,

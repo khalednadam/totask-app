@@ -51,9 +51,18 @@ const sendResetPasswordEmail = async (to, token) => {
 const sendVerificationEmail = async (to, token) => {
   const subject = "Verify Email";
   const verificationEmailURL = `${config.baseURL}/verify-email?token=${token}`;
-  const text = `Dear user,
-To verify your email, click on this link: ${verificationEmailURL}
-If you did not create an account, then ignore this email.`;
+  //   const text = `Dear user,
+  // To verify your email, click on this link: ${verificationEmailURL}
+  // If you did not create an account, then ignore this email.`;
+  const text = `
+  <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); font-family: Lato, Arial , sans-serif;">
+    <h1 style="color: #333;">Email Verification</h1>
+    <p style="color: #666; line-height: 1.6;">Dear user,</p>
+    <p style="color: #666; line-height: 1.6;">To verify your email, click on this link:</p>
+    <p style="color: #666; line-height: 1.6;"><a href="${verificationEmailURL}" style="display: inline-block; padding: 10px 20px; background-color: #79AC78; color: #fff; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
+    <p style="color: #666; line-height: 1.6;">If you did not create an account, then ignore this email.</p>
+  </div>
+`
   await sendEmail(to, subject, text);
 };
 

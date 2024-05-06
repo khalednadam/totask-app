@@ -7,7 +7,7 @@ const http = require("http");
 // const redis = require('redis');
 // const redisClient = redis.createClient();
 // const redisClient = new Redis(/* Redis configuration */);
-const server = http.createServer(app);
+const server = http.createServer();
 const io = require("socket.io")(server, {
   cors: { origin: "*" },
   path: "/v1/socket"

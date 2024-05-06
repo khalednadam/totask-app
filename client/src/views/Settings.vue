@@ -274,7 +274,7 @@ const sendVerificationEmail = async () => {
           </p>
         </v-col>
         <v-col md="8" cols="12">
-          <v-text-field readonly disabled v-model="email.value.value"
+          <v-text-field readonly :disabled="!authStore.user.isEmailVerified" v-model="email.value.value"
             :error-messages="email.errorMessage.value"></v-text-field>
           <v-btn :disabled="emailVerificationLoading" :loading="emailVerificationLoading" @click="sendVerificationEmail"
             v-if="!authStore.user.isEmailVerified" color="primary" variant="flat">

@@ -15,6 +15,7 @@ import vuetify from "./plugins/vuetify";
 // Toast Notification
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import { GlobalEvents } from 'vue-global-events'
 
 
 const app = createApp(App);
@@ -34,6 +35,8 @@ const options = {
   icon: true,
   rtl: false,
 };
+
+app.component('GlobalEvents', GlobalEvents);
 
 app.provide("WORKSPACETYPES", ["Software Development", "Marketing", "Sales"]);
 app.use(pinia);

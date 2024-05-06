@@ -37,40 +37,7 @@ const { mdAndUp } = useDisplay();
       </p>
     </div>
     <div class="flex justify-center h-full gap-2 items-start">
-      <!-- <div class="flex flex-col gap-4 h-full w-[50%] items-stretch justify-evenly"> -->
-      <!--   <v-card> -->
-      <!--     <v-card-title> -->
-      <!--       feature 1 -->
-      <!--     </v-card-title> -->
-      <!--     <v-card-text> -->
-      <!--       feature 1 explination to make it a bit longer than the title -->
-      <!--       feature 1 explination to make it a bit longer than the title -->
-      <!--       feature 1 explination to make it a bit longer than the title -->
-      <!--     </v-card-text> -->
-      <!--   </v-card> -->
-      <!--   <v-card> -->
-      <!--     <v-card-title> -->
-      <!--       feature 2 -->
-      <!--     </v-card-title> -->
-      <!--     <v-card-text> -->
-      <!--       feature 2 explination to make it a bit longer than the title -->
-      <!--       feature 2 explination to make it a bit longer than the title -->
-      <!--       feature 2 explination to make it a bit longer than the title -->
-      <!--       feature 2 explination to make it a bit longer than the title -->
-      <!--     </v-card-text> -->
-      <!--   </v-card> -->
-      <!--   <v-card> -->
-      <!--     <v-card-title> -->
-      <!--       feature 3 -->
-      <!--     </v-card-title> -->
-      <!--     <v-card-text> -->
-      <!--       feature 3 explination to make it a bit longer than the title -->
-      <!--       feature 3 explination to make it a bit longer than the title -->
-      <!--       feature 3 explination to make it a bit longer than the title -->
-      <!--     </v-card-text> -->
-      <!--   </v-card> -->
-      <!-- </div> -->
-      <div class="bg-primary/50 p-10 rounded-lg w-full">
+      <div class="bg-primary/50 p-2 rounded-lg w-full">
         <v-img src="/in-app.webp" rounded="lg" class="w-full">
         </v-img>
       </div>

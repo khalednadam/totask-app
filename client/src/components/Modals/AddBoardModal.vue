@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import { Icon } from "@iconify/vue";
 import { useDisplay } from "vuetify";
+import axios from "axios";
 import {
   getAllWorkspaceMembers,
   getMyAdminWorkspaces,
@@ -40,6 +41,7 @@ const boardName = ref("");
 const isPrivate = ref(false);
 const privateMembers = ref([]);
 const isLoading = ref(false);
+let members = [];
 if (props.workspace) {
   members = getAllWorkspaceMembers(props.workspace);
 }

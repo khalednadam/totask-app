@@ -176,6 +176,15 @@ const router = createRouter({
       },
     },
     {
+      path: "/home/about",
+      name: "about",
+      component: () => import("../views/landing/About.vue"),
+      meta: {
+        layout: LandingLayout,
+        auth: false
+      }
+    },
+    {
       path: "/verify-email",
       name: "verify-email",
       component: () => import("../views/VerifyEmail.vue"),

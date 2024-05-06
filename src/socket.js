@@ -9,7 +9,8 @@ const http = require("http");
 // const redisClient = new Redis(/* Redis configuration */);
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
-  cors: { origin: "*" }
+  cors: { origin: "*" },
+  path: "/v1/socket"
 });
 // io.adapter(redisAdapter({
 //   pubClient: redisClient,

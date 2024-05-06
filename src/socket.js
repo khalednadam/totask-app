@@ -8,10 +8,13 @@ const http = require("http");
 // const redisClient = redis.createClient();
 // const redisClient = new Redis(/* Redis configuration */);
 const server = http.createServer();
-const io = require("socket.io")(server, {
-  cors: { origin: "*" },
-  path: "/v1/socket"
+const io = require("socket.io")(3002, {
+  cors: { origin: "https://totask.app/socket.io" }
 });
+// {
+// cors: { origin: "*" },
+// path: "/v1/socket"
+// });
 // io.adapter(redisAdapter({
 //   pubClient: redisClient,
 //   subClient: redisClient.duplicate(), // Use a separate Redis client instance for subscription
@@ -22,6 +25,7 @@ const io = require("socket.io")(server, {
 //   console.log('Connected to Redis');
 // });
 io.on("connection", (socket) => {
+  console.log("Hello from the socket.")
   socket.on("subscribe", (board) => {
     socket.join(board);
     console.log("Joined to ", board);

@@ -1,29 +1,10 @@
 const app = require("./app");
 const logger = require("./config/logger");
 const http = require("http");
-
-// const redisAdapter = require('socket.io-redis');
-// const Redis = require('ioredis');
-// const redis = require('redis');
-// const redisClient = redis.createClient();
-// const redisClient = new Redis(/* Redis configuration */);
 const server = http.createServer();
-const io = require("socket.io")(3000, {
-  cors: { origin: "https://totask.app/socket.io" }
+const io = require("socket.io")(server, {
+  cors: { origin: "https://totask.app" }
 });
-// {
-// cors: { origin: "*" },
-// path: "/v1/socket"
-// });
-// io.adapter(redisAdapter({
-//   pubClient: redisClient,
-//   subClient: redisClient.duplicate(), // Use a separate Redis client instance for subscription
-// }));
-
-// // redisClient.subscribe('updates');
-// redisClient.on('connect', () => {
-//   console.log('Connected to Redis');
-// });
 io.on("connection", (socket) => {
   console.log("Hello from the socket.")
   socket.on("subscribe", (board) => {

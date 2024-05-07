@@ -37,9 +37,15 @@ const sendResetPasswordEmail = async (to, token) => {
   // TODO: add frontend app URL in config
   const subject = "Reset password";
   const resetPasswordURL = `${config.baseURL}/reset-password?token=${token}`;
-  const text = `Dear user, 
-  To reset your password, click this link: ${resetPasswordURL}
-  If you did not request any password reset, then ignore this email.`;
+  const text = `<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;">
+  <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h1 style="color: #333;">Password Reset</h1>
+    <p style="color: #666; line-height: 1.6;">Dear user,</p>
+    <p style="color: #666; line-height: 1.6;">To reset your password, click this link:</p>
+    <p style="color: #666; line-height: 1.6;"><a href="${resetPasswordURL}" style="display: inline-block; padding: 10px 20px; background-color: #79AC78; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
+    <p style="color: #666; line-height: 1.6;">If you did not request any password reset, then ignore this email.</p>
+  </div>
+</body>`;
   await sendEmail(to, subject, text);
 };
 

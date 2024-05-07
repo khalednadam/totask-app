@@ -8,7 +8,7 @@ const http = require("http");
 // const redisClient = redis.createClient();
 // const redisClient = new Redis(/* Redis configuration */);
 const server = http.createServer();
-const io = require("socket.io")(3001, {
+const io = require("socket.io")(3000, {
   cors: { origin: "https://totask.app/socket.io" }
 });
 // {

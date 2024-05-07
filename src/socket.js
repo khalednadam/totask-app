@@ -1,9 +1,10 @@
 const app = require("./app");
 const logger = require("./config/logger");
 const http = require("http");
-const server = http.createServer();
-const io = require("socket.io")(server, {
-  cors: { origin: "https://totask.app" }
+const httpServer = http.createServer();
+// const { Server } = require("socket.io")
+const io = require("socket.io")(3002, {
+  cors: { origin: "*" }
 });
 io.on("connection", (socket) => {
   console.log("Hello from the socket.")
@@ -16,8 +17,8 @@ io.on("connection", (socket) => {
     console.log("left from: ", boardId);
   })
   // socket.to.broadcast.emit('change-in-board');
-  socket.on('update-lists', (msg) => {
-    io.to(msg).emit('update-lists', msg);
+  socket.on('update-lists', (payload) => {
+    io.to(payload.boardId).emit('update-lists', payload.lists);
   });
   socket.on('change-board-info', (msg) => {
     io.to(msg).emit('change-board-info', msg);

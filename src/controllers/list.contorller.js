@@ -5,7 +5,11 @@ const catchAsync = require("../utils/catchAsync");
 const { listService, boardService } = require("../services");
 const config = require("../config/config");
 const { Board } = require("../models");
+const io = require("../socket");
 
+// const io = require("socket.io")(3002, {
+//   cors: { origin: "*" }
+// });
 const createList = catchAsync(async (req, res) => {
   if (!req.session.user) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
@@ -23,8 +27,19 @@ const createList = catchAsync(async (req, res) => {
   const highestPosList = await listService.queryLists({ board: req.body.board }, { sortBy: "position:desc", limit: 1 });
   const position = (highestPosList.results[0]?.position || 0) + parseFloat(config.POSITION_GAP);
   const list = await listService.createList({ ...req.body, position: position }, req.session.user.id);
+  // console.log(list);
+  // io.on("connection", (sd) => {
+  //   console.log(sd);
+  // })
   // await Board.updateOne({ _id: req.body.board }, { $push: { lists: { _id: list.id } } })
-  res.status(httpStatus.CREATED).send(list);
+  const filter = {
+    board: req.body.board,
+  };
+  const options = pick({ ...req.query, limit: 100 }, ["sortBy", "limit", "page"]);
+  const lists = await listService.queryLists(filter, options);
+  // console.log(lists);
+  io.emit("update-lists", lists);
+  res.status(httpStatus.CREATED).send();
 });
 
 const getListsByBoard = catchAsync(async (req, res) => {
@@ -90,6 +105,13 @@ const deleteListById = catchAsync(async (req, res) => {
   const deletedList = await listService.deleteListById(req.params.listId);
   const board = await boardService.getBoardById(deletedList.board);
   await boardService.updateBoardById(deletedList.board, { listCount: board.listCount - 1 }, req.session.user.id)
+  const filter = {
+    board: deletedList.board,
+  };
+  const options = pick({ ...req.query, limit: 100 }, ["sortBy", "limit", "page"]);
+  const lists = await listService.queryLists(filter, options);
+  // console.log(lists);
+  io.emit("update-lists", lists);
   res.status(httpStatus.OK).send(deletedList);
 })
 

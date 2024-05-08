@@ -4,7 +4,7 @@ const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { cardService, boardService, listService, checklistService } = require("../services");
 const config = require("../config/config");
-const io = require("../socket");
+const { io } = require("../socket");
 
 const createCard = catchAsync(async (req, res) => {
   if (!req.session.user) {
@@ -14,7 +14,7 @@ const createCard = catchAsync(async (req, res) => {
   const position = (highestPosCard.results[0]?.position || 0) + parseFloat(config.POSITION_GAP);
   const card = await cardService.createCard({ ...req.body, position }, req.session.user.id);
   const cards = await cardService.getCardsByListId(req.body.list);
-  io.emit("update-cards", { boardId: req.body.board, lists: [req.body.list], cards: cards });
+  // io.emit("update-cards", { boardId: req.body.board, lists: [req.body.list], cards: cards });
   res.status(httpStatus.CREATED).send(card);
 })
 

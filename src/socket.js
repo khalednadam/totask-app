@@ -1,20 +1,26 @@
-const app = require("./app");
 const logger = require("./config/logger");
 const http = require("http");
-const socketIo = require('socket.io');
-const httpServer = http.createServer();
-// const { Server } = require("socket.io")
-const server = http.createServer(app);
-const io = socketIo(server);
+const express = require("express");
+const { Server } = require("socket.io");
+const app = express();
+const config = require("./config/config");
 
-io.on("update-lists", (payload) => {
-  io.to(payload.boardId).emit("update-lists", payload.lists);
-});
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: [config.CLIENT_URL],
+    methods: ["GET", "POST", "PUT"]
+  }
+})
+
 io.on("connection", (socket) => {
   console.log("Hello from the socket.");
   socket.on("subscribe", (board) => {
     socket.join(board);
     console.log("Joined to ", board);
+  });
+  socket.on("update-lists", (payload) => {
+    io.to(payload.boardId).emit("update-lists", payload.lists);
   });
   socket.on("unsubscribe", (boardId) => {
     socket.leave(boardId);
@@ -51,4 +57,4 @@ io.on("connection", (socket) => {
   });
 });
 
-module.exports = io;
+module.exports = { io, app, server };

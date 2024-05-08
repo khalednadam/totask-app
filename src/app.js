@@ -11,8 +11,8 @@ const compression = require("compression")
 const { userService, workspaceService } = require("./services");
 const path = require("path");
 const { User } = require("./models");
-const app = express();
 const localStrategy = require("passport-local");
+const { app } = require("./socket");
 // const Redis = require('ioredis');
 
 app.use(passport.initialize());

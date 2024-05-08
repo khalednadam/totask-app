@@ -5,7 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 const { listService, boardService } = require("../services");
 const config = require("../config/config");
 const { Board } = require("../models");
-const io = require("../socket");
+const { io } = require("../socket");
 
 // const io = require("socket.io")(3002, {
 //   cors: { origin: "*" }

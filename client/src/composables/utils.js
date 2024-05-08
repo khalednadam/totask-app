@@ -417,6 +417,12 @@ export const useCardsOfList = (listId, boardId) => {
     getCards();
   });
 
+  socket.on("update-cards", (updateLists) => {
+    if (updateLists?.includes(listId) || !updateLists) {
+      getCards();
+    }
+  })
+
   watch([searchWord, searchAssignees, searchLabels, searchDate], handleCardSearchChange, { deep: true });
 
   return { cards, isLoading };

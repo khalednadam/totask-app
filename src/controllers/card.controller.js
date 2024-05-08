@@ -4,6 +4,7 @@ const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { cardService, boardService, listService, checklistService } = require("../services");
 const config = require("../config/config");
+const io = require("../socket");
 
 const createCard = catchAsync(async (req, res) => {
   if (!req.session.user) {
@@ -12,6 +13,8 @@ const createCard = catchAsync(async (req, res) => {
   const highestPosCard = await cardService.queryCards({ list: req.body.list }, { sortBy: "position:desc", limit: 1 });
   const position = (highestPosCard.results[0]?.position || 0) + parseFloat(config.POSITION_GAP);
   const card = await cardService.createCard({ ...req.body, position }, req.session.user.id);
+  const cards = await cardService.getCardsByListId(req.body.list);
+  io.emit("update-cards", { boardId: req.body.board, lists: [req.body.list], cards: cards });
   res.status(httpStatus.CREATED).send(card);
 })
 
@@ -112,13 +115,14 @@ const updateCardById = catchAsync(async (req, res) => {
   if (!req.session.user) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
   }
+  const oldCard = await cardService.getCardById(req.params.cardId, req.session.user.id);
   const newCard = await cardService.updateCardById(req.params.cardId, req.body, req.session.user.id, req.file);
   const filter = {
     list: newCard.list,
   };
   const options = pick(req.query, ["sortBy", "limit", "page"]);
   const newListCards = await cardService.queryCards(filter, options);
-  // console.log(newListCards)
+  io.emit("update-cards", { boardId: newCard.board, lists: [newCard.list, oldCard.list._id], cards: newListCards });
   res.status(httpStatus.OK).send(newCard);
 })
 

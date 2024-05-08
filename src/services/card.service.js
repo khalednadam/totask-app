@@ -3,6 +3,7 @@ const ApiError = require("../utils/ApiError");
 const { Card, Label, User } = require("../models/index");
 const { boardService } = require(".");
 const googleStorage = require("../utils/googleStorage");
+const pick = require("../utils/pick");
 
 /**
  * creates a card
@@ -204,6 +205,12 @@ const deleteCardById = async (cardId, userId) => {
   return card;
 }
 
+const getCardsByListId = async (listId) => {
+  const options = pick({}, ["sortBy", "limit", "page"]);
+  const cards = await queryCards({ list: listId }, options);
+  return cards;
+}
+
 module.exports = {
   createCard,
   getCardById,
@@ -212,5 +219,6 @@ module.exports = {
   deleteCardById,
   deleteCardCover,
   addAttachments,
-  deleteAttachment
+  deleteAttachment,
+  getCardsByListId
 }

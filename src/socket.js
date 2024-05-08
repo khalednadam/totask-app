@@ -4,44 +4,47 @@ const http = require("http");
 const httpServer = http.createServer();
 // const { Server } = require("socket.io")
 const io = require("socket.io")(httpServer, {
-  cors: { origin: "*" }
+  cors: { origin: "*" },
+});
+io.on("update-lists", (payload) => {
+  io.to(payload.boardId).emit("update-lists", payload.lists);
 });
 io.on("connection", (socket) => {
-  console.log("Hello from the socket.")
+  console.log("Hello from the socket.");
   socket.on("subscribe", (board) => {
     socket.join(board);
     console.log("Joined to ", board);
-  })
+  });
   socket.on("unsubscribe", (boardId) => {
-    socket.leave(boardId)
+    socket.leave(boardId);
     console.log("left from: ", boardId);
-  })
+  });
   // socket.to.broadcast.emit('change-in-board');
-  socket.on('update-lists', (payload) => {
-    io.to(payload.boardId).emit('update-lists', payload.lists);
+  socket.on("update-lists", (payload) => {
+    io.to(payload.boardId).emit("update-lists", payload.lists);
   });
-  socket.on('change-board-info', (msg) => {
-    io.to(msg).emit('change-board-info', msg);
-  });
-
-  socket.on('update-cards', (msg, listId) => {
-    io.to(msg).emit('update-cards', listId);
+  socket.on("change-board-info", (msg) => {
+    io.to(msg).emit("change-board-info", msg);
   });
 
-  socket.on('update-card', (cardId) => {
-    io.to(cardId).emit('update-card', cardId);
-  })
+  socket.on("update-cards", (msg, listId) => {
+    io.to(msg).emit("update-cards", listId);
+  });
 
-  socket.on('delete-card', (cardId) => {
-    io.to(cardId).emit('delete-card', cardId);
-  })
+  socket.on("update-card", (cardId) => {
+    io.to(cardId).emit("update-card", cardId);
+  });
+
+  socket.on("delete-card", (cardId) => {
+    io.to(cardId).emit("delete-card", cardId);
+  });
 
   // test
   logger.info("socket connected");
   socket.on("disconnect", () => {
     logger.info("socket disconnected");
   });
-  socket.on("join_workspace", workspace => {
+  socket.on("join_workspace", (workspace) => {
     socket.join(workspace);
     console.log(workspace);
   });

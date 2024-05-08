@@ -1,11 +1,12 @@
 const app = require("./app");
 const logger = require("./config/logger");
 const http = require("http");
+const socketIo = require('socket.io');
 const httpServer = http.createServer();
 // const { Server } = require("socket.io")
-const io = require("socket.io")(httpServer, {
-  cors: { origin: "*" },
-});
+const server = http.createServer(app);
+const io = socketIo(server);
+
 io.on("update-lists", (payload) => {
   io.to(payload.boardId).emit("update-lists", payload.lists);
 });

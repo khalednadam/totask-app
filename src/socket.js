@@ -3,7 +3,7 @@ const logger = require("./config/logger");
 const http = require("http");
 const httpServer = http.createServer();
 // const { Server } = require("socket.io")
-const io = require("socket.io")(3002, {
+const io = require("socket.io")(httpServer, {
   cors: { origin: "*" }
 });
 io.on("connection", (socket) => {

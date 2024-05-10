@@ -32,10 +32,12 @@ if (config.env !== "test") {
 const loginUserWithEmailAndPassword = async (email, password) => {
   const user = await userService.getUserByEmail(email);
   if (!user) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email");
+    return res.status(401).send({ message: "Incorrect email" });
+    // throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email");
   }
   if (!(await user.isPasswordMatch(password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect password");
+    return res.status(401).send({ message: "Incorrect password" });
+    // throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect password");
   }
 
   //   const subject = "Verify Email";

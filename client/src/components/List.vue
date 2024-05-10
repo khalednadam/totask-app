@@ -19,6 +19,7 @@ const props = defineProps({
   index: Number,
   members: Array,
   isListLoading: Boolean,
+  isDeleteLoading: Boolean
 });
 
 const cardSearch = useCardSearchStore();
@@ -29,7 +30,6 @@ const el = ref(null);
 
 const listName = ref(props.list?.name);
 const updateName = ref("");
-const renameTarget = ref(null);
 const showRename = ref(false);
 const deleteListDialog = ref(false);
 const { cards, isLoading } = useCardsOfList(props.list.id, props.list.board);
@@ -222,65 +222,34 @@ watch(cards, () => {
 });
 </script>
 <template>
-  <v-card
-    rounded="lg"
-    color="list"
-    class="w-[272px] mt-3 h-max max-h-max mb-5"
-    :id="list.id.toString()"
-  >
+  <v-card rounded="lg" color="list" class="w-[272px] mt-3 h-max max-h-max mb-5" :id="list.id.toString()">
     <v-tooltip :text="list.name">
       <template v-slot:activator="{ props }">
-        <v-card-title
-          v-bind="props"
-          class="flex sticky z-20 flex-row items-center justify-between header"
-        >
+        <v-card-title v-bind="props" class="flex sticky z-20 flex-row items-center justify-between header">
           <div class="flex justify-between items-center">
-            <div
-              @click="() => editName(listName)"
-              v-if="!showRename"
-              class="w-max max-w-[88%] truncate cursor-pointer text-xl py-2 px-2 m-[0.5px]"
-            >
+            <div @click="() => editName(listName)" v-if="!showRename"
+              class="w-max max-w-[88%] truncate cursor-pointer text-xl py-2 px-2 m-[0.5px]">
               {{ list.name }}
             </div>
             <div v-click-outside="endEditName" v-else class="w-full">
-              <v-text-field
-                class="text-2xl input"
-                v-model="updateName"
-                hide-details
-                autofocus
-              >
+              <v-text-field class="text-2xl input" v-model="updateName" hide-details autofocus>
               </v-text-field>
             </div>
             <v-menu rounded="lg">
               <template v-slot:activator="{ props }">
-                <v-btn
-                  icon
-                  variant="text"
-                  size="30"
-                  class="bg-blue-200"
-                  v-if="!showRename"
-                  v-bind="props"
-                >
+                <v-btn icon variant="text" size="30" class="bg-blue-200" v-if="!showRename" v-bind="props">
                   <Icon icon="ph:dots-three-outline-fill" />
                 </v-btn>
               </template>
               <v-list rounded="lg">
-                <v-list-item
-                  @click="() => (addCardInput = true)"
-                  density="compact"
-                  :rounded="false"
-                >
+                <v-list-item @click="() => (addCardInput = true)" density="compact" :rounded="false">
                   <template v-slot:prepend>
                     <Icon icon="ph:plus-circle" width="25" />
                   </template>
                   Add card
                 </v-list-item>
-                <v-list-item
-                  @click="deleteListDialog = true"
-                  base-color="error"
-                  density="compact"
-                  :rounded="false"
-                >
+                <v-list-item @click="deleteListDialog = true" :disabled="isDeleteLoading" :loading="isDeleteLoading"
+                  base-color="error" density="compact" :rounded="false">
                   <template v-slot:prepend>
                     <Icon icon="ph:trash" width="25" />
                   </template>
@@ -288,15 +257,8 @@ watch(cards, () => {
                 </v-list-item>
               </v-list>
             </v-menu>
-            <v-btn
-              v-if="showRename"
-              icon
-              variant="tonal"
-              color="primary"
-              size="35"
-              class="mx-1"
-              @click="() => updateList(list.id)"
-            >
+            <v-btn v-if="showRename" icon variant="tonal" color="primary" size="35" class="mx-1"
+              @click="() => updateList(list.id)">
               <Icon icon="ph:check" />
             </v-btn>
           </div>
@@ -309,54 +271,26 @@ watch(cards, () => {
     <div class="overflow-y-auto px-2">
       <div v-if="isLoading || isListLoading">
         <template v-for="i in Math.floor(Math.random() * 3) + 1" :key="i">
-          <v-skeleton-loader
-            class="my-3"
-            type="card-avatar"
-          ></v-skeleton-loader>
+          <v-skeleton-loader class="my-3" type="card-avatar"></v-skeleton-loader>
         </template>
       </div>
       <!-- <v-infinite-scroll max-height="60vh" height="max" :items="cards" :onLoad="getCards"> -->
       <!-- <template v-slot:empty> -->
       <!-- <p></p> -->
       <!-- </template> -->
-      <VueDraggable
-        ref="el"
-        group="cards"
-        class="space-y-3"
-        v-model="cards"
-        :animation="150"
-        dragClass="drag"
-        ghostClass="ghost"
-        @update="onUpdate"
-        scroll
-        :scrollSensitivity="300"
-        bubbleScroll
-        @add="onAdd"
-        v-if="!isLoading"
-      >
+      <VueDraggable ref="el" group="cards" class="space-y-3" v-model="cards" :animation="150" dragClass="drag"
+        ghostClass="ghost" @update="onUpdate" scroll :scrollSensitivity="300" bubbleScroll @add="onAdd" v-if="!isLoading">
         <template v-for="card in cards" :key="card.id">
-          <Card
-            :listName="list.name"
-            :card
-            @delete-card="(cardId) => deleteCard(cardId)"
-          />
+          <Card :listName="list.name" :card @delete-card="(cardId) => deleteCard(cardId)" />
         </template>
       </VueDraggable>
       <!-- </v-infinite-scroll> -->
     </div>
     <!-- </v-card-text> -->
 
-    <div
-      class="px-2 block z-50 mb-2"
-      v-click-outside="() => (addCardInput = false)"
-    >
-      <v-btn
-        v-if="!addCardInput"
-        class="w-full my-1 flex justify-start p-1"
-        height="40"
-        variant="text"
-        @click="() => (addCardInput = true)"
-      >
+    <div class="px-2 block z-50 mb-2" v-click-outside="() => (addCardInput = false)">
+      <v-btn v-if="!addCardInput" class="w-full my-1 flex justify-start p-1" height="40" variant="text"
+        @click="() => (addCardInput = true)">
         <div class="px-2">
           <Icon icon="ph:plus" width="20" />
         </div>
@@ -364,57 +298,32 @@ watch(cards, () => {
           <p class="text-start text-md">Add a card</p>
         </div>
       </v-btn>
-      <div
-        v-else
-        class="flex flex-col gap-2 px-1 pt-2 pb-2"
-        @keypress.enter="addCard()"
-        @keydown.esc="addCardInput = false"
-      >
-        <v-text-field
-          single-line
-          autofocus
-          v-model="newCardTitle"
-          placeholder="Enter a title for this card"
-          rows="2"
-          no-resize
-          hide-details
-        >
+      <div v-else class="flex flex-col gap-2 px-1 pt-2 pb-2" @keypress.enter="addCard()"
+        @keydown.esc="addCardInput = false">
+        <v-text-field single-line autofocus v-model="newCardTitle" placeholder="Enter a title for this card" rows="2"
+          no-resize hide-details>
         </v-text-field>
         <div class="gap-2 flex">
-          <v-btn
-            color="primary"
-            :loading="isAddingCardLoading"
-            :disabled="isAddingCardLoading"
-            @click="() => addCard()"
-          >
+          <v-btn color="primary" :loading="isAddingCardLoading" :disabled="isAddingCardLoading" @click="() => addCard()">
             Add
           </v-btn>
-          <v-btn
-            variant="text"
-            icon
-            size="35"
-            @click="() => (addCardInput = false)"
-          >
+          <v-btn variant="text" icon size="35" @click="() => (addCardInput = false)">
             <Icon icon="ph:x" width="25" />
           </v-btn>
         </div>
       </div>
     </div>
     <v-dialog width="500" v-model="deleteListDialog">
-      <DeleteModal
-        title="Are you sure you want to delete this list?"
-        text="All cards in this list will be deleted"
-        action-btn-text="Delete"
-        @cancel="() => (deleteListDialog = false)"
-        @delete="() => $emit('deleteList', list.id)"
-      />
+      <DeleteModal title="Are you sure you want to delete this list?" text="All cards in this list will be deleted"
+        action-btn-text="Delete" @cancel="() => (deleteListDialog = false)"
+        @delete="() => $emit('deleteList', list.id)" />
     </v-dialog>
   </v-card>
   <!-- </div> -->
 </template>
 
 <style scoped>
-.ghost > * {
+.ghost>* {
   background: rgba(0, 0, 0, 0.3) !important;
   border-radius: 8px;
   visibility: hidden;

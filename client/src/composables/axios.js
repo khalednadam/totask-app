@@ -17,6 +17,7 @@ axiosInstance.interceptors.response.use(
   },
   error => {
     // If the request resulted in an error response
+    console.log(error);
     if (error.response) {
       // Handle error responses here
       toastError(error); // Display error message using your toastError function

@@ -319,7 +319,6 @@ watch(cards, () => {
         @delete="() => $emit('deleteList', list.id)" />
     </v-dialog>
   </v-card>
-  <!-- </div> -->
 </template>
 
 <style scoped>

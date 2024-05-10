@@ -27,11 +27,14 @@ const { searchWord } = storeToRefs(cardSearch);
     <v-row no-gutters class="items-center my-auto px-5 !py-0 !m-0">
       <v-col md="9" cols="10" class="flex flex-col justify-center ">
         <div class="md:space-x-5 space-x-2 flex items-center">
-          <v-btn size="small" v-if="mdAndDown || route.name === 'Board'" variant="text" icon rounded="lg"
-            @click="$emit('toggleDrawer')">
-            <Icon icon="ph:list" width="25"></Icon>
-          </v-btn>
-
+          <v-tooltip text="ctrl+/">
+            <template v-slot:activator="{ props }">
+              <v-btn v-bind="props" size="small" v-if="mdAndDown || route.name === 'Board'" variant="text" icon
+                rounded="lg" @click="$emit('toggleDrawer')">
+                <Icon icon="ph:list" width="25"></Icon>
+              </v-btn>
+            </template>
+          </v-tooltip>
           <!-- board search  -->
           <v-dialog v-if="mdAndDown">
             <template v-slot:activator="{ props }">

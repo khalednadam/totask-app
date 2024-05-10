@@ -1,5 +1,5 @@
 <script setup>
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 import { socket } from "../composables/socket";
 import { VueDraggable } from 'vue-draggable-plus'
 import { useRoute } from "vue-router";
@@ -7,10 +7,6 @@ import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 import axiosInstance from "../composables/axios";
 import { useLists } from "../composables/utils";
-import { ref } from "vue";
-
-// const lists = defineModel();
-
 
 const List = defineAsyncComponent(() => import("./List.vue"))
 

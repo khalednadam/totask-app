@@ -185,10 +185,17 @@ const toggleFavorite = (boardId) => {
   }
 };
 
+const handleDrawerShortcut = (e) => {
+  if ((e.ctrlKey && e.code === 'Slash')) {
+    toggleDrawer();
+  }
+}
+
 </script>
 
 <template>
-  <!-- <GlobalEvents @keyup.metaKey="() => toggleDrawer()" @keyup.slash="() => toggleDrawer()" /> -->
+  <GlobalEvents @keyup.prevent="handleDrawerShortcut" @keyup.metaKey="() => toggleDrawer()"
+    @keyup.slash="() => toggleDrawer()" />
   <v-main v-if="isLoading && !board" class="flex flex-col justify-center items-center gap-5 h-[95vh]">
     <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular>
   </v-main>

@@ -30,7 +30,6 @@ const updateLabelById = catchAsync(async (req, res) => {
 
 const deleteLabelById = catchAsync(async (req, res) => {
   const deletedLabel = await labelService.deleteLabelById(req.params.labelId);
-  // TODO: remove the label from cards
   const board = await boardService.getBoardById(req.query.boardId);
   if (!board) {
     throw new ApiError(httpStatus.NOT_FOUND, "Board not found");

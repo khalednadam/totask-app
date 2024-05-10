@@ -7,7 +7,7 @@ const toast = useToast();
  * @param {Error} err - The error object containing the response data.
  */
 export const toastError = (err) => {
-
+  console.log(err);
   let errorMessage = "An error occurred";
 
   // Check if the error contains a response object and extract message from there

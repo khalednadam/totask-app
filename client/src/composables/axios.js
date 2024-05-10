@@ -1,5 +1,6 @@
 // axiosInstance.js
 import axios from 'axios';
+import { toastError } from './helper';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL, // Set the base URL to include the '/api' prefix

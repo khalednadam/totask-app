@@ -30,12 +30,17 @@ if (config.env !== "test") {
  * @returns {Promise<User>}
  */
 const loginUserWithEmailAndPassword = async (email, password) => {
-  const user = await userService.getUserByEmail(email);
-  if (!user) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email");
-  }
-  if (!(await user.isPasswordMatch(password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect password");
+  try {
+    const user = await userService.getUserByEmail(email);
+    if (!user) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email");
+    }
+    if (!(await user.isPasswordMatch(password))) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect password");
+    }
+    return user;
+  } catch (error) {
+    throw error; // Ensure the error is re-thrown
   }
 
   //   const subject = "Verify Email";
@@ -45,7 +50,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   // `;
   //   const msg = { from: config.email.from, to: user.email, subject, html };
   // await transport.sendMail(msg);
-  return user;
+  // return user;
 };
 
 /**

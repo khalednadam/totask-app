@@ -8,7 +8,7 @@ const toast = useToast();
  */
 export const toastError = (err) => {
   let errorMessage = "An error occurred";
-
+  console.log(err);
   if (err.response && err.response.data && err.response.data.message) {
     errorMessage = err.response.data.message;
   } else if (err.message) {

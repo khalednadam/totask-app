@@ -9,22 +9,6 @@ const axiosInstance = axios.create({
   },
   withCredentials: true // Ensure that credentials are sent with the request
 });
-
-axiosInstance.interceptors.response.use(
-  response => {
-    // If the request was successful, pass the response as-is
-    return response;
-  },
-  error => {
-    // If the request resulted in an error response
-    console.log(error);
-    if (error.response) {
-      // Handle error responses here
-      toastError(error); // Display error message using your toastError function
-    }
-    return Promise.reject(error); // Reject the Promise to propagate the error further
-  }
-);
 axiosInstance.defaults.headers.post["Accept"] = "application/json";
 axiosInstance.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 

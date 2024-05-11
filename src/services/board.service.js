@@ -20,9 +20,10 @@ const createBoard = async (boardBody, userId) => {
   const workspace = await workspaceService.getWorkspaceById(
     boardBody.workspace
   );
+  if (workspace.boards.length >= 5 && !workspace.isPremium) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "You have reached the limit for free plan");
+  }
   const isAdmin = workspace.admins.some((admin) => admin._id.toString() === userId);
-  console.log(workspace.admins.some((admin) => admin._id.toString() === userId));
-  console.log(isAdmin);
   if (
     workspace.canMemberAddBoards === false &&
     !isAdmin
@@ -324,6 +325,11 @@ const getWorkspaceMembersByBoardId = async (boardId, userId) => {
   return workspaceMembers
 }
 
+const isWorkspacePremium = async (boardId) => {
+  const workspace = await Board.findById(boardId, 'workspace').populate('workspace');
+  return workspace.workspace.isPremium;
+}
+
 module.exports = {
   createBoard,
   getBoardById,
@@ -335,5 +341,6 @@ module.exports = {
   checkIfUserIsMember,
   checkIfUserIsAdmin,
   getBoardMembers,
-  getWorkspaceMembersByBoardId
+  getWorkspaceMembersByBoardId,
+  isWorkspacePremium
 };

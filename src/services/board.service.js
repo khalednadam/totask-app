@@ -20,9 +20,11 @@ const createBoard = async (boardBody, userId) => {
   const workspace = await workspaceService.getWorkspaceById(
     boardBody.workspace
   );
-  const isAdmin = workspace.admins.some((admin) => admin._id !== userId);
+  const isAdmin = workspace.admins.some((admin) => admin._id.toString() === userId);
+  console.log(workspace.admins.some((admin) => admin._id.toString() === userId));
+  console.log(isAdmin);
   if (
-    workspace.canMemberAddBoards == false &&
+    workspace.canMemberAddBoards === false &&
     !isAdmin
   ) {
     throw new ApiError(
@@ -30,7 +32,7 @@ const createBoard = async (boardBody, userId) => {
       "You are not allowed to create boards"
     );
   }
-  const isMember = workspace.members.some((member) => member._id !== userId);
+  const isMember = workspace.members.some((member) => member._id.toString() === userId);
   if (!isMember) {
     throw new ApiError(
       httpStatus.FORBIDDEN,

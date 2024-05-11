@@ -8,6 +8,7 @@ import { useFavoriteBoardsStore } from "@/stores/favoriteBoards";
 import CreateWorkspace from "../components/Modals/CreateWorkspaceModal.vue"
 import { storeToRefs } from "pinia";
 import { useWorkspaces } from "../stores/workspaces";
+import { Icon } from "@iconify/vue";
 
 // INITS
 const favoriteBoardsStore = useFavoriteBoardsStore();
@@ -32,8 +33,12 @@ onMounted(async () => {
     <v-container>
       <v-row v-if="favoriteBoardsStore.favoriteBoards?.length > 0" class="mb-3">
         <v-col cols="12">
-          <h2 class="text-2xl">Favorite Boards</h2>
-          <v-divider class="my-1"></v-divider>
+          <div class="flex items-center pb-3 space-x-2">
+            <v-avatar color="grey" rounded="lg" size="large" class="w-full">
+              <Icon icon="ph:star-fill" width="30" />
+            </v-avatar>
+            <h4 class="font-normal">Favorite Boards</h4>
+          </div>
           <v-row class="">
             <v-col cols="12" md="3" v-for="favBoard in favoriteBoardsStore?.favoriteBoards">
               <BoardCard :board="favBoard" />

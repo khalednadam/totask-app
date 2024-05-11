@@ -42,7 +42,8 @@ const updateList = {
   }),
   body: Joi.object().keys({
     name: Joi.string(),
-    position: Joi.number()
+    position: Joi.number(),
+    color: Joi.any()
   }),
   session: Joi.object().keys({
     user: Joi.object().keys({

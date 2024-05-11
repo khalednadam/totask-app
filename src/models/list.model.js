@@ -25,6 +25,10 @@ const listSchema = mongoose.Schema(
         ref: "Card",
       },
     ],
+    color: {
+      type: String,
+      default: null
+    },
     createdBy: {
       type: schema.Types.ObjectId,
       ref: "User",

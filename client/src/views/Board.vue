@@ -200,7 +200,8 @@ const handleDrawerShortcut = (e) => {
     <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular>
   </v-main>
   <div v-else>
-    <v-navigation-drawer v-model="drawer" location="left" color="base" v-if="status < 205 && board">
+    <v-navigation-drawer class="text-white" :style="{ backgroundColor: `rgba(var(--v-theme-background) , 0.2)` }"
+      v-model="drawer" location="left" v-if="status < 205 && board">
       <template v-slot:prepend>
         <v-list-item lines="two" :title="board?.workspace.name">
           <template v-slot:prepend>

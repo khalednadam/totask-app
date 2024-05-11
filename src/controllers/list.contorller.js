@@ -97,7 +97,12 @@ const updateListById = catchAsync(async (req, res) => {
       "You need to be part of the workspace to be able to view this content "
     );
   }
+  const isPremium = await boardService.isWorkspacePremium(list.board);
+  if (!isPremium) {
+    req.body.color = null;
+  }
   const newList = await listService.updateListById(req.params.listId, req.body);
+
   res.status(httpStatus.OK).send(newList);
 })
 
@@ -110,7 +115,6 @@ const deleteListById = catchAsync(async (req, res) => {
   };
   const options = pick({ ...req.query, limit: 100 }, ["sortBy", "limit", "page"]);
   const lists = await listService.queryLists(filter, options);
-  // console.log(lists);
   io.emit("update-lists", lists);
   res.status(httpStatus.OK).send(deletedList);
 })

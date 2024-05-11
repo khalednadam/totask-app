@@ -23,7 +23,8 @@ const { searchWord } = storeToRefs(cardSearch);
 </script>
 
 <template>
-  <v-app-bar density="compact" elevation="0">
+  <v-app-bar density="compact" elevation="0"
+    :style="{ backgroundColor: `rgba(var(--v-theme-background) , 0.2)`, color: '#fff' }">
     <v-row no-gutters class="items-center my-auto px-5 !py-0 !m-0">
       <v-col md="9" cols="10" class="flex flex-col justify-center ">
         <div class="md:space-x-5 space-x-2 flex items-center">

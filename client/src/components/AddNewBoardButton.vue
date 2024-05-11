@@ -24,9 +24,13 @@ const addNewBoardDialog = ref(false);
     </v-dialog>
   </v-card>
   <div v-else>
-    <v-btn icon variant="tonal" size="small" @click="addNewBoardDialog = !addNewBoardDialog">
-      <Icon icon="ph:plus" width="20" />
-    </v-btn>
+    <v-tooltip text="Add a board">
+      <template v-slot:activator="{ props }">
+        <v-btn v-bind="props" icon variant="tonal" size="small" @click="addNewBoardDialog = !addNewBoardDialog">
+          <Icon icon="ph:plus" width="20" />
+        </v-btn>
+      </template>
+    </v-tooltip>
     <v-dialog v-model="addNewBoardDialog">
       <AddBoardModal :members="members" :workspace="workspace" :boards="boards"
         @toggle-modal="() => (addNewBoardDialog = false)" @add-board="(newBoard) => boards.unshift(newBoard)" />

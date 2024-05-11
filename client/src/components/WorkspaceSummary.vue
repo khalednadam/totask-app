@@ -17,14 +17,14 @@ const props = defineProps({
 
 const authStore = useCurrentUser();
 const workspaceMembersDialog = ref(false);
-const { boards, isLoading } = useBoards(props.workspace.id, "updatedAt:desc", 4)
+const { boards, isLoading } = useBoards(props.workspace.id, "updatedAt:desc", 7)
 const { isAdmin } = amIAdmin(props.workspace, authStore.user.id);
 </script>
 <template>
   <div class="flex mb-10 flex-col">
     <div class="flex items-center space-x-2 justify-between" :key="boards">
       <div class="flex items-center pb-3 space-x-2">
-        <v-avatar color="primary" rounded="lg" size="large" class="w-full">
+        <v-avatar color="grey" rounded="lg" size="large" class="w-full">
           <Icon icon="ph:building-office" width="30" />
         </v-avatar>
         <h4 class="font-normal">{{ workspace.name }}</h4>

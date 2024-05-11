@@ -30,10 +30,10 @@ onMounted(async () => {
   </div>
   <div v-else>
     <v-container>
-      <v-row v-if="favoriteBoardsStore.favoriteBoards?.length > 0">
+      <v-row v-if="favoriteBoardsStore.favoriteBoards?.length > 0" class="mb-3">
         <v-col cols="12">
           <h2 class="text-2xl">Favorite Boards</h2>
-          <v-divider></v-divider>
+          <v-divider class="my-1"></v-divider>
           <v-row class="">
             <v-col cols="12" md="3" v-for="favBoard in favoriteBoardsStore?.favoriteBoards">
               <BoardCard :board="favBoard" />

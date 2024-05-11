@@ -19,6 +19,7 @@ const { workspace } = getWorkspace(route.params.workspaceId)
 const closedBoardsDialog = ref(false)
 const isLoadingClosedBoard = ref(false)
 const deleteDialog = ref(false);
+
 const headers = [
   { title: 'Name', value: 'name' },
   { title: 'Actions', key: 'actions', sortable: false },
@@ -57,6 +58,7 @@ const reopenBoard = (board) => {
 }
 
 const boardToDelete = ref(null);
+
 const selectBoardToDelete = (board) => {
   boardToDelete.value = board;
   deleteDialog.value = true;
@@ -81,13 +83,16 @@ watch(deleteDialog, () => {
     <v-col v-if="isLoading" cols="12" md="3" v-for="i in 3" :key="i">
       <v-skeleton-loader class="h-[125px] overflow-hidden rounded-lg" rounded="lg" type="card"></v-skeleton-loader>
     </v-col>
-    <v-col cols="12" md="3" v-for="board in boards" :key="board.id">
-      <BoardCard :board="board" />
-    </v-col>
-    <v-col cols="12" md="3" v-if="workspace" :key="workspace">
-      <AddNewBoardButton v-if="workspace" :workspace="workspace?.id" :key="workspace" @click="() => { }"
-        :members="workspace.members" :boards="boards" />
-    </v-col>
+    <template v-else>
+      <v-col cols="12" md="3" v-if="workspace && workspace.isAdmin" :key="workspace">
+        <AddNewBoardButton :is-card="true" :workspace="workspace?.id" :key="workspace" @click="() => { }"
+          :members="workspace.members" :boards="boards" />
+      </v-col>
+      <v-col cols="12" md="3" v-for="board in boards" :key="board.id">
+        <BoardCard :board="board" />
+      </v-col>
+    </template>
+
   </v-row>
   <v-btn class="mt-5" @click="closedBoardsDialog = true">
     View closed boards

@@ -28,17 +28,32 @@ const { isAdmin } = amIAdmin(props.workspace, authStore.user.id);
           <Icon icon="ph:building-office" width="30" />
         </v-avatar>
         <h4 class="font-normal">{{ workspace.name }}</h4>
+        <Icon v-if="workspace.isPremium" icon="ph:crown-simple-fill" width="20" color="gold" />
       </div>
       <div class="flex items-center gap-2">
         <AddNewBoardButton :is-card="false" v-if="isAdmin || workspace.canMemberAddBoards" :workspace="workspace.id"
           @click="() => { }" :members="workspace.members" :boards="boards" />
         <router-link :to="`/w/settings/${workspace.id}`" v-if="isAdmin">
-          <v-btn v-if="amIAdmin(workspace, authStore.user.id)" icon variant="tonal" size="small">
-            <Icon icon="ph:gear" width="20" />
-          </v-btn>
+          <v-tooltip text="Settings">
+            <template v-slot:activator="{ props }">
+              <v-btn v-bind="props" v-if="amIAdmin(workspace, authStore.user.id)" icon variant="tonal" size="small">
+                <Icon icon="ph:gear" width="20" />
+              </v-btn>
+            </template>
+          </v-tooltip>
         </router-link>
-        <v-btn icon variant="tonal" size="small" @click="() => workspaceMembersDialog = true">
-          <Icon icon="ph:user" width="20" />
+        <v-tooltip text="Members">
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" icon variant="tonal" size="small" @click="() => workspaceMembersDialog = true">
+              <Icon icon="ph:user" width="20" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+        <v-btn v-if="!workspace.isPremium" variant="tonal" class="!h-10" @click="() => { }">
+          <Icon icon="ph:crown-simple" width="20" />
+          <p>
+            Get premium
+          </p>
         </v-btn>
       </div>
     </div>

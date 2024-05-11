@@ -1,18 +1,20 @@
 <script setup>
 import { ref } from "vue";
 import AddBoardModal from "./Modals/AddBoardModal.vue";
+import { Icon } from "@iconify/vue";
 
 const props = defineProps({
   workspace: String,
   members: Array,
   boards: Array,
+  isCard: Boolean
 });
 
 const addNewBoardDialog = ref(false);
 </script>
 <template>
-  <v-card height="120" class="!bg-primary dark:!bg-primary/50 cursor-pointer"
-    @click="addNewBoardDialog = !addNewBoardDialog" color="sd">
+  <v-card v-if="isCard" height="120" variant="tonal" class="cursor-pointer"
+    @click="addNewBoardDialog = !addNewBoardDialog">
     <v-card-text class="flex justify-center items-center flex-col h-full opacity-100">
       Add a new board
     </v-card-text>
@@ -21,6 +23,15 @@ const addNewBoardDialog = ref(false);
         @toggle-modal="() => (addNewBoardDialog = false)" @add-board="(newBoard) => boards.unshift(newBoard)" />
     </v-dialog>
   </v-card>
+  <div v-else>
+    <v-btn icon variant="tonal" size="small" @click="addNewBoardDialog = !addNewBoardDialog">
+      <Icon icon="ph:plus" width="20" />
+    </v-btn>
+    <v-dialog v-model="addNewBoardDialog">
+      <AddBoardModal :members="members" :workspace="workspace" :boards="boards"
+        @toggle-modal="() => (addNewBoardDialog = false)" @add-board="(newBoard) => boards.unshift(newBoard)" />
+    </v-dialog>
+  </div>
 </template>
 <style scoped>
 :deep(.v-btn--active > .v-btn__overlay,

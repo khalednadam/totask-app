@@ -9,12 +9,14 @@ import axiosInstance from "../composables/axios";
 import { useLists } from "../composables/utils";
 
 const List = defineAsyncComponent(() => import("./List.vue"))
+const props = defineProps({
+  isWorkspacePremium: Boolean
+})
 
 const isDeleteLoading = ref(false);
 const route = useRoute();
 const toast = useToast();
 const { lists, isLoading } = await useLists(route.params.boardId)
-
 const updateListPosition = (listId, newPosition) => {
   axiosInstance.put(`/list/${listId}`, {
     position: newPosition
@@ -69,8 +71,8 @@ const deleteList = (listId) => {
     class="flex flex-shrink h-[70%] max-h-[70%] justify-between mx-3 gap-3 mb-3" scroll :scrollSensitivity="300"
     @update="onUpdate" bubbleScroll>
     <template v-for="(list, index) in lists" :key="list.id">
-      <List :is-delete-loading="isDeleteLoading" :is-list-loading="isLoading" :id="list.id.toString()" :list="list"
-        @delete-list="(listId) => deleteList(listId)" :index="index"
+      <List :is-workspace-premium="isWorkspacePremium" :is-delete-loading="isDeleteLoading" :is-list-loading="isLoading"
+        :id="list.id.toString()" :list="list" @delete-list="(listId) => deleteList(listId)" :index="index"
         @update-index="(index) => updateListPosition(list.id, index)" />
     </template>
   </VueDraggable>

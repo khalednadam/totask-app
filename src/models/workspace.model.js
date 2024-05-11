@@ -17,8 +17,9 @@ const workspaceSchema = mongoose.Schema(
     description: {
       type: String,
     },
-    icon: {
-      type: String,
+    isPremium: {
+      type: Boolean,
+      default: false
     },
     admins: [
       {

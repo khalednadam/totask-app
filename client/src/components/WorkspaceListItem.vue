@@ -31,7 +31,7 @@ const { isAdmin } = amIAdmin(props.workspace, store.user?.id)
 <template>
   <div class="flex items-center justify-between gap-2">
     <div class="flex justify-center items-center gap-2">
-      <v-avatar bg-color="red" color="grey" rounded="lg">
+      <v-avatar color="grey" rounded="lg">
         <Icon icon="ph:building-office" width="30" />
       </v-avatar>
       <v-tooltip :text="workspace.name" :open-delay="350">

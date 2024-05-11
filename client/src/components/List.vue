@@ -19,7 +19,8 @@ const props = defineProps({
   index: Number,
   members: Array,
   isListLoading: Boolean,
-  isDeleteLoading: Boolean
+  isDeleteLoading: Boolean,
+  isWorkspacePremium: Boolean
 });
 
 const cardSearch = useCardSearchStore();
@@ -29,6 +30,8 @@ const toast = useToast();
 const el = ref(null);
 
 const listName = ref(props.list?.name);
+
+const color = ref(null);
 const updateName = ref("");
 const showRename = ref(false);
 const deleteListDialog = ref(false);
@@ -43,6 +46,17 @@ const editName = (listName) => {
   showRename.value = true;
   updateName.value = listName;
 };
+
+const listColors = [
+  "#4BCE97",
+  "#F5CD47",
+  "#FEA362",
+  "#9F8FEF",
+  "#6CC3E0",
+  "#94C748",
+  "#E774BB",
+  "#579DFF"
+]
 
 const endEditName = () => {
   showRename.value = false;
@@ -101,9 +115,6 @@ const updateList = () => {
       {
         name: updateName.value,
       },
-      {
-        withCredentials: true,
-      }
     )
     .then((res) => {
       listName.value = res.data.name;
@@ -217,12 +228,30 @@ const getCards = ({ done }) => {
     });
 };
 
+const updateListColor = (color) => {
+  axiosInstance
+    .put(
+      `/list/${props.list.id}`,
+      {
+        color
+      },
+    )
+    .then((res) => {
+      listName.value = res.data.name;
+      socket.emit("update-lists", res.data.board);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 watch(cards, () => {
   page.value = 1;
 });
 </script>
 <template>
-  <v-card rounded="lg" color="list" class="w-[272px] mt-3 h-max max-h-max mb-5" :id="list.id.toString()">
+  <v-card variant="elevated" rounded="lg" :color="list.color || 'list'" class="w-[272px] mt-3 h-max max-h-max mb-5"
+    :id="list.id.toString()">
     <v-tooltip :text="list.name">
       <template v-slot:activator="{ props }">
         <v-card-title v-bind="props" class="flex sticky z-20 flex-row items-center justify-between header">
@@ -242,6 +271,28 @@ watch(cards, () => {
                 </v-btn>
               </template>
               <v-list rounded="lg">
+                <v-list-item v-if="isWorkspacePremium" :rounded="false">
+                  <p class="mb-2">
+                    Change list color
+                  </p>
+                  <div class="flex gap-2">
+                    <template v-for="color in listColors.slice(0, 4)">
+                      <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
+                        class="h-8 cursor-pointer flex w-12 rounded-lg">
+                      </v-btn>
+                    </template>
+                  </div>
+                  <div class="flex mt-2 gap-2">
+                    <template v-for="color in listColors.slice(4, 8)">
+                      <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
+                        class="h-8 cursor-pointer flex w-12 rounded-lg">
+                      </v-btn>
+                    </template>
+                  </div>
+                  <v-btn @click="() => updateListColor(null)" class="w-full mt-2" variant="tonal">
+                    Remove list color
+                  </v-btn>
+                </v-list-item>
                 <v-list-item @click="() => (addCardInput = true)" density="compact" :rounded="false">
                   <template v-slot:prepend>
                     <Icon icon="ph:plus-circle" width="25" />

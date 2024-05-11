@@ -22,7 +22,9 @@ const getWorkspace = catchAsync(async (req, res) => {
   if (!workspace) {
     throw new ApiError(httpStatus.NOT_FOUND, "Workspace was not found");
   }
-  res.send(workspace);
+  // const isMember = await workspaceService.checkIfUserIsMember(workspace._id, req.session.user.id);
+  const isAdmin = await workspaceService.checkIfUserIsAdmin(workspace._id, req.session.user.id);
+  res.send({ ...workspace._doc, isAdmin });
 });
 
 const updateWorkspace = catchAsync(async (req, res) => {

@@ -33,7 +33,7 @@ const isWorkspaceAdmin = computed(() => amIAdmin(props.workspace, store.user?.id
   <div class="flex items-center justify-between gap-2">
     <div class="flex justify-center items-center gap-2">
       <v-avatar bg-color="red" color="grey" rounded="lg">
-        {{ workspace.name[0].toUpperCase() }}
+        <Icon icon="ph:building-office" width="30" />
       </v-avatar>
       <v-tooltip :text="workspace.name" :open-delay="350">
         <template v-slot:activator="{ props }">
@@ -48,7 +48,7 @@ const isWorkspaceAdmin = computed(() => amIAdmin(props.workspace, store.user?.id
     <v-menu>
       <template v-slot:activator="{ props }">
         <v-btn icon variant="text" size="x-small">
-          <Icon v-bind="props" icon="ph:caret-down" width="25" class="cursor-pointer"
+          <Icon v-bind="props" icon="ph:dots-three-bold" width="25" class="cursor-pointer"
             @click="workspaceMenu = !workspaceMenu"></Icon>
         </v-btn>
       </template>

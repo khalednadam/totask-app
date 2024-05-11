@@ -615,64 +615,72 @@ const changeCoverMenu = ref(false);
                 @update-card="(newCard) => updateCard(newCard)" />
             </div>
           </div>
-          <div class="flex items-center gap-1">
-            <Icon icon="ph:text-align-left" width="25" />
-            Description
-          </div>
-          <v-card v-if="(!card?.description || card.description.length === 0) &&
-            !changeCardDescription
-            " class="mt-2" variant="tonal" @click="changeCardDescription = true">
-            <v-card-text> Add a more detailed description... </v-card-text>
-          </v-card>
-          <div class="h-32 mt-2 my-20" v-if="changeCardDescription" v-click-outside="onClickOutsideDescription">
-            <QuillEditor ref="quill" toolbar="essential" v-model:content="descriptionToChange" @text-change="setText"
-              contentType="html" theme="snow" />
-            <div class="flex gap-3 justify-end mt-3">
-              <v-btn color="primary" variant="outlined" @click="() => {
-                (changeCardDescription = false),
-                  (descriptionToChange = card?.description);
-              }
-                ">
-                Cancel
-              </v-btn>
-              <v-btn color="primary" @click="() => updateCardDescription()">
-                Save
-              </v-btn>
+          <div class="space-y-2 flex flex-col">
+            <div>
+              <div class="flex items-center gap-1">
+                <Icon icon="ph:text-align-left" width="25" />
+                Description
+              </div>
+              <v-card v-if="(!card?.description || card.description.length === 0) &&
+                !changeCardDescription
+                " class="mt-2" variant="tonal" @click="changeCardDescription = true">
+                <v-card-text> Add a more detailed description... </v-card-text>
+              </v-card>
+              <div class="h-32 mt-2 my-20" v-if="changeCardDescription" v-click-outside="onClickOutsideDescription">
+                <QuillEditor ref="quill" toolbar="essential" v-model:content="descriptionToChange" @text-change="setText"
+                  contentType="html" theme="snow" />
+                <div class="flex gap-3 justify-end mt-3">
+                  <v-btn color="primary" variant="outlined" @click="() => {
+                    (changeCardDescription = false),
+                      (descriptionToChange = card?.description);
+                  }
+                    ">
+                    Cancel
+                  </v-btn>
+                  <v-btn color="primary" @click="() => updateCardDescription()">
+                    Save
+                  </v-btn>
+                </div>
+              </div>
+              <div class="pt-2" v-if="card?.description && !changeCardDescription" @click="changeCardDescription = true"
+                v-html="card?.description"></div>
+            </div>
+            <div>
+              <div class="flex items-center gap-1 mt-5" v-if="card.attachments && card.attachments.length > 0">
+                <Icon icon="ph:paperclip" width="25" />
+                Attachments
+              </div>
+              <div class="my-2">
+                <template v-for="attachment in card.attachments">
+                  <Attachment :card-id="card.id" :list-id="card.list.id" :src="attachment"
+                    @update-card="(newCard) => updateCard(newCard)" />
+                </template>
+              </div>
+            </div>
+            <div>
+              <Checklist v-if="card.checklist" :card-id="card.id" :list-id="card?.list.id" :board-id="card.board.id"
+                class="mt-5" v-model="card.checklist" @update-card="(newCard) => updateCard(newCard)"
+                @update-card-checklist="(newChecklist) => updateCardChecklist(newChecklist)
+                  " />
+            </div>
+            <div>
+              <div class="flex items-center mt-6 gap-1">
+                <Icon icon="ph:chat" width="25" />
+                Comments
+              </div>
+              <template v-for="comment in card.comments" :key="comment.id">
+                <Comment :board-id="card.board.id" :card-id="card.id" :comment />
+              </template>
+              <v-text-field @keydown.enter="addComment" v-model="newCommentText" class="mt-4" hide-details
+                density="compact" placeholder="write a comment">
+                <template v-slot:append>
+                  <v-btn variant="tonal" color="primary" @click="addComment">
+                    send
+                  </v-btn>
+                </template>
+              </v-text-field>
             </div>
           </div>
-          <div class="pt-2" v-if="card?.description && !changeCardDescription" @click="changeCardDescription = true"
-            v-html="card?.description"></div>
-
-          <div class="flex items-center gap-1 mt-5" v-if="card.attachments && card.attachments.length > 0">
-            <Icon icon="ph:paperclip" width="25" />
-            Attachments
-          </div>
-          <div class="my-2">
-            <template v-for="attachment in card.attachments">
-              <Attachment :card-id="card.id" :list-id="card.list.id" :src="attachment"
-                @update-card="(newCard) => updateCard(newCard)" />
-            </template>
-          </div>
-
-          <Checklist v-if="card.checklist" :card-id="card.id" :list-id="card?.list.id" :board-id="card.board.id"
-            class="mt-5" v-model="card.checklist" @update-card="(newCard) => updateCard(newCard)" @update-card-checklist="(newChecklist) => updateCardChecklist(newChecklist)
-              " />
-
-          <div class="flex items-center mt-6 gap-1">
-            <Icon icon="ph:chat" width="25" />
-            Comments
-          </div>
-          <template v-for="comment in card.comments" :key="comment.id">
-            <Comment :board-id="card.board.id" :card-id="card.id" :comment />
-          </template>
-          <v-text-field @keydown.enter="addComment" v-model="newCommentText" class="mt-4" hide-details density="compact"
-            placeholder="write a comment">
-            <template v-slot:append>
-              <v-btn variant="tonal" color="primary" @click="addComment">
-                send
-              </v-btn>
-            </template>
-          </v-text-field>
         </v-col>
 
         <!------------------->

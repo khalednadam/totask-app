@@ -68,7 +68,7 @@ export const getRecentWorkspaces = () => {
       withCredentials: true,
       params: {
         sortBy: "updatedAt:desc",
-        limit: 5,
+        limit: 7,
       },
     })
     .then((res) => {

@@ -1,6 +1,6 @@
 <script setup>
 // IMPORTS
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "@/stores/auth";
 import {
@@ -24,9 +24,8 @@ const store = useCurrentUser();
 const workspaceMenu = ref(false);
 const workspaceMembersDialog = ref(false);
 const admins = ref(props.workspace.admins);
-// members.value = workspace.value.members.filter(member => !admins.value.some(admin => admin.id === member.id))
 const members = ref(props.workspace.members.filter(member => !admins.value.some(admin => admin.id === member.id)))
-const isWorkspaceAdmin = computed(() => amIAdmin(props.workspace, store.user?.id));
+const { isAdmin } = amIAdmin(props.workspace, store.user?.id)
 
 </script>
 <template>
@@ -56,7 +55,7 @@ const isWorkspaceAdmin = computed(() => amIAdmin(props.workspace, store.user?.id
         <v-list-item @click="() => (workspaceMembersDialog = true)">
           Members
         </v-list-item>
-        <router-link :to="`/w/settings/${workspace.id}`" v-if="isWorkspaceAdmin">
+        <router-link :to="`/w/settings/${workspace.id}`" v-if="isAdmin">
           <v-list-item @click="() => { }"> Settings </v-list-item>
         </router-link>
         <v-list-item @click="$emit('openMemberDialog', workspace)">

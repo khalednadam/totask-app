@@ -200,13 +200,22 @@ const handleDrawerShortcut = (e) => {
     <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular>
   </v-main>
   <div v-else>
-    <v-navigation-drawer class="text-white" :style="{ backgroundColor: `rgba(var(--v-theme-background) , 0.2)` }"
-      v-model="drawer" location="left" v-if="status < 205 && board">
+    <v-navigation-drawer class="text-white backdrop-blur-3xl"
+      :style="{ backgroundColor: `rgba(var(--v-theme-background) , 0.2)` }" v-model="drawer" location="left"
+      v-if="status < 205 && board">
       <template v-slot:prepend>
-        <v-list-item lines="two" :title="board?.workspace.name">
+        <v-list-item lines="two">
+          <template v-slot:title>
+            <div class="flex items-center gap-2">
+              <p class="max-w-[110px] truncate">
+                {{ board.workspace.name }}
+              </p>
+              <Icon v-if="board.workspace.isPremium" icon="ph:crown-simple-fill" width="20" color="gold" />
+            </div>
+          </template>
           <template v-slot:prepend>
             <v-avatar color="primary" rounded="lg">
-              {{ board?.workspace.name[0].toUpperCase() }}
+              <Icon icon="ph:building-office" width="30" />
             </v-avatar>
           </template>
         </v-list-item>
@@ -389,7 +398,7 @@ const handleDrawerShortcut = (e) => {
 
         <div class="flex h-[80vh] mb-4">
           <Suspense v-if="board">
-            <DraggableLists />
+            <DraggableLists :is-workspace-premium="board.workspace.isPremium" />
           </Suspense>
           <div class="min-w-[350px] mt-3">
             <v-btn text="Add a new list" color="list" class="flex w-[272px] font-bold justify-start text-start rounded"

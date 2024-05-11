@@ -195,8 +195,8 @@ const copyCard = () => {
     </v-card>
     <v-menu rounded="lg">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" icon size="35" class="!absolute right-2 top-2" @click="() => { }" variant="text">
-          <Icon icon="ph:dots-three-outline-fill" width="20" />
+        <v-btn v-bind="props" icon size="35" class="!absolute right-2  top-2" @click="() => { }" variant="text">
+          <Icon icon="ph:dots-three-outline-fill" width="20" class="text-oppsite" />
         </v-btn>
       </template>
       <v-list>

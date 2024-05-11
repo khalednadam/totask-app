@@ -23,7 +23,7 @@ const updateListPosition = (listId, newPosition) => {
   }, {
     withCredentials: true
   }).then(() => {
-    socket.emit("update-lists", route.params.boardId);
+    socket.emit("update-lists", { boardId: route.params.boardId });
   }).catch((err) => {
     console.log(err);
   })
@@ -55,7 +55,7 @@ const deleteList = (listId) => {
   }).then(() => {
     toast.success("List was deleted");
     // lists.value = lists.value.filter((list) => list.id !== listId);
-    socket.emit("update-lists", route.params.boardId);
+    socket.emit("update-lists", { boardId: route.params.boardId });
   }).catch((err) => {
     console.log(err);
   }).finally(() => {

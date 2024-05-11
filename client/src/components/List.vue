@@ -118,7 +118,7 @@ const updateList = () => {
     )
     .then((res) => {
       listName.value = res.data.name;
-      socket.emit("update-lists", res.data.board);
+      socket.emit("update-lists", { boardId: res.data.board });
     })
     .catch((err) => {
       console.log(err);
@@ -238,7 +238,7 @@ const updateListColor = (color) => {
     )
     .then((res) => {
       listName.value = res.data.name;
-      socket.emit("update-lists", res.data.board);
+      socket.emit("update-lists", { boardId: res.data.board });
     })
     .catch((err) => {
       console.log(err);

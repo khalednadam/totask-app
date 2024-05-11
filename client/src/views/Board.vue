@@ -135,7 +135,7 @@ const addList = () => {
       }
     )
     .then(() => {
-      socket.emit("update-lists", route.params.boardId);
+      socket.emit("update-lists", { boardId: route.params.boardId });
       newListName.value = "";
       toast.success("List created");
     })

@@ -28,6 +28,7 @@ const dark = {
     onbackground: "#FAFAFA",
     list: "#0F1204",
     card: "#313F35",
+    opposite: "#fff"
   },
 };
 const light = {
@@ -55,6 +56,7 @@ const light = {
     onbackground: "#79AC78",
     list: "#F1F2F4",
     card: "#FAFAFA",
+    opposite: "#000"
   },
 };
 

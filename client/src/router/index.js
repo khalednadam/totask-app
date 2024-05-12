@@ -104,6 +104,16 @@ const router = createRouter({
       },
     },
     {
+      path: "/admin/premiumRequests",
+      name: "premiumRequests",
+      component: () => import("../views/admin/PremiumRequests.vue"),
+      meta: {
+        admin: true,
+        layout: AdminLayout,
+        auth: true
+      },
+    },
+    {
       path: "/login",
       name: "login",
       component: () => import("../views/Login.vue"),

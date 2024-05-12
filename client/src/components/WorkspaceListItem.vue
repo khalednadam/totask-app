@@ -37,7 +37,7 @@ const { isAdmin } = amIAdmin(props.workspace, store.user?.id)
       <v-tooltip :text="workspace.name" :open-delay="350">
         <template v-slot:activator="{ props }">
           <router-link class="flex items-center gap-2" :to="`/w/${workspace.id}`">
-            <p v-bind="props" class="truncate max-w-[105px] cursor-pointer">
+            <p v-bind="props" class="truncate max-w-[80px] cursor-pointer">
               {{ workspace.name }}
             </p>
             <Icon v-if="workspace.isPremium" icon="ph:crown-simple-fill" width="20" color="gold" />

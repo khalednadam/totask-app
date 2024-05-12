@@ -23,8 +23,6 @@ import axiosInstance from "../composables/axios";
 // GLOBAL
 const workspaceTypes = inject("WORKSPACETYPES");
 
-// env
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 // INITS
 const route = useRoute();
@@ -51,7 +49,6 @@ const memberToRemove = ref(null);
 const removeMemberDialog = ref(false);
 
 // computed
-//TODO: fix
 const { isUserAdmin } = isUserWorkspaceAdmin(route.params.workspaceId);
 
 // FUNCTIONS
@@ -83,8 +80,9 @@ const deleteWorkspace = () => {
   }
 };
 const updateWorkspace = async () => {
+  console.log(workspace.value);
   axiosInstance
-    .put(`/w/${workspace.value.id}`, null, {
+    .put(`/w/${workspace.value._id.toString()}`, null, {
       withCredentials: true,
       params: {
         body: {

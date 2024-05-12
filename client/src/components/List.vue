@@ -31,7 +31,6 @@ const el = ref(null);
 
 const listName = ref(props.list?.name);
 
-const color = ref(null);
 const updateName = ref("");
 const showRename = ref(false);
 const deleteListDialog = ref(false);
@@ -118,7 +117,7 @@ const updateList = () => {
     )
     .then((res) => {
       listName.value = res.data.name;
-      socket.emit("update-lists", { boardId: res.data.board });
+      // socket.emit("update-lists", { boardId: res.data.board, results: res.data });
     })
     .catch((err) => {
       console.log(err);
@@ -238,7 +237,7 @@ const updateListColor = (color) => {
     )
     .then((res) => {
       listName.value = res.data.name;
-      socket.emit("update-lists", { boardId: res.data.board });
+      // socket.emit("update-lists", { boardId: res.data.board, results: res.data });
     })
     .catch((err) => {
       console.log(err);
@@ -308,8 +307,7 @@ watch(cards, () => {
                 </v-list-item>
               </v-list>
             </v-menu>
-            <v-btn v-if="showRename" icon variant="tonal" color="primary" size="35" class="mx-1"
-              @click="() => updateList(list.id)">
+            <v-btn v-if="showRename" icon variant="tonal" color="primary" size="35" class="mx-1">
               <Icon icon="ph:check" />
             </v-btn>
           </div>

@@ -17,19 +17,19 @@ io.on("connection", (socket) => {
   console.log("Hello from the socket.");
   socket.on("subscribe", (board) => {
     socket.join(board);
-    console.log("Joined to ", board);
+    // console.log("Joined to ", board);
   });
   socket.on("update-lists", (payload) => {
     io.to(payload.boardId).emit("update-lists", payload.lists);
   });
   socket.on("unsubscribe", (boardId) => {
     socket.leave(boardId);
-    console.log("left from: ", boardId);
+    // console.log("left from: ", boardId);
   });
   // socket.to.broadcast.emit('change-in-board');
-  socket.on("update-lists", (payload) => {
-    io.to(payload.boardId).emit("update-lists", payload.lists);
-  });
+  // socket.on("update-lists", (payload) => {
+  //   io.to(payload.boardId).emit("update-lists");
+  // });
   socket.on("change-board-info", (msg) => {
     io.to(msg).emit("change-board-info", msg);
   });

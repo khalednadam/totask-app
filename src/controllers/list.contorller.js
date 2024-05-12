@@ -103,6 +103,12 @@ const updateListById = catchAsync(async (req, res) => {
   }
   const newList = await listService.updateListById(req.params.listId, req.body);
 
+  const filter = {
+    board: newList.board,
+  };
+  const options = pick({ ...req.query, limit: 100 }, ["sortBy", "limit", "page"]);
+  const lists = await listService.queryLists(filter, options);
+  io.emit("update-lists", lists);
   res.status(httpStatus.OK).send(newList);
 })
 

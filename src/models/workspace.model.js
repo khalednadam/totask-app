@@ -48,6 +48,10 @@ const workspaceSchema = mongoose.Schema(
       type: schema.Types.ObjectId,
       ref: "User",
     },
+    premiumRequested: {
+      type: Boolean,
+      default: false
+    },
     updatedBy: {
       type: schema.Types.ObjectId,
       ref: "User",

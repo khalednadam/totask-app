@@ -7,6 +7,7 @@ import { RouterLink } from "vue-router";
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import UserProfile from "./UserProfile.vue";
+import axiosInstance from "../composables/axios";
 
 
 // PROPS & EMITS
@@ -19,6 +20,33 @@ const authStore = useCurrentUser();
 const workspaceMembersDialog = ref(false);
 const { boards, isLoading } = useBoards(props.workspace.id, "updatedAt:desc", 7)
 const { isAdmin } = amIAdmin(props.workspace, authStore.user.id);
+const premiumDialog = ref(false);
+const loading = ref(false);
+
+const premiumFeats = [
+  "Unlimited boards",
+  "Unlimited members",
+  "List colors",
+  "And more coming soon.."
+];
+
+const requestPremium = async () => {
+  loading.value = true;
+  try {
+    await axiosInstance.post("/premium-request/create", {
+      workspace: props.workspace.id,
+      user: authStore.user.id
+    })
+    props.workspace.premiumRequested = true;
+  } catch (err) {
+    // (err);
+    console.log(err);
+  } finally {
+    loading.value = false;
+    premiumDialog.value = false;
+  }
+}
+
 </script>
 <template>
   <div class="flex mb-10 flex-col">
@@ -49,7 +77,8 @@ const { isAdmin } = amIAdmin(props.workspace, authStore.user.id);
             </v-btn>
           </template>
         </v-tooltip>
-        <v-btn v-if="!workspace.isPremium" variant="tonal" class="!h-10" @click="() => { }">
+        <v-btn :disabled="workspace.premiumRequested" v-if="!workspace.isPremium" @click="premiumDialog = true"
+          variant="tonal" class="!h-10">
           <Icon icon="ph:crown-simple" width="20" />
           <p>
             Get premium
@@ -93,6 +122,35 @@ const { isAdmin } = amIAdmin(props.workspace, authStore.user.id);
             <UserProfile v-for="member in workspace.members" :key="member.id" :member />
           </v-list>
           <p v-else>There are no members in this workspace</p>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="premiumDialog" class="md:max-w-[30vw] w-full">
+      <v-card>
+        <v-btn variant="text" class="!absolute right-1 top-1 z-50" icon size="35" @click="() => premiumDialog = false">
+          <Icon icon="ph:x"></Icon>
+        </v-btn>
+        <v-img class="align-end text-white" height="120" src="/premiumbg.png" cover>
+        </v-img>
+        <v-card-title class="text-center">
+          Get totask premium
+          <p class="text-sm opacity-75 font-bold">
+            Get the most out of totask!
+          </p>
+        </v-card-title>
+        <v-card-text>
+          <ul class="list-disc flex flex-col items-start mx-auto w-max justify-end">
+            <li v-for="feat in premiumFeats">
+              {{ feat }}
+            </li>
+          </ul>
+          <v-btn @click="requestPremium" :loading="loading" :disabled="loading || workspace.premiumRequested"
+            color="primary" class="w-full mt-5" flat>
+            Request totask premium
+          </v-btn>
+          <v-btn color="primary" class="w-full" variant="text" flat @click="() => premiumDialog = false">
+            Cancel
+          </v-btn>
         </v-card-text>
       </v-card>
     </v-dialog>

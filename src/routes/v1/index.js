@@ -10,6 +10,7 @@ const checklistRoute = require("./checklist.route");
 const labelRoute = require("./label.route");
 const commentRoute = require("./comment.route");
 const blogRoute = require("./blog.route");
+const premiumRequestRoute = require("./premiumRequest.route");
 
 const defaultRoutes = [
   {
@@ -51,6 +52,10 @@ const defaultRoutes = [
   {
     path: "/blog",
     route: blogRoute
+  },
+  {
+    path: "/premium-request",
+    route: premiumRequestRoute
   }
 ];
 

@@ -38,7 +38,6 @@ const updateWorkspace = catchAsync(async (req, res) => {
   const workspace = await workspaceService.updateWorkspaceById(
     req.params.workspaceId,
     req.query.body,
-    req.session.user.id
   );
   res.status(httpStatus.OK).send(workspace);
 });

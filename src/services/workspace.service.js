@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const { Workspace, Board, Card } = require("../models/index");
 const ApiError = require("../utils/ApiError");
-const { userService } = require(".");
+const { userService, workspaceService } = require(".");
 
 /**
  * creates a workspace
@@ -33,30 +33,15 @@ const getWorkspaceById = async (workspaceId) => {
  * update a workspace by id
  * @param {ObjectId} id
  * @param {Object} workspaceUpdateBody
- * @param {Object} adminId
  * @returns {Promise<Workspace>}
  */
 const updateWorkspaceById = async (
   workspaceId,
   workspaceUpdateBody,
-  adminId
 ) => {
-  if (!adminId) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
-  }
   const workspace = await getWorkspaceById(workspaceId);
   if (!workspace) {
     throw new ApiError(httpStatus.NOT_FOUND, "workspace not found");
-  }
-  const isAdmin = await checkIfUserIsAdmin(workspaceId, adminId);
-  if (
-    !isAdmin &&
-    workspace.canMemberAddBoards == false
-  ) {
-    throw new ApiError(
-      httpStatus.FORBIDDEN,
-      "You are not allowed to edit the workspace"
-    );
   }
   workspace.updatedAt = new Date();
   Object.assign(workspace, workspaceUpdateBody);
@@ -115,6 +100,9 @@ const addMemberToWorkspace = async (workspaceId, emailOfUserToAdd, adminId) => {
       httpStatus.UNAUTHORIZED,
       "You are not authroized to add a member to the workspace"
     );
+  }
+  if (!workspace.isPremium && workspace.members.length >= 5) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "You have reached the limit for free plan");
   }
   const user = await userService.getUserByEmail(emailOfUserToAdd);
   // const userById = await userService.getUserById(user._id)
@@ -213,6 +201,7 @@ const removeUserFromWorkspace = async (
 
 /**
  * gets all the members regardless of their role
+ * @async
  * @param {ObjectId} workspaceId
  * @param {ObjectId} userId
  * @returns {Array}

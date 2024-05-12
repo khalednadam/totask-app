@@ -8,3 +8,4 @@ module.exports.checklistController = require("./checklist.controller");
 module.exports.labelController = require("./label.controller");
 module.exports.commentController = require("./comment.controller");
 module.exports.blogController = require("./blog.controller");
+module.exports.premiumRequestController = require("./premiumRequest.controller");

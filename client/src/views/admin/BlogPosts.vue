@@ -1,5 +1,4 @@
 <script setup>
-import axios from 'axios';
 import { ref, watchEffect } from 'vue';
 import BlogCard from '../../components/Landing/BlogCard.vue';
 import { useRoute, useRouter } from 'vue-router';

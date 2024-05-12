@@ -30,7 +30,7 @@ const getUsers = async () => {
   }
 }
 onMounted(async () => {
-  await getUsers();
+  // await getUsers();
 })
 </script>
 <template>
@@ -40,10 +40,6 @@ onMounted(async () => {
     </h1>
     <div>
       <UsersStats />
-      <!-- {{ users.results }} -->
     </div>
-
-    <!-- <v-pagination v-model="page" color="primary" @update:model-value="router.replace({ query: { page: page } })" -->
-    <!--   :length="users.totalPages" rounded="large"></v-pagination> -->
   </div>
 </template>

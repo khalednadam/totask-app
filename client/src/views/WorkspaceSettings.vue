@@ -2,7 +2,6 @@
 // IMPORTS
 import { ref, watchEffect, inject, computed, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
 import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "../stores/auth";
 import AddMembersDialog from "../components/Modals/AddMemberToWorkspaceModal.vue";
@@ -47,11 +46,40 @@ const isWorkspaceAdmin = ref(false);
 const canMemberAddBoards = ref(workspace.canMemberAddBoards);
 const memberToRemove = ref(null);
 const removeMemberDialog = ref(false);
+const isPremium = ref(workspace.isPremium)
 
 // computed
 const { isUserAdmin } = isUserWorkspaceAdmin(route.params.workspaceId);
 
+const loading = ref(false);
+const premiumDialog = ref(false);
 // FUNCTIONS
+
+
+const premiumFeats = [
+  "Unlimited boards",
+  "Unlimited members",
+  "List colors",
+  "And more coming soon.."
+];
+
+const requestPremium = async () => {
+  loading.value = true;
+  try {
+    await axiosInstance.post("/premium-request/create", {
+      workspace: workspaceId.value,
+      user: store.user.id
+    })
+    workspace.premiumRequested = true;
+  } catch (err) {
+    // (err);
+    console.log(err);
+  } finally {
+    loading.value = false;
+    premiumDialog.value = false;
+  }
+}
+
 const getWorkspace = (workspaceId) => {
   axiosInstance
     .get(`/w/${workspaceId}`, { withCredentials: true })
@@ -79,8 +107,9 @@ const deleteWorkspace = () => {
       });
   }
 };
+
 const updateWorkspace = async () => {
-  console.log(workspace.value);
+  console.log(isPremium.value)
   axiosInstance
     .put(`/w/${workspace.value._id.toString()}`, null, {
       withCredentials: true,
@@ -89,6 +118,7 @@ const updateWorkspace = async () => {
           name: workspaceName.value,
           type: workspaceType.value,
           description: workspaceDescription.value,
+          isPremium: isPremium.value
         },
       },
     })
@@ -100,6 +130,7 @@ const updateWorkspace = async () => {
       console.log(err);
     });
 };
+
 const toggleAbilityToAddBoards = (newCanMemberAddBoards) => {
   axiosInstance
     .put(
@@ -179,9 +210,15 @@ watch(isUserAdmin, () => {
       <v-col cols="6" md="6">
         <div class="flex items-center py-5 space-x-2">
           <v-avatar color="primary" rounded="lg" size="large" class="w-full">
-            {{ workspace.name[0].toUpperCase() }}
+            <Icon icon="ph:building-office" width="30" />
           </v-avatar>
-          <h2>{{ workspace.name }}</h2>
+          <div>
+            <h2>{{ workspace.name }}</h2>
+            <p class="text-sm" v-if="workspace.isPremium">
+              premium
+            </p>
+          </div>
+          <!-- <Icon v-if="workspace.isPremium" icon="ph:crown-simple-fill" color="gold" width="20" /> -->
           <v-tooltip text="More info" :open-delay="1000">
             <template v-slot:activator="{ props }">
               <v-btn variant="text" v-bind="props" icon size="x-small"
@@ -251,12 +288,6 @@ watch(isUserAdmin, () => {
             <v-list-item v-for="admin in admins" :key="admin.id" :title="admin.name" :subtitle="'@' + admin.username">
               <template #prepend>
                 <UserAvatar :user="admin" />
-                <!-- <v-avatar color="primary" v-if="admin.profilePhotoUrl.length === 0"> -->
-                <!--   {{ admin.name[0].toUpperCase() }} -->
-                <!-- </v-avatar> -->
-                <!-- <v-avatar color="primary" v-else> -->
-                <!--   <v-img :src="admin.profilePhotoUrl"> </v-img> -->
-                <!-- </v-avatar> -->
               </template>
             </v-list-item>
           </v-list>
@@ -272,9 +303,16 @@ watch(isUserAdmin, () => {
             </UserProfile>
           </v-list>
         </div>
-        <v-btn variant="text" color="error" @click="deleteWorkspaceDialog = !deleteWorkspaceDialog">
-          Delete this workspace
-        </v-btn>
+        <div class="flex flex-col w-max">
+          <v-btn variant="flat" class="mt-5" color="primary" :loading="loading"
+            :disabled="loading || workspace.premiumRequested" @click="() => premiumDialog = true">
+            <Icon icon="ph:crown-simple-fill" width="20" />
+            Get premium
+          </v-btn>
+          <v-btn variant="text" class="mt-5" color="error" @click="deleteWorkspaceDialog = !deleteWorkspaceDialog">
+            Delete this workspace
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
     <v-dialog v-model="addMembersDialog">
@@ -329,6 +367,14 @@ watch(isUserAdmin, () => {
               <v-select density="compact" label="Workspace type" :items="workspaceTypes"
                 v-model="workspaceType"></v-select>
               <v-textarea label="workspace description" v-model="workspaceDescription" density="compact"></v-textarea>
+              <div v-if="workspace.isPremium" class="flex mx-2 mb-5 justify-between items-center">
+                <p>
+                  Premium workspace
+                </p>
+                <v-btn color="error" variant="flat" @click="() => isPremium = !isPremium">
+                  {{ workspace.isPremium && !isPremium ? 'Remove premium' : 'Cancel' }}
+                </v-btn>
+              </div>
               <div class="flex justify-end gap-5">
                 <v-btn @click="editWorkspaceDialog = false" variant="outlined" color="primary">cancel</v-btn>
                 <v-btn variant="flat" color="primary" @click="() => updateWorkspace()">save</v-btn>
@@ -336,6 +382,36 @@ watch(isUserAdmin, () => {
             </v-card-text>
           </v-col>
         </v-row>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="premiumDialog" class="md:max-w-[30vw] w-full">
+      <v-card>
+        <v-btn variant="text" class="!absolute right-1 top-1 z-50" icon size="35" @click="() => premiumDialog = false">
+          <Icon icon="ph:x"></Icon>
+        </v-btn>
+        <v-img class="align-end text-white" height="120" src="/premiumbg.png" cover>
+        </v-img>
+        <v-card-title class="text-center">
+          Get totask premium
+          <p class="text-sm opacity-75 font-bold">
+            Get the most out of totask!
+          </p>
+        </v-card-title>
+        <v-card-text>
+          <ul class="list-disc flex flex-col items-start mx-auto w-max justify-end">
+            <li v-for="feat in premiumFeats">
+              {{ feat }}
+            </li>
+          </ul>
+          <v-btn @click="requestPremium" :loading="loading" :disabled="loading || workspace.premiumRequested"
+            color="primary" class="w-full mt-5" flat>
+            Request totask premium
+          </v-btn>
+          <v-btn color="primary" class="w-full" variant="text" flat @click="() => premiumDialog = false">
+            Cancel
+          </v-btn>
+        </v-card-text>
       </v-card>
     </v-dialog>
     <v-dialog v-model="removeMemberDialog" width="500">

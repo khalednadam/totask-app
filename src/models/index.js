@@ -8,3 +8,4 @@ module.exports.Checklist = require("./checklist.model");
 module.exports.Label = require("./label.model");
 module.exports.Comment = require("./comment.model");
 module.exports.Blog = require("./blog.model");
+module.exports.PremiumRequest = require("./premiumRequest.model");

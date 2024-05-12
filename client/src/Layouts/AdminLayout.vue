@@ -54,6 +54,14 @@ onMounted(() => {
             </template>
           </v-list-item>
         </router-link>
+        <router-link to="/admin/premiumRequests">
+          <v-list-item :active="router.currentRoute.value.fullPath === '/admin/premiumRequests'" color="primary"
+            title="Premium Requests">
+            <template #prepend>
+              <Icon icon="ph:envelope" width="20"> </Icon>
+            </template>
+          </v-list-item>
+        </router-link>
         <router-link to="/admin/settings">
           <v-list-item color="primary" title="Settings"
             :active="router.currentRoute.value.fullPath === '/admin/settings'">

@@ -5,7 +5,6 @@ import { storeToRefs } from "pinia";
 import { useCardSearchStore } from "../stores/cardSearch.js";
 import debounce from 'lodash.debounce'
 import { useBoardSearch } from "../stores/boardSearch.js";
-import { useRoute } from "vue-router";
 import axiosInstance from "./axios.js";
 
 // env

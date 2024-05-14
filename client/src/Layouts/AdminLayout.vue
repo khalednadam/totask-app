@@ -62,6 +62,21 @@ onMounted(() => {
             </template>
           </v-list-item>
         </router-link>
+        <router-link to="/admin/workspaces">
+          <v-list-item :active="router.currentRoute.value.fullPath === '/admin/workspaces'" color="primary"
+            title="Workspaces">
+            <template #prepend>
+              <Icon icon="ph:building-office" width="20"> </Icon>
+            </template>
+          </v-list-item>
+        </router-link>
+        <router-link to="/admin/users">
+          <v-list-item :active="router.currentRoute.value.fullPath === '/admin/users'" color="primary" title="Users">
+            <template #prepend>
+              <Icon icon="ph:user" width="20"> </Icon>
+            </template>
+          </v-list-item>
+        </router-link>
         <router-link to="/admin/settings">
           <v-list-item color="primary" title="Settings"
             :active="router.currentRoute.value.fullPath === '/admin/settings'">

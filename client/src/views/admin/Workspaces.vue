@@ -5,6 +5,7 @@ import axiosInstance from '../../composables/axios';
 import { useRoute } from 'vue-router';
 import UserCard from '../../components/Admin/UserCard.vue';
 import { Icon } from '@iconify/vue';
+import WorkspaceCard from '../../components/Admin/WorkspaceCard.vue';
 
 const route = useRoute();
 
@@ -61,11 +62,7 @@ watch(search, debounce(async () => {
     <div>
       <v-row>
         <v-col cols="4" v-for="workspace in workspaces.results" :key="workspace._id">
-          <v-card>
-            <v-card-title>
-              {{ workspace.name }}
-            </v-card-title>
-          </v-card>
+          <WorkspaceCard :workspace="workspace" />
         </v-col>
       </v-row>
     </div>

@@ -31,13 +31,13 @@ const updateWorkspace = catchAsync(async (req, res) => {
   if (!req.session.user) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Please login");
   }
-  const isAdmin = await workspaceService.checkIfUserIsAdmin(req.params.workspaceId, req.session.user.id);
+  const isAdmin = await workspaceService.checkIfUserIsAdmin(req.params.workspaceId, req.session.user.id) || req.session.user.role === 'admin';
   if (!isAdmin) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "You need to be admin to be able to update this worksapce");
   }
   const workspace = await workspaceService.updateWorkspaceById(
     req.params.workspaceId,
-    req.query.body,
+    req.body,
   );
   res.status(httpStatus.OK).send(workspace);
 });

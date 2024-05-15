@@ -19,6 +19,7 @@ const register = catchAsync(async (req, res) => {
   const workspace = await workspaceService.createWorkspace(
     {
       name: `${user.name}'s workspace`,
+      createdBy: user.id
     },
     user.id
   );

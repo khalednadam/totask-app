@@ -31,7 +31,7 @@ const addNewBoardDialog = ref(false);
         </v-btn>
       </template>
     </v-tooltip>
-    <v-dialog v-model="addNewBoardDialog">
+    <v-dialog scrollable v-model="addNewBoardDialog">
       <AddBoardModal :members="members" :workspace="workspace" :boards="boards"
         @toggle-modal="() => (addNewBoardDialog = false)" @add-board="(newBoard) => boards.unshift(newBoard)" />
     </v-dialog>

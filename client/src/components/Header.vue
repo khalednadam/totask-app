@@ -93,7 +93,7 @@ const { searchWord } = storeToRefs(boardSearch);
     </v-row>
 
   </v-app-bar>
-  <v-dialog v-model="addNewBoardDialog">
+  <v-dialog scrollable v-model="addNewBoardDialog">
     <AddBoardModal :members="undefined" :workspace="undefined" @toggle-modal="() => (addNewBoardDialog = false)" />
   </v-dialog>
 </template>

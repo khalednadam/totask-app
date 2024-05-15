@@ -93,7 +93,7 @@ const addBoard = () => {
   <v-card class="self-center h-full md:w-2/3 overflow-y-auto" rounded="lg">
     <div class="absolute right-3 top-3">
       <v-btn @click="() => $emit('toggleModal')" size="x-small" icon variant="text">
-        <Icon icon="ph:x" width="25" class="text-white" />
+        <Icon icon="ph:x" width="25" />
       </v-btn>
     </div>
     <v-row>
@@ -166,7 +166,7 @@ const addBoard = () => {
             class="w-full">Create</v-btn>
         </v-card-text>
       </v-col>
-      <v-col v-if="lgAndUp" cols="12" md="6" class="bg-darkPrimary">
+      <v-col v-if="lgAndUp" cols="12" md="6" class="">
         <v-row class="justify-center items-center h-full my-auto mx-auto w-full">
           <v-col cols="1"></v-col>
           <v-col cols="10" class="h-[50%] rounded-lg max-h-[220px]" :style="boardBackgroundColor !== 'default'
@@ -177,7 +177,7 @@ const addBoard = () => {
               <v-col class="h-full my-auto rounded-lg" :style="{ backgroundColor: 'rgb(var(--v-theme-list))' }">
                 <v-row>
                   <v-col cols="12" class="my-auto mx-auto space-y-3">
-                    <v-card color="card" v-for="i in 3" class="min-h-[40px]">
+                    <v-card v-for="i in 3" class="min-h-[40px]">
                       <v-card-text>
                         <v-row>
                           <v-col cols="12" class="space-y-2">
@@ -193,7 +193,7 @@ const addBoard = () => {
               <v-col class="h-full my-auto rounded-lg" :style="{ backgroundColor: 'rgb(var(--v-theme-list))' }">
                 <v-row>
                   <v-col cols="12" class="my-auto mx-auto space-y-3">
-                    <v-card color="card" v-for="i in 1" class="min-h-[40px]">
+                    <v-card v-for="i in 1" class="min-h-[40px]">
                       <v-card-text>
                         <v-row>
                           <v-col cols="12" class="space-y-2">
@@ -209,7 +209,7 @@ const addBoard = () => {
               <v-col class="h-full my-auto rounded-lg" :style="{ backgroundColor: 'rgb(var(--v-theme-list))' }">
                 <v-row>
                   <v-col cols="12" class="my-auto mx-auto space-y-3">
-                    <v-card color="card" v-for="i in 2" class="min-h-[40px]">
+                    <v-card v-for="i in 2" class="min-h-[40px]">
                       <v-card-text>
                         <v-row>
                           <v-col cols="12" class="space-y-2">

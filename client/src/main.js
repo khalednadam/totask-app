@@ -1,6 +1,7 @@
 import "./assets/main.css";
 
 import { createApp } from "vue";
+import { createDeviceDetector } from "next-vue-device-detector";
 
 import App from "./App.vue";
 import router from "./router";
@@ -19,6 +20,7 @@ import { GlobalEvents } from 'vue-global-events'
 
 
 const app = createApp(App);
+export const device = createDeviceDetector()
 
 // Toast options
 const options = {
@@ -42,5 +44,6 @@ app.provide("WORKSPACETYPES", ["Software Development", "Marketing", "Sales"]);
 app.use(pinia);
 app.use(router);
 app.use(vuetify);
+app.use(device);
 app.use(Toast, options);
 app.mount("#app");

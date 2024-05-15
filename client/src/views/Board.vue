@@ -28,6 +28,10 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import VueDatePicker from "@vuepic/vue-datepicker";
 import { useCardSearchStore } from "../stores/cardSearch";
 import axiosInstance from "../composables/axios";
+import { createDeviceDetector } from "next-vue-device-detector";
+
+const d = createDeviceDetector()
+const isMobile = ref(d.mobile);
 
 const DangerDeleteModal = defineAsyncComponent(
   () => import("../components/Modals/DangerDeleteModal.vue")
@@ -395,7 +399,9 @@ const handleDrawerShortcut = (e) => {
             </v-col>
           </v-row>
         </v-app-bar>
-
+        <v-alert v-if="isMobile" closable class="mx-1 !z-50 !absolute bottom-0 my-5 " color="background"
+          text="For optimal performance and full functionality, we recommend accessing totask on a desktop or laptop computer."
+          type="warning"></v-alert>
         <div class="flex h-[80vh] mb-4">
           <Suspense v-if="board">
             <DraggableLists :is-workspace-premium="board.workspace.isPremium" />

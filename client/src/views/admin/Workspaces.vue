@@ -3,7 +3,6 @@ import debounce from 'lodash.debounce'
 import { ref, onMounted, watch } from 'vue';
 import axiosInstance from '../../composables/axios';
 import { useRoute } from 'vue-router';
-import UserCard from '../../components/Admin/UserCard.vue';
 import { Icon } from '@iconify/vue';
 import WorkspaceCard from '../../components/Admin/WorkspaceCard.vue';
 
@@ -15,13 +14,12 @@ const workspaces = ref({});
 const page = ref(route.query.page || 1);
 const getWorkspaces = async () => {
   isLoading.value = true;
-  console.log(search.value || "hello");
   try {
     const response = await axiosInstance.get(`/w/`, {
       params: {
         limit: 12,
         page: page.value,
-        username: search.value
+        name: search.value
       },
       withCredentials: true
     });

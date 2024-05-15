@@ -11,9 +11,10 @@ import WorkspaceListItem from "../components/WorkspaceListItem.vue";
 import Header from "../components/Header.vue";
 import LogoutBtn from "../components/LogoutBtn.vue";
 import { getWorkspaces } from "../composables/utils";
+import { createDeviceDetector } from "next-vue-device-detector";
 
-// env
-
+const d = createDeviceDetector()
+const isMobile = ref(d.mobile);
 // INITS
 const { mdAndUp } = useDisplay();
 const router = useRouter();
@@ -122,6 +123,9 @@ watch(addMembersDialog, () => {
     <Header @toggle-drawer="() => (drawer = !drawer)" :drawer="drawer" />
     <v-main v-if="authStore.user">
       <!-- <v-container> -->
+      <v-alert v-if="isMobile" class="mx-1 my-5" color="background"
+        text="For optimal performance and full functionality, we recommend accessing totask on a desktop or laptop computer."
+        type="warning"></v-alert>
       <div class="mx-10">
         <slot></slot>
       </div>

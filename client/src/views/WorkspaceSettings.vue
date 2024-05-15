@@ -111,16 +111,12 @@ const deleteWorkspace = () => {
 const updateWorkspace = async () => {
   console.log(isPremium.value)
   axiosInstance
-    .put(`/w/${workspace.value._id.toString()}`, null, {
-      withCredentials: true,
-      params: {
-        body: {
-          name: workspaceName.value,
-          type: workspaceType.value,
-          description: workspaceDescription.value,
-          isPremium: isPremium.value
-        },
-      },
+    .put(`/w/${workspace.value._id.toString()}`, {
+
+      name: workspaceName.value,
+      type: workspaceType.value,
+      description: workspaceDescription.value,
+      isPremium: isPremium.value
     })
     .then(async (res) => {
       editWorkspaceDialog.value = false;

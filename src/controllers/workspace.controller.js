@@ -53,8 +53,10 @@ const getWorkspacesForUserId = catchAsync(async (req, res) => {
 });
 
 const getAllWorkspaces = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ["members"]);
-  // console.log(filter);
+  const filter = pick(req.query, ["members", "name"]);
+  if (req.query.name && req.query.name.trim().length > 1) {
+    filter.name = { $regex: req.query.name, $options: 'i' };
+  }
   const options = pick(req.query, ["sortBy", "limit", "page"]);
   const result = await workspaceService.queryWorkspaces(filter, options);
   res.send(result);

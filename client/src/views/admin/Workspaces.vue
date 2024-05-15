@@ -19,7 +19,8 @@ const getWorkspaces = async () => {
       params: {
         limit: 12,
         page: page.value,
-        name: search.value
+        name: search.value,
+        sortBy: "createdAt:desc"
       },
       withCredentials: true
     });

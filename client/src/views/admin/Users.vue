@@ -20,7 +20,8 @@ const getUsers = async () => {
       params: {
         limit: 12,
         page: page.value,
-        username: search.value
+        username: search.value,
+        sortBy: "createdAt:desc"
       },
       withCredentials: true
     });

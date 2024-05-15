@@ -24,7 +24,7 @@ const getUsers = catchAsync(async (req, res) => {
   if (req.query.username && req.query.username.trim().length > 1) {
     filter.username = { $regex: req.query.username, $options: 'i' };
   }
-  const options = pick(req.query, ["sort", "limit", "page"]);
+  const options = pick(req.query, ["sortBy", "limit", "page"]);
   if (req.session.user.role !== 'admin') {
     throw new ApiError(httpStatus.UNAUTHORIZED, "You need to be admin to access");
   }

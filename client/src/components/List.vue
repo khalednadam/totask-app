@@ -250,7 +250,7 @@ watch(cards, () => {
 </script>
 <template>
   <v-card variant="elevated" rounded="lg" :color="list.color || 'list'"
-    class="w-[272px] max-h-full flex h-max overflow-y-hidden mt-3 " :id="list.id.toString()">
+    class="w-[272px] flex-1 flex h-max overflow-y-hidden " :id="list.id.toString()">
     <v-tooltip :text="list.name">
       <template v-slot:activator="{ props }">
         <v-card-title v-bind="props" class="flex sticky z-20 flex-row items-center justify-between header">
@@ -315,7 +315,6 @@ watch(cards, () => {
       </template>
     </v-tooltip>
 
-    <!-- <v-card-text class="overflow-y-auto h-[100%] max-h-[100%]"> -->
     <!-- VueDraggablePlus -->
     <div class="overflow-hidden flex-col flex max-h-[70vh]">
       <div class="overflow-y-auto px-2 flex-1 max-h-full">
@@ -339,34 +338,34 @@ watch(cards, () => {
         </VueDraggable>
       </div>
       <!-- </v-infinite-scroll> -->
-    </div>
-    <!-- </v-card-text> -->
-
-    <div class="px-2 block z-50 mb-2" v-click-outside="() => (addCardInput = false)">
-      <v-btn v-if="!addCardInput" class="w-full my-1 flex justify-start p-1" height="40" variant="text"
-        @click="() => (addCardInput = true)">
-        <div class="px-2">
-          <Icon icon="ph:plus" width="20" />
-        </div>
-        <div>
-          <p class="text-start text-md">Add a card</p>
-        </div>
-      </v-btn>
-      <div v-else class="flex flex-col gap-2 px-1 pt-2 pb-2" @keypress.enter="addCard()"
-        @keydown.esc="addCardInput = false">
-        <v-text-field single-line autofocus v-model="newCardTitle" placeholder="Enter a title for this card" rows="2"
-          no-resize hide-details>
-        </v-text-field>
-        <div class="gap-2 flex">
-          <v-btn color="primary" :loading="isAddingCardLoading" :disabled="isAddingCardLoading" @click="() => addCard()">
-            Add
-          </v-btn>
-          <v-btn variant="text" icon size="35" @click="() => (addCardInput = false)">
-            <Icon icon="ph:x" width="25" />
-          </v-btn>
+      <div class="px-2  z-50 mb-2" v-click-outside="() => (addCardInput = false)">
+        <v-btn v-if="!addCardInput" class="w-full my-1 flex justify-start p-1" height="40" variant="text"
+          @click="() => (addCardInput = true)">
+          <div class="px-2">
+            <Icon icon="ph:plus" width="20" />
+          </div>
+          <div>
+            <p class="text-start text-md">Add a card</p>
+          </div>
+        </v-btn>
+        <div v-else class="flex flex-col gap-2 px-1 pt-2 pb-2" @keypress.enter="addCard()"
+          @keydown.esc="addCardInput = false">
+          <v-text-field single-line autofocus v-model="newCardTitle" placeholder="Enter a title for this card" rows="2"
+            no-resize hide-details>
+          </v-text-field>
+          <div class="gap-2 flex">
+            <v-btn color="primary" :loading="isAddingCardLoading" :disabled="isAddingCardLoading"
+              @click="() => addCard()">
+              Add
+            </v-btn>
+            <v-btn variant="text" icon size="35" @click="() => (addCardInput = false)">
+              <Icon icon="ph:x" width="25" />
+            </v-btn>
+          </div>
         </div>
       </div>
     </div>
+
     <v-dialog width="500" v-model="deleteListDialog">
       <DeleteModal title="Are you sure you want to delete this list?" text="All cards in this list will be deleted"
         action-btn-text="Delete" @cancel="() => (deleteListDialog = false)"

@@ -133,7 +133,7 @@ const copyCard = () => {
 
 <template>
   <div class="relative">
-    <v-card class="my-1 " @click="activateDetails" :ripple="false" :key="props.worksapceMembers">
+    <v-card class="my-1" @click="activateDetails" :ripple="false" :key="props.worksapceMembers">
       <v-img v-if="card.cover" :src="card.cover" class="" cover height="90"></v-img>
       <v-card-title>
         <div v-if="card.labels && card.labels.length >= 1" class="flex gap-2 items-center flex-wrap">
@@ -193,27 +193,29 @@ const copyCard = () => {
         </div>
       </v-card-text>
     </v-card>
-    <v-menu rounded="lg">
-      <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" icon size="35" class="!absolute right-2  top-2" @click="() => { }" variant="text">
-          <Icon icon="ph:dots-three-outline-fill" width="20" class="text-oppsite" />
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item @click="copyCard">
-          <template #prepend>
-            <Icon icon="ph:copy" width="20" />
-          </template>
-          Copy card
-        </v-list-item>
-        <v-list-item base-color="error" @click="deleteCardDialog = true">
-          <template #prepend>
-            <Icon icon="ph:trash" width="20" />
-          </template>
-          Delete card
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    <div class="bg-card">
+      <v-menu rounded="lg">
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" icon size="35" class="!absolute right-2  top-2" @click="() => { }" variant="text">
+            <Icon icon="ph:dots-three-outline-fill" width="20" />
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="copyCard">
+            <template #prepend>
+              <Icon icon="ph:copy" width="20" />
+            </template>
+            Copy card
+          </v-list-item>
+          <v-list-item base-color="error" @click="deleteCardDialog = true">
+            <template #prepend>
+              <Icon icon="ph:trash" width="20" />
+            </template>
+            Delete card
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
   </div>
   <v-dialog width="500" v-model="deleteCardDialog">
     <DeleteModal title="Are you sure you want to delete this card?" action-btn-text="Delete"

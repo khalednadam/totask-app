@@ -103,7 +103,8 @@ const queryBoards = async (filter, options) => {
  * @returns {Promise<Board>}
  */
 const updateBoardById = async (boardId, boardBody, userId) => {
-  const board = await getBoardById(boardId);
+  // const board = await getBoardById(boardId);
+  const board = await Board.findOne({ _id: boardId });
   if (!board) {
     throw new ApiError(httpStatus.NOT_FOUND, "Board not found");
   }
@@ -114,6 +115,10 @@ const updateBoardById = async (boardId, boardBody, userId) => {
       "You are not allowed to modify this board"
     );
   }
+  // if(board.isPrivate )
+  // await boardBody.populate('members').execPopulate();
+  const userIds = boardBody.members.map(user => user._id);
+  boardBody.members = userIds;
   board.updatedAt = new Date();
   Object.assign(board, boardBody);
   await board.save();

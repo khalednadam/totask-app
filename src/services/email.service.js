@@ -42,7 +42,7 @@ const sendResetPasswordEmail = async (to, token) => {
     <h1 style="color: #333;">Password Reset</h1>
     <p style="color: #666; line-height: 1.6;">Dear user,</p>
     <p style="color: #666; line-height: 1.6;">To reset your password, click this link:</p>
-    <p style="color: #666; line-height: 1.6;"><a href="${resetPasswordURL}" style="display: inline-block; padding: 10px 20px; background-color: #79AC78; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
+    <p style="color: #666; line-height: 1.6;"><a href="${resetPasswordURL}" style="display: inline-block; padding: 10px 20px; background-color: #6DB193; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
     <p style="color: #666; line-height: 1.6;">If you did not request any password reset, then ignore this email.</p>
   </div>
 </body>`;
@@ -65,7 +65,7 @@ const sendVerificationEmail = async (to, token) => {
     <h1 style="color: #333;">Email Verification</h1>
     <p style="color: #666; line-height: 1.6;">Dear user,</p>
     <p style="color: #666; line-height: 1.6;">To verify your email, click on this link:</p>
-    <p style="color: #666; line-height: 1.6;"><a href="${verificationEmailURL}" style="display: inline-block; padding: 10px 20px; background-color: #79AC78; color: #fff; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
+    <p style="color: #666; line-height: 1.6;"><a href="${verificationEmailURL}" style="display: inline-block; padding: 10px 20px; background-color: #6DB193; color: #fff; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
     <p style="color: #666; line-height: 1.6;">If you did not create an account, then ignore this email.</p>
   </div>
 `

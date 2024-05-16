@@ -2,9 +2,10 @@ const httpStatus = require("http-status");
 const pick = require("../utils/pick");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
-const { cardService, boardService, listService, checklistService } = require("../services");
+const { cardService, boardService, listService, checklistService, emailService } = require("../services");
 const config = require("../config/config");
 const { io } = require("../socket");
+const { Card } = require("../models");
 
 const createCard = catchAsync(async (req, res) => {
   if (!req.session.user) {
@@ -155,7 +156,25 @@ const updateCardIsComplete = catchAsync(async (req, res) => {
 })
 
 const updateCardAssignees = catchAsync(async (req, res) => {
+  const card = await Card.findById(req.params.cardId, 'assignees').populate('assignees');
   const updatedCard = await cardService.updateCardById(req.params.cardId, { assignees: req.body.assignees }, req.session.user.id);
+  const createMsg = (name) => {
+    const msg = `
+  <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h1 style="color: #333;">You have been added to a card</h1>
+<p style="color: #666; line-height: 1.6;">Hello ${name},</p>
+<p style="color: #666; line-height: 1.6;">You have been added to ${updatedCard.title}.</p>
+<p style="color: #666; line-height: 1.6;">You can view the card <a href="${config.baseURL}/b/${updatedCard.board._id.toString()}" style="color: #6DB193; text-decoration: none;">here</a>.</p>
+    <p style="color: #666; line-height: 1.6;">Thank you!</p>
+  </div>
+`
+    return msg;
+  }
+  const newAssignees = req.body.assignees.filter(assingee => !card.assignees.map(cardAssignee => cardAssignee.id).includes(assingee.id));
+  for (let assignee in newAssignees) {
+    console.log(newAssignees[assignee])
+    await emailService.sendEmail(newAssignees[assignee].email, 'You have been added to a card', createMsg(newAssignees[assignee].name));
+  }
   res.status(httpStatus.OK).send(updatedCard);
 })
 

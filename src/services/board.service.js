@@ -258,7 +258,8 @@ const checkIfUserIsMember = async (boardId, userId) => {
   // throw new ApiError(httpStatus.UNAUTHORIZED, "You are not a member of this board")
   // }
   const board = await Board.findById(boardId, 'members');
-  const isBoardMember = board.members.includes(userId);
+  const isBoardMember = board?.members.includes(userId);
+  console.log(isBoardMember);
   if (!isBoardMember) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "You are not a member of this board");
   }

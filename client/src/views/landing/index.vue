@@ -1,6 +1,10 @@
 <script setup>
 import { useDisplay } from 'vuetify';
+import Join from '../../components/Landing/Join.vue';
+import { ref } from 'vue';
+import FeatureTabs from '../../components/Landing/FeatureTabs.vue';
 const { mdAndUp } = useDisplay();
+const tab = ref(null)
 </script>
 <template>
   <div>
@@ -58,32 +62,38 @@ const { mdAndUp } = useDisplay();
         </v-col>
       </v-row>
     </div>
-    <div class="space-y-2 my-20 items-start gap-5 justify-between">
-      <v-row>
-        <v-col cols="12" md="6">
-          <div class="flex flex-col gap-5">
-            <h2 class="text-4xl">
-              Unleash Your Productivity
-            </h2>
-            <p class="">
-              Unleash productivity with totask. Seamlessly blend simplicity, flexibility, and
-              power
-              to turn chaos into clarity. Easily navigate boards, lists, and cards for clear insights into your team's
-              actions.
-              Dive into our guide for streamlined efficiency.
-            </p>
-          </div>
-        </v-col>
-        <v-col cols="12" md="6">
+    <div>
+      <FeatureTabs />
+    </div>
+    <!-- <div class="space-y-2 my-20 items-start gap-5 justify-between"> -->
+    <!--   <v-row> -->
+    <!--     <v-col cols="12" md="6"> -->
+    <!--       <div class="flex flex-col gap-5"> -->
+    <!--         <h2 class="text-4xl"> -->
+    <!--           Unleash Your Productivity -->
+    <!--         </h2> -->
+    <!--         <p class=""> -->
+    <!--           Unleash productivity with totask. Seamlessly blend simplicity, flexibility, and -->
+    <!--           power -->
+    <!--           to turn chaos into clarity. Easily navigate boards, lists, and cards for clear insights into your team's -->
+    <!--           actions. -->
+    <!--           Dive into our guide for streamlined efficiency. -->
+    <!--         </p> -->
+    <!--       </div> -->
+    <!--     </v-col> -->
+    <!--     <v-col cols="12" md="6"> -->
 
-          <div class="flex justify-center gap-2 items-start w-full">
-            <div class="bg-primary/50 p-2 rounded-lg w-full">
-              <v-img src="/in-app.webp" rounded="lg" max-height="375">
-              </v-img>
-            </div>
-          </div>
-        </v-col>
-      </v-row>
+    <!--       <div class="flex justify-center gap-2 items-start w-full"> -->
+    <!--         <div class="bg-primary/50 p-2 rounded-lg w-full"> -->
+    <!--           <v-img src="/in-app.webp" rounded="lg" max-height="375"> -->
+    <!--           </v-img> -->
+    <!--         </div> -->
+    <!--       </div> -->
+    <!--     </v-col> -->
+    <!--   </v-row> -->
+    <!-- </div> -->
+    <div class="my-20">
+      <Join />
     </div>
     <!-- <div class="my-4 w-full relative bg-primary"> -->
     <!--   <div class="my-2"> -->

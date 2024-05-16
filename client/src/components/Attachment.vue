@@ -11,7 +11,6 @@ const props = defineProps({
 
 const emit = defineEmits(["updateCard"])
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 const encodedURL = props.src.replace("https://", "http://").replace(/[ +#]/g, (match) => {
   return '%' + match.charCodeAt(0).toString(16).toUpperCase();
@@ -34,7 +33,26 @@ const deleteAttachment = () => {
     console.log(err);
   })
 }
-
+const downloadFile = async (uri) => {
+  try {
+    const fileUri = uri; // Replace 'YOUR_FILE_URI' with the actual URI of the file in your Google Cloud Storage bucket
+    const response = await axiosInstance(fileUri, {
+      // headers: {
+      //   'Access-Control-Allow-Credentials': true
+      // }
+    });
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = 'filename'; // Optionally set the downloaded file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error downloading file:', error);
+  }
+}
 </script>
 <template>
   <v-row>
@@ -58,14 +76,14 @@ const deleteAttachment = () => {
       </p>
       <div class="flex gap-1 justify-start items-center">
         <p class="text-xs cursor-pointer underline">
-          <a :href="`${encodedURL}`" rel="external" target="_blank">
-            View
-          </a>
+          <!-- <a :href="`${encodedURL}`" rel="external" target="_blank"> -->
+          <!--   View -->
+          <!-- </a> -->
         </p>
         <p class="text-xs underline cursor-pointer">
-          <a :href="`${encodedURL}`" :download="filename">
-            Download
-          </a>
+        <div @click="() => downloadFile(encodedURL)" :download="filename">
+          Download
+        </div>
         </p>
         <p class="text-xs underline cursor-pointer" @click="deleteAttachment">
           Delete

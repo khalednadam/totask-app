@@ -2,7 +2,6 @@
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import UserAvatar from "./UserAvatar.vue";
-import axios from "axios";
 import { socket } from "../composables/socket";
 import axiosInstance from "../composables/axios";
 const assignees = defineModel();
@@ -19,7 +18,7 @@ const updateCardAssignees = () => {
     .put(
       `/card/assignees/${props.cardId}`,
       {
-        assignees: assignees.value.map((assignee) => assignee.id),
+        assignees: assignees.value,
       },
       {
         withCredentials: true,
@@ -38,16 +37,8 @@ const updateCardAssignees = () => {
 <template>
   <v-menu v-model="membersMenu" :close-on-content-click="false" location="end">
     <template v-slot:activator="{ props }">
-      <v-btn
-        v-if="mini"
-        icon
-        rounded="full"
-        color="onbackground"
-        :size="32"
-        v-bind="props"
-        class="w-full"
-        variant="tonal"
-      >
+      <v-btn v-if="mini" icon rounded="full" color="onbackground" :size="32" v-bind="props" class="w-full"
+        variant="tonal">
         <icon icon="ph:plus" />
       </v-btn>
       <v-btn v-else v-bind="props" class="w-full" variant="tonal">
@@ -59,16 +50,8 @@ const updateCardAssignees = () => {
     </template>
     <v-card>
       <v-card-text>
-        <v-autocomplete
-          v-model="assignees"
-          :items="members"
-          chips
-          closable-chips
-          item-title="name"
-          return-object
-          label="Assignees"
-          multiple
-        >
+        <v-autocomplete v-model="assignees" :items="members" chips closable-chips item-title="name" return-object
+          label="Assignees" multiple>
           <template v-slot:chip="{ props, item }">
             <v-chip v-bind="props" :text="item.raw.name">
               <template v-slot:prepend>
@@ -78,11 +61,7 @@ const updateCardAssignees = () => {
           </template>
 
           <template v-slot:item="{ props, item }">
-            <v-list-item
-              v-bind="props"
-              :title="item.raw.name"
-              :subtitle="item.raw.username"
-            >
+            <v-list-item v-bind="props" :title="item.raw.name" :subtitle="item.raw.username">
               <template v-slot:prepend>
                 <UserAvatar :user="item.raw" />
               </template>
@@ -90,22 +69,14 @@ const updateCardAssignees = () => {
           </template>
         </v-autocomplete>
         <div class="flex justify-end gap-2">
-          <v-btn
-            color="primary"
-            variant="outlined"
-            @click="membersMenu = false"
-          >
+          <v-btn color="primary" variant="outlined" @click="membersMenu = false">
             Cancel
           </v-btn>
-          <v-btn
-            color="primary"
-            @click="
-              () => {
-                updateCardAssignees();
-                membersMenu = false;
-              }
-            "
-          >
+          <v-btn color="primary" @click="() => {
+            updateCardAssignees();
+            membersMenu = false;
+          }
+            ">
             Save
           </v-btn>
         </div>

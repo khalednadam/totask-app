@@ -273,8 +273,8 @@ const handleDrawerShortcut = (e) => {
         </v-row>
       </div>
     </v-main>
-    <v-main v-if="status < 205" :style="{ backgroundColor: board?.backgroundColor }" class="h-screen overflow-x-auto">
-      <div v-if="board?.closed" class="w-full h-full gap-2 flex flex-col justify-center items-center">
+    <v-main v-if="status < 205" :style="{ backgroundColor: board?.backgroundColor }" class="h-screen relative">
+      <div v-if="board?.closed" class="w-full h-full relative gap-2 flex flex-col justify-center items-center">
         <h1>This Board is closed</h1>
         <div class="flex flex-col justify-center items-center gap-2">
           <v-btn variant="flat" color="primary" @click="() => reopenBoard(board?.workspace.id)">
@@ -399,40 +399,45 @@ const handleDrawerShortcut = (e) => {
             </v-col>
           </v-row>
         </v-app-bar>
-        <v-alert v-if="isMobile" closable class="mx-1 !z-50 !absolute bottom-0 my-5 " color="background"
-          text="For optimal performance and full functionality, we recommend accessing totask on a desktop or laptop computer."
-          type="warning"></v-alert>
-        <div class="flex h-[80vh] mb-4">
-          <Suspense v-if="board">
-            <DraggableLists :is-workspace-premium="board.workspace.isPremium" />
-          </Suspense>
-          <div class="min-w-[350px] mt-3">
-            <v-btn text="Add a new list" color="list" class="flex w-[272px] font-bold justify-start text-start rounded"
-              height="60" rounded="lg" v-if="!showAddList" @click="() => (showAddList = true)" variant="flat"
-              elevation="1">
-              <template v-slot:prepend>
-                <Icon icon="ph:plus" class=""></Icon>
-              </template>
-            </v-btn>
-            <v-card color="list" rounded="lg" class="w-[272px]" v-else v-click-outside="() => (showAddList = false)"
-              @keypress.enter="addList()" @keydown.esc="showAddList = false">
-              <div class="px-2 py-2">
-                <v-text-field autofocus placeholder="List name" hide-details v-model="newListName">
-                </v-text-field>
-                <div class="space-x-2 mt-3">
-                  <v-btn color="primary" class="" :disabled="newListName.length === 0 || isAddingListLoading"
-                    :loading="isAddingListLoading" @click="() => addList()">
-                    Add list
-                  </v-btn>
-                  <v-btn variant="text" class="" icon size="35" @click="() => (showAddList = false)">
-                    <Icon icon="ph:x"></Icon>
-                  </v-btn>
-                </div>
+        <v-container class="!max-w-full ">
+          <div class="absolute bottom-0 top-24">
+            <v-alert v-if="isMobile" colsable class="mx-1 z-50 ! my-5 !fixed" color="background"
+              text="For optimal performance and full functionality, we recommend accessing totask on a desktop or laptop computer."
+              type="warning"></v-alert>
+            <div class="flex overflow-x-auto overflow-y-hidden h-[100%] max-h-full ">
+              <Suspense v-if="board">
+                <DraggableLists :is-workspace-premium="board.workspace.isPremium" />
+              </Suspense>
+              <div class="min-w-[350px] ">
+                <v-btn text="Add a new list" color="list"
+                  class="flex w-[272px] font-bold justify-start text-start rounded" height="60" rounded="lg"
+                  v-if="!showAddList" @click="() => (showAddList = true)" variant="flat" elevation="1">
+                  <template v-slot:prepend>
+                    <Icon icon="ph:plus" class=""></Icon>
+                  </template>
+                </v-btn>
+                <v-card color="list" rounded="lg" class="w-[272px]" v-else v-click-outside="() => (showAddList = false)"
+                  @keypress.enter="addList()" @keydown.esc="showAddList = false">
+                  <div class="px-2 py-2">
+                    <v-text-field autofocus placeholder="List name" hide-details v-model="newListName">
+                    </v-text-field>
+                    <div class="space-x-2 mt-3">
+                      <v-btn color="primary" class="" :disabled="newListName.length === 0 || isAddingListLoading"
+                        :loading="isAddingListLoading" @click="() => addList()">
+                        Add list
+                      </v-btn>
+                      <v-btn variant="text" class="" icon size="35" @click="() => (showAddList = false)">
+                        <Icon icon="ph:x"></Icon>
+                      </v-btn>
+                    </div>
+                  </div>
+                </v-card>
               </div>
-            </v-card>
+            </div>
           </div>
-        </div>
+        </v-container>
       </div>
+
 
       <!-- Board Settings  -->
       <v-navigation-drawer v-if="boardCopy" location="right" temporary v-model="boardSettingsDialog" width="500">

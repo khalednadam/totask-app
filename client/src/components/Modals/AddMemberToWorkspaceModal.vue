@@ -26,7 +26,7 @@ const users = ref([]);
 const inviteNewUser = () => {
   axiosInstance
     .post(
-      `/w/addUserTo/${props.workspaceInfo.id}`,
+      `/w/addUserTo/${props.workspaceInfo._id}`,
       {
         userEmail: userToInvite.value,
       },

@@ -249,8 +249,8 @@ watch(cards, () => {
 });
 </script>
 <template>
-  <v-card variant="elevated" rounded="lg" :color="list.color || 'list'" class="w-[272px] mt-3 h-max max-h-max mb-5"
-    :id="list.id.toString()">
+  <v-card variant="elevated" rounded="lg" :color="list.color || 'list'"
+    class="w-[272px] max-h-full flex h-max overflow-y-hidden mt-3 " :id="list.id.toString()">
     <v-tooltip :text="list.name">
       <template v-slot:activator="{ props }">
         <v-card-title v-bind="props" class="flex sticky z-20 flex-row items-center justify-between header">
@@ -317,22 +317,27 @@ watch(cards, () => {
 
     <!-- <v-card-text class="overflow-y-auto h-[100%] max-h-[100%]"> -->
     <!-- VueDraggablePlus -->
-    <div class="overflow-y-auto px-2">
-      <div v-if="isLoading || isListLoading">
-        <template v-for="i in Math.floor(Math.random() * 3) + 1" :key="i">
-          <v-skeleton-loader class="my-3" type="card-avatar"></v-skeleton-loader>
-        </template>
+    <div class="overflow-hidden flex-col flex max-h-[70vh]">
+      <div class="overflow-y-auto px-2 flex-1 max-h-full">
+        <div v-if="isLoading || isListLoading">
+          <template v-for="i in Math.floor(Math.random() * 3) + 1" :key="i">
+            <v-skeleton-loader class="my-3" type="card-avatar"></v-skeleton-loader>
+          </template>
+        </div>
+        <!-- <v-infinite-scroll max-height="60vh" height="max" :items="cards" :onLoad="getCards"> -->
+        <!--   <template v-slot:empty> -->
+        <!--     <p> -->
+        <!--       s -->
+        <!--     </p> -->
+        <!--   </template> -->
+        <VueDraggable ref="el" group="cards" class="space-y-3 relative" v-model="cards" :animation="150" dragClass="drag"
+          ghostClass="ghost" @update="onUpdate" scroll :scrollSensitivity="300" bubbleScroll @add="onAdd"
+          v-if="!isLoading">
+          <template v-for="card in cards" :key="card.id">
+            <Card :listName="list.name" :card @delete-card="(cardId) => deleteCard(cardId)" />
+          </template>
+        </VueDraggable>
       </div>
-      <!-- <v-infinite-scroll max-height="60vh" height="max" :items="cards" :onLoad="getCards"> -->
-      <!-- <template v-slot:empty> -->
-      <!-- <p></p> -->
-      <!-- </template> -->
-      <VueDraggable ref="el" group="cards" class="space-y-3" v-model="cards" :animation="150" dragClass="drag"
-        ghostClass="ghost" @update="onUpdate" scroll :scrollSensitivity="300" bubbleScroll @add="onAdd" v-if="!isLoading">
-        <template v-for="card in cards" :key="card.id">
-          <Card :listName="list.name" :card @delete-card="(cardId) => deleteCard(cardId)" />
-        </template>
-      </VueDraggable>
       <!-- </v-infinite-scroll> -->
     </div>
     <!-- </v-card-text> -->

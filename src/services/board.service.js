@@ -259,7 +259,6 @@ const checkIfUserIsMember = async (boardId, userId) => {
   // }
   const board = await Board.findById(boardId, 'members');
   const isBoardMember = board?.members.includes(userId);
-  console.log(isBoardMember);
   if (!isBoardMember) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "You are not a member of this board");
   }
@@ -326,7 +325,6 @@ const getWorkspaceMembersByBoardId = async (boardId, userId) => {
   if (!isMember) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authroized to see the member of this board");
   }
-  console.log('workspace id: ', board.workspace._id);
   const workspaceMembers = await workspaceService.getWorkspaceMembers(board.workspace._id, userId);
   return workspaceMembers
 }

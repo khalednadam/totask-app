@@ -172,7 +172,6 @@ const updateCardAssignees = catchAsync(async (req, res) => {
   }
   const newAssignees = req.body.assignees.filter(assingee => !card.assignees.map(cardAssignee => cardAssignee.id).includes(assingee.id));
   for (let assignee in newAssignees) {
-    console.log(newAssignees[assignee])
     await emailService.sendEmail(newAssignees[assignee].email, 'You have been added to a card', createMsg(newAssignees[assignee].name));
   }
   res.status(httpStatus.OK).send(updatedCard);

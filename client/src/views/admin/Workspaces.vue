@@ -60,7 +60,7 @@ watch(search, debounce(async () => {
     </div>
     <div>
       <v-row>
-        <v-col cols="4" v-for="workspace in workspaces.results" :key="workspace._id">
+        <v-col cols="12" md="4" v-for="workspace in workspaces.results" :key="workspace._id">
           <WorkspaceCard :workspace="workspace" />
         </v-col>
       </v-row>

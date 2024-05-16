@@ -61,7 +61,7 @@ watch(search, debounce(async () => {
     </div>
     <div>
       <v-row>
-        <v-col cols="4" v-for="user in users.results" :key="user._id">
+        <v-col cols="12" md="4" v-for="user in users.results" :key="user._id">
           <UserCard :user="user" />
         </v-col>
       </v-row>

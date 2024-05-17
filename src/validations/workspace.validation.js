@@ -63,7 +63,7 @@ const getWorkspacesForUser = {
 const modifyUserRole = {
   body: Joi.object().keys({
     workspaceId: Joi.string().required().custom(objectId),
-    memberToPromote: Joi.string().required().custom(objectId),
+    member: Joi.string().required().custom(objectId),
   }),
   session: Joi.object().keys({
     user: Joi.object().keys({

@@ -155,42 +155,38 @@ const removeUserFromWorkspace = async (
   if (!workspace) {
     throw new ApiError(httpStatus.NOT_FOUND, "Workspace not found");
   }
-  const isAdmin = await checkIfUserIsAdmin(workspaceId, adminId);
-  if (!isAdmin) {
-    throw new ApiError(
-      httpStatus.UNAUTHORIZED,
-      "You are not authroized to add a member to the workspace"
-    );
-  }
   const user = await userService.getUserByEmail(emailOfUserToRemove);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "user is not fount");
+  }
+  if (workspace.createdBy.toString() == user.id) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "workspace creator cannot be removed from workspace");
+  }
+  const isAdmin = await checkIfUserIsAdmin(workspaceId, adminId) || user.id === adminId;
+  if (!isAdmin) {
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      "You are not authroized to remove a member from the workspace"
+    );
   }
   const userToRemoveId = user.id;
   const isMember = await checkIfUserIsMember(workspaceId, userToRemoveId)
   if (!isMember) {
     throw new ApiError(httpStatus.FORBIDDEN, "User is not in the workspace");
   }
-  function updateWorkspaceMembers() {
-    const newMembers = workspace.members.filter(
-      (member) => member.id != userToRemoveId
-    );
-    workspace.members = newMembers;
-    return workspace.members;
-  }
-  await updateWorkspaceById(
-    workspaceId,
-    { members: updateWorkspaceMembers() },
-    adminId
+  const newMembers = workspace.members.filter(
+    (member) => member.id != userToRemoveId
   );
+  const newAdmins = workspace.admins.filter((admin) => admin.id != userToRemoveId);
+  const updatedWorkspace = await Workspace.findByIdAndUpdate(workspaceId, { members: newMembers, admins: newAdmins })
   const boards = await Board.find({ workspace: workspaceId });
 
   for (const board of boards) {
-    newBoardMembers = board.members.filter(memberId => memberId != userToRemoveId.toString());
+    let newBoardMembers = board.members.filter(memberId => memberId != userToRemoveId.toString());
     await Board.findByIdAndUpdate(board._id, { members: newBoardMembers });
     const cards = await Card.find({ board: board.id });
     for (const card of cards) {
-      card.assignees = card.assignees.filter(memberId => memberId !== userToRemoveId.toString());
+      card.assignees = card.assignees.filter(memberId => memberId != userToRemoveId.toString());
       await card.save();
     }
   }
@@ -275,6 +271,7 @@ const promoteMemberToAdmin = async (
   memberToPromoteId,
   adminId
 ) => {
+  console.log(memberToPromoteId)
   const workspace = await getWorkspaceById(workspaceId);
   if (!workspace) {
     throw new ApiError(httpStatus.NOT_FOUND, "Workspace was not found");
@@ -289,7 +286,7 @@ const promoteMemberToAdmin = async (
       "You need to be an admin to promote member to admin"
     );
   }
-  const isUserMember = await checkIfUserIsMember(workspaceId, userId);
+  const isUserMember = await checkIfUserIsMember(workspaceId, adminId);
   if (!isUserMember) {
     throw new ApiError(
       httpStatus.UNAUTHORIZED,
@@ -328,7 +325,7 @@ const removeWorkspaceAdmin = async (
   adminToRemoveId,
   removerId
 ) => {
-  const workspace = await getWorkspaceById(workspaceId);
+  const workspace = await Workspace.findById(workspaceId);
   if (!workspace) {
     throw new ApiError(httpStatus.NOT_FOUND, "Workspace was not found");
   }
@@ -341,7 +338,7 @@ const removeWorkspaceAdmin = async (
       "Only workspace creator can remove admins"
     );
   }
-  const isAdmin = await checkIfUserIsAdmin(workspaceId, adminId);
+  const isAdmin = await checkIfUserIsAdmin(workspaceId, removerId);
   if (!isAdmin) {
     throw new ApiError(httpStatus.NOT_FOUND, "Admin was not found");
   }

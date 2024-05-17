@@ -3,7 +3,7 @@ const pick = require("../utils/pick");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { workspaceService, userService, emailService } = require("../services");
-const { Workspace } = require("../models");
+const { Workspace, User } = require("../models");
 const { baseURL } = require("../config/config");
 
 const createWorkspace = catchAsync(async (req, res) => {
@@ -112,7 +112,7 @@ const removeUserFromWorkspace = catchAsync(async (req, res) => {
     <p style="color: #666; line-height: 1.6;">Best regards,<br> Totask Team</p>
   </div>
   `
-  await emailService.sendEmail(req.body.userEmail, 'You have been added to a workspace', msg);
+  await emailService.sendEmail(req.body.userEmail, 'You have been removed from workspace', msg);
   res.status(httpStatus.OK).send(user);
 });
 
@@ -163,21 +163,37 @@ const getWorkspacesAsMember = catchAsync(async (req, res) => {
 });
 
 const promoteMemberToAdmin = catchAsync(async (req, res) => {
+  const user = await User.findById(req.body.member)
   const promote = await workspaceService.promoteMemberToAdmin(
     req.body.workspaceId,
-    req.body.memberToPromoteId,
+    req.body.member,
     req.session.user.id
   );
-  res.status(httpStatus.OK).send(promote);
+  const msg = `
+  <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h1 style="color: #333;">You are now admin in ${promote.name}</h1>
+    <p style="color: #666; line-height: 1.6;">Hello ${user.name},</p>
+    <p style="color: #666; line-height: 1.6;">you are now an admin in "<strong>${promote.name}</strong>".</p>
+    <p style="text-align: center;">
+      <a href="${baseURL}/w/${req.body.workspaceId}" style="display: inline-block; padding: 10px 20px; background-color: #6DB193; color: #fff; text-decoration: none; border-radius: 5px;">Go to Workspace</a>
+    </p>
+    <p style="color: #666; line-height: 1.6;">If you have any questions or need assistance, feel free to reach out to us.</p>
+    <p style="color: #666; line-height: 1.6;">Best regards,<br> Totask Team</p>
+  </div>
+  `
+  await emailService.sendEmail(user.email, 'You now admin', msg);
+  console.log(user);
+  res.status(httpStatus.OK).send(user);
 });
 
 const removeWrokspaceAdmin = catchAsync(async (req, res) => {
+  const user = await User.findById(req.body.member);
   const newWorkspace = await workspaceService.removeWorkspaceAdmin(
     req.body.workspaceId,
-    req.body.adminToRemoveId,
+    req.body.member,
     req.session.user.id
   );
-  res.status(httpStatus.OK).send(newWorkspace);
+  res.status(httpStatus.OK).send(user);
 });
 
 const deleteWorkspace = catchAsync(async (req, res) => {

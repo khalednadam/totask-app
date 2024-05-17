@@ -23,8 +23,10 @@ const toast = useToast();
 const userToAdd = ref();
 const userToInvite = ref("");
 const users = ref([]);
+const loading = ref(false);
 // FUNCTIONS
 const inviteNewUser = () => {
+  loading.value = true;
   axiosInstance
     .post(
       `/w/addUserTo/${props.workspaceInfo._id}`,
@@ -43,7 +45,9 @@ const inviteNewUser = () => {
     })
     .catch((err) => {
       console.log(err);
-    });
+    }).finally(() => {
+      loading.value = false;
+    })
 };
 const searchForUsers = async () => {
   try {
@@ -105,7 +109,8 @@ watch(userToInvite, debounce(() => {
               <v-btn color="primary" class="w-full" variant="outlined" @click="$emit('toggleModal')">Cancel</v-btn>
             </v-col>
             <v-col cols="12" md="6">
-              <v-btn @click="inviteNewUser" color="primary" class="w-full">Send</v-btn>
+              <v-btn :loading="loading" :disabled="loading" @click="inviteNewUser" color="primary"
+                class="w-full">Add</v-btn>
             </v-col>
           </v-row>
         </v-card-text>

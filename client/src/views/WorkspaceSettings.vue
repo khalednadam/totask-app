@@ -15,7 +15,6 @@ import {
 import { useToast } from "vue-toastification";
 import DeleteModal from "../components/Modals/DeleteModal.vue";
 import UserProfile from "../components/UserProfile.vue";
-import UserAvatar from "../components/UserAvatar.vue";
 import axiosInstance from "../composables/axios";
 
 
@@ -47,6 +46,8 @@ const canMemberAddBoards = ref(workspace.canMemberAddBoards);
 const memberToRemove = ref(null);
 const removeMemberDialog = ref(false);
 const isPremium = ref(workspace.isPremium)
+const removeMemberLoading = ref(false);
+const promoteToAdminLoading = ref(false);
 
 // computed
 const { isUserAdmin } = isUserWorkspaceAdmin(route.params.workspaceId);
@@ -151,6 +152,7 @@ const activateRemvoeMemberDialog = (member) => {
 }
 
 const removeMemberFromWorksapce = () => {
+  removeMemberLoading.value = true;
   axiosInstance.put(`/w/removeUserFrom/${workspaceId.value}`, {
     userEmail: memberToRemove.value.email
   }, {
@@ -162,9 +164,44 @@ const removeMemberFromWorksapce = () => {
   }).catch((err) => {
     console.log(err)
     toast.error(err.statusText);
+  }).finally(() => {
+    removeMemberLoading.value = false;
   })
 }
 
+const promoteToAdmin = async (memberId) => {
+  promoteToAdminLoading.value = true;
+  try {
+    const response = await axiosInstance.put(`/w/promoteMemberToAdmin`, {
+      workspaceId: workspaceId.value,
+      member: memberId
+    })
+    toast.success("User has been promoted");
+    admins.value.push(response.data);
+  } catch (err) {
+    toast.error(err);
+  } finally {
+    promoteToAdminLoading.value = false;
+  }
+}
+
+const makeAdminNormalMember = async (adminId) => {
+  promoteToAdminLoading.value = true;
+  try {
+    const response = await axiosInstance.put(`/w/removeWorkspaceAdmin`, {
+      workspaceId: workspaceId.value,
+      member: adminId
+    })
+    // members.value.push(response.data);
+    // admins.value = admins.value.filter((admin) => admin._id != response.data._id);
+    // admins.value.map(admin => console.log(admin._id != response.data._id))
+    toast.success("User has been updated");
+  } catch (err) {
+    toast.error(err);
+  } finally {
+    promoteToAdminLoading.value = false;
+  }
+}
 
 // LIFE CYCLES
 watchEffect(() => {
@@ -281,11 +318,19 @@ watch(isUserAdmin, () => {
           <h3 class="text-xl">workspace admins</h3>
           <v-divider></v-divider>
           <v-list bg-color="transparent">
-            <v-list-item v-for="admin in admins" :key="admin.id" :title="admin.name" :subtitle="'@' + admin.username">
-              <template #prepend>
-                <UserAvatar :user="admin" />
-              </template>
-            </v-list-item>
+            <UserProfile v-for="admin in admins" :key="admin.id || admins" :member="admin">
+              <div class="flex items-center gap-2">
+                <v-btn v-if="workspace.createdBy !== admin.id" :loading="promoteToAdminLoading"
+                  :disabled="promoteToAdminLoading" @click="() => makeAdminNormalMember(admin.id)" variant="flat"
+                  color="primary">
+                  Normal
+                </v-btn>
+                <v-btn variant="flat" color="error" @click="() => activateRemvoeMemberDialog(admin)"
+                  :loading="removeMemberLoading" :disabled="removeMemberLoading">
+                  {{ store.user.id === admin.id ? "Leave" : "Remove from workspace" }}
+                </v-btn>
+              </div>
+            </UserProfile>
           </v-list>
         </div>
         <div class="py-5">
@@ -293,9 +338,15 @@ watch(isUserAdmin, () => {
           <v-divider></v-divider>
           <v-list bg-color="transparent">
             <UserProfile v-for="member in members" :key="member.id" :member>
-              <v-btn color="error" @click="() => activateRemvoeMemberDialog(member)">
-                Remove from workspace
-              </v-btn>
+              <div class="flex items-center gap-2">
+                <v-btn :loading="promoteToAdminLoading" :disabled="promoteToAdminLoading"
+                  @click="() => promoteToAdmin(member.id)" variant="flat" color="primary">
+                  Promote to admin
+                </v-btn>
+                <v-btn variant="flat" color="error" @click="() => activateRemvoeMemberDialog(member)">
+                  Remove from workspace
+                </v-btn>
+              </div>
             </UserProfile>
           </v-list>
         </div>
@@ -413,7 +464,8 @@ watch(isUserAdmin, () => {
     </v-dialog>
     <v-dialog v-model="removeMemberDialog" width="500">
       <DeleteModal title="Are you sure you want to remove this member?" :text="memberToRemove.name"
-        action-btn-text="Remove" @delete="() => removeMemberFromWorksapce()" @cancel="() => removeMemberDialog = false" />
+        action-btn-text="Remove" @delete="() => removeMemberFromWorksapce()" @cancel="() => removeMemberDialog = false"
+        :is-loading="removeMemberLoading" />
     </v-dialog>
   </div>
 </template>

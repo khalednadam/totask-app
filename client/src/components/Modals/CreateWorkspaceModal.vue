@@ -1,21 +1,21 @@
 <script setup>
 // IMPORTS
 import { ref, inject } from "vue";
-import axios from "axios";
 import { useDisplay } from "vuetify";
 import axiosInstance from "../../composables/axios";
+import { useRouter } from "vue-router";
 
 // GLOBAL
 const workspaceTypes = inject("WORKSPACETYPES");
 
 // env
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 // PROPS & EMITS
 const emit = defineEmits(["toggleModal"]);
 
 // INITS
 const { mdAndUp, lgAndUp, mdAndDown } = useDisplay();
+const router = useRouter();
 
 // REFS
 const workspaceName = ref();
@@ -40,6 +40,7 @@ const createWorkspace = async () => {
       workspaceName.value = "";
       workspaceType.value = "";
       workspaceDescription.value = "";
+      router.go();
       emit("toggleModal");
     })
     .catch((err) => {

@@ -2,7 +2,6 @@
 import { ref, watch } from "vue";
 import { Icon } from "@iconify/vue";
 import { useDisplay } from "vuetify";
-import axios from "axios";
 import {
   getAllWorkspaceMembers,
   getMyAdminWorkspaces,
@@ -13,7 +12,6 @@ import { useToast } from "vue-toastification";
 import { toastError } from "@/composables/helper";
 import axiosInstance from "../../composables/axios";
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
 const toast = useToast();
 

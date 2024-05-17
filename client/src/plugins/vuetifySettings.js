@@ -86,6 +86,7 @@ const settings = {
       letterSpacing: 0,
       ripple: false,
       rounded: "lg",
+      variant: "flat"
     },
     VTextField: {
       variant: "outlined",

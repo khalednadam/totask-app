@@ -181,7 +181,7 @@ const promoteMemberToAdmin = catchAsync(async (req, res) => {
     <p style="color: #666; line-height: 1.6;">Best regards,<br> Totask Team</p>
   </div>
   `
-  await emailService.sendEmail(user.email, 'You now admin', msg);
+  await emailService.sendEmail(user.email, 'You are now an admin', msg);
   console.log(user);
   res.status(httpStatus.OK).send(user);
 });

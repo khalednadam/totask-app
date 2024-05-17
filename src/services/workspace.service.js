@@ -186,11 +186,9 @@ const removeUserFromWorkspace = async (
   const boards = await Board.find({ workspace: workspaceId });
 
   for (const board of boards) {
-    // Remove the user from the board members
-    board.members = board.members.filter(memberId => memberId !== userToRemoveId.toString());
-    await board.save();
+    newBoardMembers = board.members.filter(memberId => memberId != userToRemoveId.toString());
+    await Board.findByIdAndUpdate(board._id, { members: newBoardMembers });
     const cards = await Card.find({ board: board.id });
-
     for (const card of cards) {
       card.assignees = card.assignees.filter(memberId => memberId !== userToRemoveId.toString());
       await card.save();

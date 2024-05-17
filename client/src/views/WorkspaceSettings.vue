@@ -312,7 +312,8 @@ watch(isUserAdmin, () => {
       </v-col>
     </v-row>
     <v-dialog v-model="addMembersDialog">
-      <AddMembersDialog :workspaceInfo="workspace" @toggle-modal="() => (addMembersDialog = !addMembersDialog)" />
+      <AddMembersDialog v-model="members" :workspaceInfo="workspace"
+        @toggle-modal="() => (addMembersDialog = !addMembersDialog)" />
     </v-dialog>
     <v-dialog v-model="deleteWorkspaceDialog">
       <v-card class="self-center h-full overflow-hidden" rounded="lg">

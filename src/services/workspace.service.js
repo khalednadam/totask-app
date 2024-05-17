@@ -112,8 +112,8 @@ const addMemberToWorkspace = async (workspaceId, emailOfUserToAdd, adminId) => {
   if (!user.isEmailVerified) {
     throw new ApiError(httpStatus.NOT_FOUND, "User is not verified")
   }
-  const userToAddId = user.id;
-  if (workspace.members.some((user) => user.id === userToAddId)) {
+  const userToAddId = user._id.toString();
+  if (workspace.members.some((user) => user._id.toString() === userToAddId)) {
     throw new ApiError(
       httpStatus.FORBIDDEN,
       "User is already in the workspace"
@@ -136,7 +136,7 @@ const addMemberToWorkspace = async (workspaceId, emailOfUserToAdd, adminId) => {
     { members: updateWorkspaceMembers() },
     adminId
   );
-  return workspace;
+  return user;
 };
 
 /**
@@ -187,12 +187,12 @@ const removeUserFromWorkspace = async (
 
   for (const board of boards) {
     // Remove the user from the board members
-    board.members = board.members.filter(memberId => memberId.toString() !== userToRemoveId.toString());
+    board.members = board.members.filter(memberId => memberId !== userToRemoveId.toString());
     await board.save();
     const cards = await Card.find({ board: board.id });
 
     for (const card of cards) {
-      card.assignees = card.assignees.filter(memberId => memberId.toString() !== userToRemoveId.toString());
+      card.assignees = card.assignees.filter(memberId => memberId !== userToRemoveId.toString());
       await card.save();
     }
   }

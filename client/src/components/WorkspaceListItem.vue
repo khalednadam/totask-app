@@ -59,7 +59,7 @@ const { isAdmin } = amIAdmin(props.workspace, store.user?.id)
         <router-link :to="`/w/settings/${workspace.id}`" v-if="isAdmin">
           <v-list-item @click="() => { }"> Settings </v-list-item>
         </router-link>
-        <v-list-item @click="$emit('openMemberDialog', workspace)">
+        <v-list-item v-if="isAdmin" @click="$emit('openMemberDialog', workspace)">
           Add members
         </v-list-item>
       </v-list>

@@ -2,7 +2,7 @@ const httpStatus = require("http-status");
 const pick = require("../utils/pick");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
-const { workspaceService, userService } = require("../services");
+const { workspaceService, userService, emailService } = require("../services");
 const { Workspace } = require("../models");
 const { baseURL } = require("../config/config");
 
@@ -70,37 +70,49 @@ const addMemberToWorkspace = catchAsync(async (req, res) => {
   }
   const workspaceName = await Workspace.findById(req.params.workspaceId, 'name');
   const addedUser = await userService.getUserByEmail(req.body.userEmail);
+  const user = await workspaceService.addMemberToWorkspace(
+    req.params.workspaceId,
+    req.body.userEmail,
+    req.session.user.id
+  );
   const msg = `
   <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
     <h1 style="color: #333;">You have been added to ${workspaceName.name}</h1>
     <p style="color: #666; line-height: 1.6;">Hello ${addedUser.name},</p>
     <p style="color: #666; line-height: 1.6;"><strong>${req.session.user.name}</strong> added you to "<strong>${workspaceName.name}</strong>".</p>
-    <p style="color: #666; line-height: 1.6;">We are excited to have you join us. You can start collaborating with your team and explore the workspace</p>
+    <p style="color: #666; line-height: 1.6;">You can start collaborating with your team and explore the workspace</p>
     <p style="text-align: center;">
       <a href="${baseURL}/w/${req.params.workspaceId}" style="display: inline-block; padding: 10px 20px; background-color: #6DB193; color: #fff; text-decoration: none; border-radius: 5px;">Go to Workspace</a>
     </p>
     <p style="color: #666; line-height: 1.6;">If you have any questions or need assistance, feel free to reach out to us.</p>
-    <p style="color: #666; line-height: 1.6;">Best regards,<br> The totask Team</p>
+    <p style="color: #666; line-height: 1.6;">Best regards,<br> Totask Team</p>
   </div>
   `
-  const workspace = await workspaceService.addMemberToWorkspace(
-    req.params.workspaceId,
-    req.body.userEmail,
-    req.session.user.id
-  );
   await emailService.sendEmail(req.body.userEmail, 'You have been added to a workspace', msg);
-  res.status(httpStatus.OK).send(workspace);
+  res.status(httpStatus.OK).send(user);
 });
 
 const removeUserFromWorkspace = catchAsync(async (req, res) => {
   if (!req.session.user) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate");
   }
+  const workspaceName = await Workspace.findById(req.params.workspaceId, 'name');
   const user = await workspaceService.removeUserFromWorkspace(
     req.params.workspaceId,
     req.body.userEmail,
     req.session.user.id
   );
+
+  const msg = `
+  <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h1 style="color: #333;">You have been removed from ${workspaceName.name}</h1>
+    <p style="color: #666; line-height: 1.6;">Hello ${user.name},</p>
+    <p style="color: #666; line-height: 1.6;">You have been removed from "<strong>${workspaceName.name}</strong>".</p>
+    <p style="color: #666; line-height: 1.6;">If you have any questions or need assistance, feel free to reach out to us.</p>
+    <p style="color: #666; line-height: 1.6;">Best regards,<br> Totask Team</p>
+  </div>
+  `
+  await emailService.sendEmail(req.body.userEmail, 'You have been added to a workspace', msg);
   res.status(httpStatus.OK).send(user);
 });
 

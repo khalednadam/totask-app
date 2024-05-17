@@ -14,6 +14,7 @@ const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const props = defineProps({
   workspaceInfo: Object,
 });
+const members = defineModel();
 const emit = defineEmits(["toggleModal"]);
 const usersMenu = ref(false);
 // INTIS
@@ -37,6 +38,7 @@ const inviteNewUser = () => {
     .then((res) => {
       emit("toggleModal");
       // socket.emit("update-workspace", "workspace updated");
+      members.value.push(res.data);
       toast.success("User added successfully")
     })
     .catch((err) => {

@@ -326,7 +326,7 @@ watch(isUserAdmin, () => {
                   Normal
                 </v-btn>
                 <v-btn variant="flat" color="error" @click="() => activateRemvoeMemberDialog(admin)"
-                  :loading="removeMemberLoading" :disabled="removeMemberLoading">
+                  :loading="removeMemberLoading" :disabled="removeMemberLoading || workspace.createdBy == store.user.id">
                   {{ store.user.id === admin.id ? "Leave" : "Remove from workspace" }}
                 </v-btn>
               </div>

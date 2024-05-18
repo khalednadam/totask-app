@@ -65,8 +65,7 @@ const changePassword = () => {
       changePasswordDialog.value = false;
     })
     .catch((err) => {
-      console.log(err);
-      toast.error("failed - check your current password and try again!");
+      toast.error("An error occurred");
     });
 };
 
@@ -121,7 +120,6 @@ const deleteAccount = () => {
       router.push("/login");
     })
     .catch((err) => {
-      console.log(err);
       toast.error("failed - check your password and try again!");
     })
     .finally(() => {
@@ -172,8 +170,7 @@ const deleteProfilePic = handleSubmit(() => {
       profilePic.value = null;
     })
     .catch((err) => {
-      toast.error("failed");
-      console.log(err);
+      toast.error("An error occurred");
     })
     .finally(() => {
       isLoading.value = false;
@@ -202,8 +199,7 @@ const updateProfilePic = handleSubmit(() => {
       profilePic.value = null;
     })
     .catch((err) => {
-      toast.error("failed");
-      console.log(err);
+      toast.error("An error occurred");
     })
     .finally(() => {
       isLoading.value = false;
@@ -235,8 +231,7 @@ const updateProfile = handleSubmit(() => {
       profilePic.value = null;
     })
     .catch((err) => {
-      toast.error("failed");
-      console.log(err);
+      toast.error("An error occurred");
     })
     .finally(() => {
       isLoading.value = false;
@@ -249,7 +244,7 @@ const sendVerificationEmail = async () => {
     await axiosInstance.post("/auth/send-verification-email");
     toast.success("Verification email was sent");
   } catch (err) {
-    toast.error("something went wrong!");
+    toast.error("Something went wrong!");
   } finally {
     emailVerificationLoading.value = false;
   }
@@ -381,9 +376,9 @@ const sendVerificationEmail = async () => {
   <v-dialog v-model="deleteAvatarDialog" class="md:max-w-[50vw] w-full">
     <DeleteModal :is-loading="isLoading" title="Delete Profile Picture" actionBtnText="Delete"
       text="Your profile picture will be deleted" @cancel="deleteAvatarDialog = false" @delete="() => {
-          profilePic = null;
-          deleteProfilePic();
-        }
+        profilePic = null;
+        deleteProfilePic();
+      }
         " />
   </v-dialog>
   <v-dialog v-model="changeAvatarDialog" class="md:max-w-[50vw] w-full">

@@ -40,8 +40,7 @@ const sendPasswordEmail = handleSubmit(async () => {
       email.value.value = "";
     })
     .catch((err) => {
-      console.log(err);
-      toast.error(err.message);
+      toast.error("An error occurred");
     }).finally(() => {
       isSubmitting.value = false;
     })

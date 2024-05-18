@@ -162,8 +162,7 @@ const removeMemberFromWorksapce = () => {
     removeMemberDialog.value = false;
     toast.success("User was removed successfully")
   }).catch((err) => {
-    console.log(err)
-    toast.error(err.statusText);
+    toast.error("An error occurred");
   }).finally(() => {
     removeMemberLoading.value = false;
   })
@@ -179,7 +178,7 @@ const promoteToAdmin = async (memberId) => {
     toast.success("User has been promoted");
     admins.value.push(response.data);
   } catch (err) {
-    toast.error(err);
+    toast.error("An error occurred");
   } finally {
     promoteToAdminLoading.value = false;
   }
@@ -197,7 +196,7 @@ const makeAdminNormalMember = async (adminId) => {
     // admins.value.map(admin => console.log(admin._id != response.data._id))
     toast.success("User has been updated");
   } catch (err) {
-    toast.error(err);
+    toast.error("An error occurred");
   } finally {
     promoteToAdminLoading.value = false;
   }

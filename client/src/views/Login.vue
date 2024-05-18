@@ -2,19 +2,16 @@
 // IMPORTS
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
 import { useForm, useField } from "vee-validate";
 import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "../stores/auth";
-import { toastError } from "../composables/helper";
 import axiosInstance from "../composables/axios";
-
-// env
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+import { useToast } from "vue-toastification";
 
 // INITS
 const router = useRouter();
 const authStore = useCurrentUser();
+const toast = useToast();
 
 const rules = [
   value => !!value || 'Required.',
@@ -66,8 +63,7 @@ const login = handleSubmit(async () => {
       router.push("/");
     })
     .catch((err) => {
-      toastError(err);
-      console.log(err);
+      toast.error("Incorrect email address and/or password.")
     }).finally(() => {
       isLoading.value = false;
     })

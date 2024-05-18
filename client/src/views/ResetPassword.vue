@@ -61,7 +61,6 @@ const resetPassword = handleSubmit(async () => {
       router.push("/login");
     })
     .catch((err) => {
-      console.log(err);
       toast.error("Resetting password failed");
     });
 });

@@ -2,26 +2,29 @@
 import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "../stores/auth";
 import { useRouter } from "vue-router";
-import axios from "axios";
 import axiosInstance from "../composables/axios";
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+import { ref } from "vue";
+import { useToast } from "vue-toastification";
 
+const toast = useToast()
 const authStore = useCurrentUser();
 const router = useRouter();
+const loading = ref(false);
 
 
 const logout = () => {
+  loading.value = true;
   axiosInstance
-    .post(`/auth/logout`, null, {
-      withCredentials: true,
-    })
+    .post(`/auth/logout`)
     .then(() => {
       authStore.$reset();
       router.push("/home");
     })
     .catch((err) => {
-      console.log(err);
-    });
+      toast.error("An error occurred");
+    }).finally(() => {
+      loading.value = false;
+    })
 };
 </script>
 <template>
@@ -41,7 +44,8 @@ const logout = () => {
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn variant="outlined" text="Cancel" @click="isActive.value = false"></v-btn>
-          <v-btn variant="tonal" text="Logout" color="error" @click="() => logout()"></v-btn>
+          <v-btn :loading="loading" :disabled="loading" variant="tonal" text="Logout" color="error"
+            @click="() => logout()"></v-btn>
         </v-card-actions>
       </v-card>
     </template>

@@ -74,23 +74,6 @@ app.use(
   })
 );
 
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-
-  if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-  }
-
-  res.status(500).json({
-    status: 'error',
-    message: 'Something went wrong!',
-  });
-});
-
-
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());

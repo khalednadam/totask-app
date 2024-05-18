@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed, watch, onUnmounted } from "vue";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { QuillEditor } from "@vueup/vue-quill";
 import { getMembersOfBoard, useCard } from "../../composables/utils";
@@ -10,7 +10,6 @@ import CardMembersInput from "../CardMembersInput.vue";
 import Checklist from "../Checklist.vue";
 import AddChecklistCard from "../AddChecklistCard.vue";
 import { socket } from "../../composables/socket";
-import { onUnmounted } from "vue";
 import { useCardDetailsStore } from "../../stores/cardDetails";
 import { storeToRefs } from "pinia";
 import DeleteModal from "./DeleteModal.vue";
@@ -19,6 +18,8 @@ import Comment from "../Comment.vue";
 import { useCurrentUser } from "../../stores/auth";
 import Attachment from "../Attachment.vue";
 import axiosInstance from "../../composables/axios";
+import Labels from "../Labels.vue";
+
 // INITS
 const props = defineProps({
   isDateDue: Boolean,
@@ -65,6 +66,8 @@ const editLabel = ref(false);
 const newCommentText = ref("");
 const cardCover = ref();
 const isLoading = ref(false);
+const addCommentLoading = ref(false);
+const addLabelLoading = ref(false);
 
 // Funcitons
 const updateCard = (newCard) => {
@@ -242,10 +245,6 @@ const deleteCardCover = () => {
     });
 };
 
-// const addFileToAttachments = (e) => {
-//   attachments = Object.values(e.target.files).map((val) => (val));
-//   console.log(attachments);
-// }
 
 const addAttachments = () => {
   isLoading.value = true;
@@ -346,6 +345,7 @@ const updateCardLabels = () => {
 };
 
 const createLabel = () => {
+  addLabelLoading.value = true;
   axiosInstance
     .post(
       `/label/create`,
@@ -369,8 +369,10 @@ const createLabel = () => {
       newLabelColor.value = null;
     })
     .catch((err) => {
-      console.log(err);
-    });
+      toast.error("An error occurred")
+    }).finally(() => {
+      addLabelLoading.value = false;
+    })
 };
 
 const updateLabel = (labelId) => {
@@ -434,27 +436,27 @@ watch(editLabel, () => {
   }
 });
 
-const addComment = () => {
-  axiosInstance
-    .post(
-      `/comment/${card.value.id}/create`,
-      {
-        text: newCommentText.value,
-        // user: currentUser.user.id,
-        boardId: card.value.board.id,
-      },
-      {
-        withCredentials: true,
-      }
-    )
-    .then((res) => {
-      newCommentText.value = "";
-      socket.emit("update-cards", card.value.board.id, null);
-      socket.emit("update-card", card.value.id);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+const addComment = async () => {
+  addCommentLoading.value = true;
+  try {
+    await axiosInstance
+      .post(
+        `/comment/${card.value.id}/create`,
+        {
+          text: newCommentText.value,
+          // user: currentUser.user.id,
+          boardId: card.value.board.id,
+        }
+      )
+
+    newCommentText.value = "";
+    socket.emit("update-cards", card.value.board.id, null);
+    socket.emit("update-card", card.value.id);
+  } catch (err) {
+    toast.error("An error occurred")
+  } finally {
+    addCommentLoading.value = false;
+  }
 };
 
 // Life cycle
@@ -481,7 +483,11 @@ const changeCoverMenu = ref(false);
 
 <template>
   <v-card v-if="isCardLoading" class="2xl:w-[35vw] xl:w-[50vw] w-[90vw] m-auto">
-    <v-progress-circular color="primary" indeterminate="disable-shrink" size="16" width="2"></v-progress-circular>
+    <v-card-text>
+      <div class="flex justify-center items-center w-full">
+        <v-progress-circular color="primary" indeterminate="disable-shrink" size="16" width="2"></v-progress-circular>
+      </div>
+    </v-card-text>
   </v-card>
   <v-card v-else class="2xl:w-[35vw] xl:w-[50vw] w-full mx-auto">
     <v-hover v-slot="{ isHovering, props }" :open-delay="200">
@@ -515,80 +521,37 @@ const changeCoverMenu = ref(false);
         </v-menu>
       </v-img>
     </v-hover>
-    <v-card-title class="px-10 !flex justify-between">
-      <div class="w-full">
-        <div>
-          <p class="font-bold text-2xl px-4 py-2" @click="changeCardTitle = true" v-if="!changeCardTitle">
-            {{ card?.title }}
-          </p>
-          <v-text-field v-click-outside="onClickOutsideTitle" hide-details :autofocus="changeCardTitle"
-            v-model="titleToChange" class="input" v-else>
-          </v-text-field>
-        </div>
-        <p class="!text-sm px-4">
-          in list
-          <span class="underline font-bold"> {{ card.list.name }} </span>
-        </p>
-      </div>
-      <div>
-        <v-btn variant="text" icon size="27" @click="cardDetails.$reset">
-          <Icon icon="ph:x" width="20" />
-        </v-btn>
-      </div>
-    </v-card-title>
     <v-card-text>
-      <v-row>
-        <v-col cols="12" md="8">
-          <p class="mb-2">Labels</p>
-          <div class="pb-3 flex">
-            <div class="flex items-center flex-wrap gap-2" v-if="card.labels.length > 0">
-              <template v-for="label in card.labels">
-                <v-btn :color="label.color" variant="flat">
-                  <p v-if="label.title">
-                    {{ label.title.toUpperCase() }}
-                  </p>
-                </v-btn>
-              </template>
-            </div>
-            <!-- <LabelsMenu @update-card="(newCard) => updateCard(newCard)" :card-id="card.id" :in-details="true" -->
-            <!--   v-model="cardLabels" :board-labels="card.board.labels" /> -->
-            <v-btn id="labels-menu-activator" @click="labelsMenu = true" icon variant="text" size="small">
-              <Icon icon="ph:plus" width="20" />
-            </v-btn>
-            <v-menu :close-on-content-click="false" activator="#labels-menu-activator">
-              <v-card class="relative">
-                <v-card-title class="text-center relative">
-                  Labels
-                </v-card-title>
-                <v-card-text>
-                  <v-item-group v-model="cardLabels" multiple class="space-y-2 my-2 w-96">
-                    <v-item v-for="label in card.board.labels" :value="label" v-slot="{ isSelected, toggle }">
-                      <div class="flex items-center">
-                        <v-btn class="w-11/12" :color="label.color" @click="() => {
-                          toggle();
-                          updateCardLabels();
-                        }
-                          ">
-                          <p v-if="label.title">
-                            {{ label.title.toUpperCase() }}
-                          </p>
-                          <template v-slot:prepend v-if="isSelected">
-                            <Icon icon="ph:check" width="20" />
-                          </template>
-                        </v-btn>
-                        <v-btn icon variant="text" size="small" @click="() => openEditLabel(label)">
-                          <Icon icon="ph:pencil-simple" width="20" />
-                        </v-btn>
-                      </div>
-                    </v-item>
-                  </v-item-group>
-                  <v-btn @click="newLabelMenu = true" variant="tonal" class="w-full">
-                    Add a new label
-                  </v-btn>
-                </v-card-text>
-              </v-card>
-            </v-menu>
+      <div class="!flex justify-between mb-7">
+        <div class="w-full">
+          <div>
+            <p class="font-bold text-2xl py-2" @click="changeCardTitle = true" v-if="!changeCardTitle">
+              {{ card?.title }}
+            </p>
+            <v-text-field v-click-outside="onClickOutsideTitle" hide-details :autofocus="changeCardTitle"
+              v-model="titleToChange" class="input" v-else>
+            </v-text-field>
           </div>
+          <p class="!text-sm ">
+            in list
+            <span class="underline font-bold"> {{ card.list.name }} </span>
+          </p>
+        </div>
+        <div>
+          <v-btn variant="text" icon size="27" @click="cardDetails.$reset">
+            <Icon icon="ph:x" width="20" />
+          </v-btn>
+        </div>
+      </div>
+      <v-row>
+
+        <v-col cols="12" md="8">
+          <!-- Labels -->
+          <p class="mb-2">Labels</p>
+          <Labels :board-id="card.board.id" v-model:card-labels="card.labels" :list-id="card.list.id" :card-id="card.id" @update-card="(newCard) => updateCard(newCard)" v-model:cardLabelsCopy="cardLabels" v-model:newLabelMenu="newLabelMenu" :board-labels="card.board.labels" />
+           <!--  -->
+
+          <!--  Due Date -->
           <div class="pb-3 space-y-1" v-if="card?.endDate">
             <div class="flex items-center gap-1">
               <Icon icon="ph:clock" width="25" />
@@ -603,6 +566,9 @@ const changeCoverMenu = ref(false);
                 @update-card-dates="() => updateCardDates()" @on-delete-date="() => onDeleteDate()" />
             </div>
           </div>
+           <!--  -->
+
+          <!-- Members -->
           <div class="pb-3" v-if="card?.assignees.length > 0">
             <p>Members</p>
             <div class="flex pt-2 p-1 -space-x-2 overflow-hidden">
@@ -615,6 +581,9 @@ const changeCoverMenu = ref(false);
                 @update-card="(newCard) => updateCard(newCard)" />
             </div>
           </div>
+          <!-- -->
+
+          <!-- Description -->
           <div class="space-y-2 flex flex-col">
             <div>
               <div class="flex items-center gap-1">
@@ -645,6 +614,9 @@ const changeCoverMenu = ref(false);
               <div class="pt-2" v-if="card?.description && !changeCardDescription" @click="changeCardDescription = true"
                 v-html="card?.description"></div>
             </div>
+            <!-- -->
+
+            <!-- Attachments -->
             <div>
               <div class="flex items-center gap-1 mt-5" v-if="card.attachments && card.attachments.length > 0">
                 <Icon icon="ph:paperclip" width="25" />
@@ -657,12 +629,17 @@ const changeCoverMenu = ref(false);
                 </template>
               </div>
             </div>
+            <!-- -->
+
+            <!-- Checklist -->
             <div>
               <Checklist v-if="card.checklist" :card-id="card.id" :list-id="card?.list.id" :board-id="card.board.id"
                 class="mt-5" v-model="card.checklist" @update-card="(newCard) => updateCard(newCard)"
                 @update-card-checklist="(newChecklist) => updateCardChecklist(newChecklist)
                   " />
             </div>
+
+            <!-- Comments -->
             <div>
               <div class="flex items-center mt-6 gap-1">
                 <Icon icon="ph:chat" width="25" />
@@ -674,12 +651,15 @@ const changeCoverMenu = ref(false);
               <v-text-field @keydown.enter="addComment" v-model="newCommentText" class="mt-4" hide-details
                 density="compact" placeholder="write a comment">
                 <template v-slot:append>
-                  <v-btn variant="tonal" color="primary" @click="addComment">
+                  <v-btn :loading="addCommentLoading" :disabled="addCommentLoading" variant="tonal" color="primary"
+                    @click="addComment">
                     send
                   </v-btn>
                 </template>
               </v-text-field>
             </div>
+            <!-- -->
+            
           </div>
         </v-col>
 

@@ -33,7 +33,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   try {
     const user = await userService.getUserByEmail(email);
     if (!user) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect email");
+      throw new ApiError(401, "Incorrect email");
     }
     if (!(await user.isPasswordMatch(password))) {
       throw new ApiError(httpStatus.UNAUTHORIZED, "Incorrect password");
@@ -129,7 +129,7 @@ const verifyEmail = async (verifyEmailToken) => {
     if (!user) {
       throw new Error();
     }
-    console.log(user)
+    console.log(user);
     // await userService.updateUserById(user.id, { isEmailVerified: true });
     await User.findByIdAndUpdate(user.id, { isEmailVerified: true });
   } catch (err) {

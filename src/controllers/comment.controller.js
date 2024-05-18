@@ -29,7 +29,7 @@ const createComment = catchAsync(async (req, res) => {
     return msg;
   }
   for (let assignee of card.assignees) {
-    if (assignee.id != req.session.user.id) {
+    if (assignee._id != req.session.user.id) {
       await emailService.sendEmail(assignee.email, 'New comment', createMsg(assignee.name));
     }
   }

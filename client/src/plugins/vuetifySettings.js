@@ -92,6 +92,7 @@ const settings = {
       variant: "outlined",
       rounded: "lg",
       density: "compact",
+      autocomplete: "off"
     },
     VFileInput: {
       variant: "outlined",

@@ -33,8 +33,8 @@ const { searchWord } = storeToRefs(boardSearch);
           <v-btn v-if="smAndDown" variant="text" icon rounded="lg" @click="$emit('toggleDrawer')">
             <Icon icon="ph:list" width="35"></Icon>
           </v-btn>
-          <v-text-field v-if="mdAndUp" v-model="searchWord" clearable="" color="primary" rounded placeholder="Search"
-            hide-details density="compact">
+          <v-text-field autocomplete="off" v-if="mdAndUp" v-model="searchWord" clearable="" color="primary" rounded
+            placeholder="Search" hide-details density="compact">
             <template #append-inner>
               <Icon icon="ph:magnifying-glass" width="25"></Icon>
             </template>
@@ -51,8 +51,8 @@ const { searchWord } = storeToRefs(boardSearch);
                   Search for boards
                 </v-card-title>
                 <v-card-text>
-                  <v-text-field clearable v-model="searchWord" variant="outlined" color="primary" rounded
-                    placeholder="Search" hide-details density="compact">
+                  <v-text-field autocomplete="off" clearable v-model="searchWord" variant="outlined" color="primary"
+                    rounded placeholder="Search" hide-details density="compact">
                     <template #append-inner>
                       <Icon icon="ph:magnifying-glass" width="25"></Icon>
                     </template>

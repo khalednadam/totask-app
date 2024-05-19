@@ -64,7 +64,7 @@ const addBoard = () => {
       `/b/create`,
       {
         name: boardName.value,
-        workspace: props.workspace,
+        workspace: props.workspace || chosenWorkspace.value._id,
         backgroundColor: boardBackgroundColor.value,
         description: boardDescription.value,
         isPrivate: isPrivate.value,
@@ -87,7 +87,10 @@ const addBoard = () => {
 };
 </script>
 <template>
-  <v-card class="self-center h-full md:w-2/3 overflow-y-auto" rounded="lg">
+  <v-card scrollable class="self-center h-full md:w-2/3 overflow-y-auto" rounded="lg">
+    <v-card-title>
+      <h1 class="text-3xl">Add new board</h1>
+    </v-card-title>
     <div class="absolute right-3 top-3">
       <v-btn @click="() => $emit('toggleModal')" size="x-small" icon variant="text">
         <Icon icon="ph:x" width="25" />
@@ -95,10 +98,6 @@ const addBoard = () => {
     </div>
     <v-row>
       <v-col cols="12" lg="6">
-        <v-card-title>
-          <h1 class="text-3xl">Add new board</h1>
-          <p class="py-2"></p>
-        </v-card-title>
         <v-card-text class="">
           <v-text-field v-model="boardName" label="Board name"></v-text-field>
           <v-autocomplete v-if="!workspace" label="workspace" :items="workspaces" item-title="name"

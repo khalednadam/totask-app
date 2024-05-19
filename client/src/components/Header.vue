@@ -29,7 +29,6 @@ const { searchWord } = storeToRefs(boardSearch);
     <v-row no-gutters class="items-center my-auto  px-5 !py-0 !m-0">
       <v-col cols="5" class="">
         <div class="flex">
-
           <v-btn v-if="smAndDown" variant="text" icon rounded="lg" @click="$emit('toggleDrawer')">
             <Icon icon="ph:list" width="35"></Icon>
           </v-btn>
@@ -73,7 +72,8 @@ const { searchWord } = storeToRefs(boardSearch);
       </v-col>
       <v-col cols="5" class="flex flex-col justify-center ">
         <div class="md:space-x-5 space-x-2 px-2 flex items-center">
-          <v-btn color="onbackground" variant="flat" v-if="mdAndUp" @click="() => addNewBoardDialog = !addNewBoardDialog">
+          <v-btn color="onbackground" variant="flat" v-if="mdAndUp && route.path !== '/settings'"
+            @click="() => addNewBoardDialog = !addNewBoardDialog">
             <template #append>
               <Icon icon="ph:plus-bold" width="20"></Icon>
             </template>
@@ -93,7 +93,7 @@ const { searchWord } = storeToRefs(boardSearch);
     </v-row>
 
   </v-app-bar>
-  <v-dialog scrollable v-model="addNewBoardDialog">
+  <v-dialog :scrollable="true" v-model="addNewBoardDialog">
     <AddBoardModal :members="undefined" :workspace="undefined" @toggle-modal="() => (addNewBoardDialog = false)" />
   </v-dialog>
 </template>

@@ -36,9 +36,9 @@ const getBoardsByWorkspace = catchAsync(async (req, res) => {
     $or: [{ 'members': req.session.user.id }],
     closed: req.query.isClosed,
   };
-  // if (req.query.name && req.query.name.trim().length > 1) {
-  //   filter.name = { $regex: req.query.name, $options: 'i' }; // Case-insensitive regex search
-  // }
+  if (req.query.name && req.query.name.trim().length > 1) {
+    filter.name = { $regex: req.query.name, $options: 'i' }; // Case-insensitive regex search
+  }
   const options = pick(req.query, ["sortBy", "limit", "page"]);
   const boards = await boardService.queryBoards(filter, options);
   // req.redisClient.set(req.originalUrl, JSON.stringify(boards), 'EX', 100);

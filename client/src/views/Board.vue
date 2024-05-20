@@ -229,7 +229,7 @@ const handleDrawerShortcut = (e) => {
         <router-link :to="`/`">
           <v-list-item :active="router.currentRoute.value.fullPath === `/`" color="primary" title="Home">
             <template #prepend>
-              <Icon icon="ph:house" width="20"> </Icon>
+              <Icon icon="ph:house" width="20" class="mr-1"> </Icon>
             </template>
           </v-list-item>
         </router-link>
@@ -237,14 +237,14 @@ const handleDrawerShortcut = (e) => {
           <v-list-item :active="router.currentRoute.value.fullPath === `/w/${board?.workspace.id}`
             " color="primary" title="Boards">
             <template #prepend>
-              <Icon icon="ph:columns" width="20"> </Icon>
+              <Icon icon="ph:columns" width="20" class="mr-1"> </Icon>
             </template>
           </v-list-item>
         </router-link>
         <router-link :to="`/w/settings/${board?.workspace.id}`">
           <v-list-item color="primary" title="Settings" :active="router.currentRoute.value.fullPath === '/settings'">
             <template #prepend>
-              <Icon icon="ph:gear" width="20"> </Icon>
+              <Icon icon="ph:gear" width="20" class="mr-1"> </Icon>
             </template>
           </v-list-item>
         </router-link>

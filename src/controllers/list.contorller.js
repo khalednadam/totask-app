@@ -115,7 +115,7 @@ const updateListById = catchAsync(async (req, res) => {
 const deleteListById = catchAsync(async (req, res) => {
   const deletedList = await listService.deleteListById(req.params.listId);
   const board = await boardService.getBoardById(deletedList.board);
-  await boardService.updateBoardById(deletedList.board, { listCount: board.listCount - 1 }, req.session.user.id)
+  // await boardService.updateBoardById(deletedList.board, { listCount: board.listCount - 1 }, req.session.user.id)
   const filter = {
     board: deletedList.board,
   };

@@ -73,7 +73,7 @@ watch(deleteDialog, () => {
     <h1 class="pt-2 pb-4">
       {{ workspace?.name }}
     </h1>
-    <router-link :to="`/w/settings/${workspace?.id}`">
+    <router-link :to="`/w/settings/${workspace?._id}`">
       <v-btn icon variant="text">
         <Icon icon="ph:pencil-simple-line" width="25" />
       </v-btn>

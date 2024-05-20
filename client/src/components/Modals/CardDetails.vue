@@ -548,8 +548,10 @@ const changeCoverMenu = ref(false);
         <v-col cols="12" md="8">
           <!-- Labels -->
           <p class="mb-2">Labels</p>
-          <Labels :board-id="card.board.id" v-model:card-labels="card.labels" :list-id="card.list.id" :card-id="card.id" @update-card="(newCard) => updateCard(newCard)" v-model:cardLabelsCopy="cardLabels" v-model:newLabelMenu="newLabelMenu" :board-labels="card.board.labels" />
-           <!--  -->
+          <Labels :board-id="card.board.id" v-model:card-labels="card.labels" :list-id="card.list.id" :card-id="card.id"
+            @update-card="(newCard) => updateCard(newCard)" v-model:cardLabelsCopy="cardLabels"
+            v-model:newLabelMenu="newLabelMenu" :board-labels="card.board.labels" />
+          <!--  -->
 
           <!--  Due Date -->
           <div class="pb-3 space-y-1" v-if="card?.endDate">
@@ -566,7 +568,7 @@ const changeCoverMenu = ref(false);
                 @update-card-dates="() => updateCardDates()" @on-delete-date="() => onDeleteDate()" />
             </div>
           </div>
-           <!--  -->
+          <!--  -->
 
           <!-- Members -->
           <div class="pb-3" v-if="card?.assignees.length > 0">
@@ -584,8 +586,8 @@ const changeCoverMenu = ref(false);
           <!-- -->
 
           <!-- Description -->
-          <div class="space-y-2 flex flex-col">
-            <div>
+          <div class="space-y-2  flex flex-col">
+            <div class="">
               <div class="flex items-center gap-1">
                 <Icon icon="ph:text-align-left" width="25" />
                 Description
@@ -611,8 +613,8 @@ const changeCoverMenu = ref(false);
                   </v-btn>
                 </div>
               </div>
-              <div class="pt-2" v-if="card?.description && !changeCardDescription" @click="changeCardDescription = true"
-                v-html="card?.description"></div>
+              <div class="pt-2 max-w-full overflow-y-auto" v-if="card?.description && !changeCardDescription"
+                @click="changeCardDescription = true" v-html="card?.description"></div>
             </div>
             <!-- -->
 
@@ -659,7 +661,7 @@ const changeCoverMenu = ref(false);
               </v-text-field>
             </div>
             <!-- -->
-            
+
           </div>
         </v-col>
 

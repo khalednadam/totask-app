@@ -15,10 +15,10 @@ const token = ref(route.query.token);
 const verifyEmail = async () => {
   loading.value = true;
   try {
-    await axiosInstance.post("/auth/verify-email", null, {
+    await axiosInstance.post("/auth/verify-email", {}, {
       params: {
         token: token.value
-      }
+      },
     });
     router.push("/")
   } catch (err) {

@@ -131,7 +131,7 @@ const verifyEmail = async (verifyEmailToken) => {
     }
     console.log(user);
     // await userService.updateUserById(user.id, { isEmailVerified: true });
-    await User.findByIdAndUpdate(user.id, { isEmailVerified: true });
+    await User.findByIdAndUpdate(user._id, { isEmailVerified: true });
   } catch (err) {
     throw new ApiError(httpStatus.UNAUTHORIZED, "Email verification failed");
   }

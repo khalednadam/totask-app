@@ -47,7 +47,7 @@ onMounted(async () => {
       Email verification failed
     </h1>
     <p>
-      This can heppen if the verification token is timed out. Try re-sending the verification email from setings
+      This can heppen if the verification token is timed out. Try re-sending the verification email from settings.
     </p>
     <router-link to="/settings">
       <v-btn flat color="primary">

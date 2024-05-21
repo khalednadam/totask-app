@@ -145,7 +145,7 @@ const sendVerificationEmail = catchAsync(async (req, res) => {
  * verify email
  */
 const verifyEmail = catchAsync(async (req, res) => {
-  await authService.verifyEmail(req.query.token);
+  await authService.verifyEmail(req.query.token.toString());
   const sessionUser = {
     ...req.session.user,
     isEmailVerified: true

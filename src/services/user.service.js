@@ -10,7 +10,7 @@ const googleStorage = require("../utils/googleStorage");
  */
 const createUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Email is taken");
+    throw new ApiError(400, "Email is taken");
   }
   if (await User.isUsernameTaken(userBody.username)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Username is taken");

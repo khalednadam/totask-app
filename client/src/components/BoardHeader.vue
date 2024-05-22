@@ -50,13 +50,14 @@ const { searchWord } = storeToRefs(cardSearch);
                 </v-card-title>
                 <v-card-text>
                   <v-text-field clearable v-model="searchWord" variant="outlined" color="primary" rounded
-                    placeholder="Search" hide-details density="compact">
+                    placeholder="Search for cards" hide-details density="compact">
                     <template #append-inner>
                       <Icon icon="ph:magnifying-glass" width="25"></Icon>
                     </template>
                   </v-text-field>
                   <div class="flex mt-2 justify-end justify-self-end gap-2">
-                    <v-btn color="primary" @click="() => { searchWord = ''; isActive.value = false }" variant="outlined">
+                    <v-btn color="primary" @click="() => { searchWord = ''; isActive.value = false }"
+                      variant="outlined">
                       Cancel
                     </v-btn>
                     <v-btn color="primary" @click="isActive.value = false">
@@ -68,7 +69,7 @@ const { searchWord } = storeToRefs(cardSearch);
             </template>
           </v-dialog>
           <v-text-field v-else clearable v-model="searchWord" variant="outlined" color="primary" rounded
-            placeholder="Search" class="max-w-[40%]" hide-details density="compact">
+            placeholder="Search for cards" class="max-w-[40%]" hide-details density="compact">
             <template #append-inner>
               <Icon icon="ph:magnifying-glass" width="25"></Icon>
             </template>

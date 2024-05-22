@@ -33,7 +33,7 @@ const { searchWord } = storeToRefs(boardSearch);
             <Icon icon="ph:list" width="35"></Icon>
           </v-btn>
           <v-text-field autocomplete="off" v-if="mdAndUp && route.path !== '/settings'" v-model="searchWord"
-            clearable="" color="primary" rounded placeholder="Search" hide-details density="compact">
+            clearable="" color="primary" rounded placeholder="Search for boards" hide-details density="compact">
             <template #append-inner>
               <Icon icon="ph:magnifying-glass" width="25"></Icon>
             </template>
@@ -51,7 +51,8 @@ const { searchWord } = storeToRefs(boardSearch);
                 </v-card-title>
                 <v-card-text>
                   <v-text-field v-if="route.path !== '/settings'" autocomplete="off" clearable v-model="searchWord"
-                    variant="outlined" color="primary" rounded placeholder="Search" hide-details density="compact">
+                    variant="outlined" color="primary" rounded placeholder="Search for boards" hide-details
+                    density="compact">
                     <template #append-inner>
                       <Icon icon="ph:magnifying-glass" width="25"></Icon>
                     </template>

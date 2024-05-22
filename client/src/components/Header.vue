@@ -32,13 +32,13 @@ const { searchWord } = storeToRefs(boardSearch);
           <v-btn v-if="smAndDown" variant="text" icon rounded="lg" @click="$emit('toggleDrawer')">
             <Icon icon="ph:list" width="35"></Icon>
           </v-btn>
-          <v-text-field autocomplete="off" v-if="mdAndUp && route.path !== '/settings'" v-model="searchWord" clearable=""
-            color="primary" rounded placeholder="Search" hide-details density="compact">
+          <v-text-field autocomplete="off" v-if="mdAndUp && route.path !== '/settings'" v-model="searchWord"
+            clearable="" color="primary" rounded placeholder="Search" hide-details density="compact">
             <template #append-inner>
               <Icon icon="ph:magnifying-glass" width="25"></Icon>
             </template>
           </v-text-field>
-          <v-dialog v-if="smAndDown">
+          <v-dialog v-if="smAndDown && route.path !== '/settings'">
             <template v-slot:activator="{ props }">
               <v-btn v-bind="props" variant="text" icon size="small" rounded="lg">
                 <Icon icon="ph:magnifying-glass" width="25"></Icon>
@@ -57,7 +57,8 @@ const { searchWord } = storeToRefs(boardSearch);
                     </template>
                   </v-text-field>
                   <div class="flex mt-2 justify-end justify-self-end gap-2">
-                    <v-btn color="primary" @click="() => { searchWord = ''; isActive.value = false }" variant="outlined">
+                    <v-btn color="primary" @click="() => { searchWord = ''; isActive.value = false }"
+                      variant="outlined">
                       Cancel
                     </v-btn>
                     <v-btn color="primary" @click="isActive.value = false">

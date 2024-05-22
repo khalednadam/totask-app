@@ -117,7 +117,9 @@ onUnmounted(() => {
             </v-list-item>
             <v-list-item>
               <router-link to="/login">
-                Login
+                <v-btn color="primary" variant="outline">
+                  Login
+                </v-btn>
               </router-link>
             </v-list-item>
             <v-list-item>

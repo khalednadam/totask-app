@@ -89,7 +89,7 @@ const updateUserById = async (id, updateBody, file) => {
     const imgUrl = await googleStorage.uploadToGoogleStorage(file.originalname, file.buffer);
     user.profilePhotoUrl = imgUrl;
   }
-  if (user.email !== updateBody.email) {
+  if (updateBody.email && (user.email !== updateBody.email)) {
     user.isEmailVerified = false;
   }
   user.updatedAt = new Date();

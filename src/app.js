@@ -1,4 +1,5 @@
 const express = require("express");
+require('express-async-errors');
 const cors = require("cors");
 const MongoStore = require("connect-mongo");
 const bodyParser = require("body-parser");
@@ -15,7 +16,6 @@ const localStrategy = require("passport-local");
 const { app } = require("./socket");
 // const Redis = require('ioredis');
 
-require('express-async-errors');
 app.use(passport.initialize());
 app.use(express.json());
 app.use(compression());

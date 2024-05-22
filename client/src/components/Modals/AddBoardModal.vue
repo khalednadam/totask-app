@@ -64,7 +64,7 @@ const addBoard = () => {
       `/b/create`,
       {
         name: boardName.value,
-        workspace: props.workspace || chosenWorkspace.value._id,
+        workspace: props.workspace || chosenWorkspace.value?._id,
         backgroundColor: boardBackgroundColor.value,
         description: boardDescription.value,
         isPrivate: isPrivate.value,
@@ -106,8 +106,8 @@ const addBoard = () => {
           <div class="pb-5">
             <p>Background color</p>
             <div class="w-full">
-              <v-color-picker class="min-w-full" v-model="boardBackgroundColor" hide-canvas :modes="['rgb', 'hsl', 'hex']"
-                show-swatches></v-color-picker>
+              <v-color-picker class="min-w-full" v-model="boardBackgroundColor" hide-canvas
+                :modes="['rgb', 'hsl', 'hex']" show-swatches></v-color-picker>
             </div>
             <!-- <v-btn-toggle v-model="boardBackgroundColor" mandatory variant="flat" class="sapce-x-2 gap-2 py-2"> -->
             <!--   <v-btn color="" value="#86efac" style="background-color: #86efac"> -->
@@ -154,8 +154,9 @@ const addBoard = () => {
           <v-select v-model="privateMembers" multiple v-if="isPrivate && workspace" :items="workspace.members"
             label="members" item-title="name" item-value="id">
           </v-select>
-          <v-select :key="chosenWorkspace" v-model="chosenWorkspacePrivateMembers" multiple v-if="isPrivate && !workspace"
-            :items="chosenWorkspace.members" label="members" item-title="name" item-value="id">
+          <v-select :key="chosenWorkspace" v-model="chosenWorkspacePrivateMembers" multiple
+            v-if="isPrivate && !workspace" :items="chosenWorkspace.members" label="members" item-title="name"
+            item-value="id">
           </v-select>
           <v-textarea v-model="boardDescription" label="Board description"></v-textarea>
           <v-btn @click="addBoard" color="primary" :loading="isLoading" :disabled="isLoading"

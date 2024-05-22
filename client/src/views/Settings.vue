@@ -269,7 +269,7 @@ const sendVerificationEmail = async () => {
               <v-img :src="authStore.user?.profilePhotoUrl" v-else></v-img>
             </v-avatar>
             <div class="flex flex-col justify-between items-center gap-2">
-              <v-btn v-bind="props" @click="changeAvatarDialog = true">Change</v-btn>
+              <v-btn v-bind="props" color="primary" @click="changeAvatarDialog = true">Change</v-btn>
               <v-btn color="error" @click="deleteAvatarDialog = true" :disabled="!user.profilePhotoUrl">Delete</v-btn>
             </div>
           </div>
@@ -297,8 +297,7 @@ const sendVerificationEmail = async () => {
           <p class="text-xl">Email</p>
         </v-col>
         <v-col md="8" cols="12">
-          <v-text-field readonly :disabled="authStore.user.isEmailVerified" v-model="email.value.value"
-            :error-messages="email.errorMessage.value"></v-text-field>
+          <v-text-field v-model="email.value.value" :error-messages="email.errorMessage.value"></v-text-field>
           <v-btn :disabled="emailVerificationLoading" :loading="emailVerificationLoading" @click="sendVerificationEmail"
             v-if="!authStore.user.isEmailVerified" color="primary" variant="flat">
             Verify
@@ -385,7 +384,8 @@ const sendVerificationEmail = async () => {
     <v-card>
       <v-card-title> Change your profile picture </v-card-title>
       <v-card-text>
-        <v-file-input v-model="profilePic" accept="image/*" label="Profile Picture" variant="solo-filled"></v-file-input>
+        <v-file-input v-model="profilePic" accept="image/*" label="Profile Picture"
+          variant="solo-filled"></v-file-input>
       </v-card-text>
       <v-card-actions class="self-end">
         <v-btn variant="outlined" color="primary" @click="changeAvatarDialog = false">

@@ -155,7 +155,7 @@ const addBoard = () => {
             label="members" item-title="name" item-value="id">
           </v-select>
           <v-select :key="chosenWorkspace" v-model="chosenWorkspacePrivateMembers" multiple
-            v-if="isPrivate && !workspace" :items="chosenWorkspace.members" label="members" item-title="name"
+            v-if="isPrivate && !workspace" :items="chosenWorkspace?.members" label="members" item-title="name"
             item-value="id">
           </v-select>
           <v-textarea v-model="boardDescription" label="Board description"></v-textarea>

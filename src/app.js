@@ -15,6 +15,7 @@ const localStrategy = require("passport-local");
 const { app } = require("./socket");
 // const Redis = require('ioredis');
 
+require('express-async-errors');
 app.use(passport.initialize());
 app.use(express.json());
 app.use(compression());

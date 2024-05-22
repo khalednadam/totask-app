@@ -11,6 +11,8 @@
 //     }
 //   }
 // }
+
+
 class ApiError extends Error {
   constructor(statusCode, message) {
     super(message);
@@ -21,4 +23,5 @@ class ApiError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
+
 module.exports = ApiError;

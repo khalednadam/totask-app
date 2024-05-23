@@ -14,6 +14,7 @@ const path = require("path");
 const { User } = require("./models");
 const localStrategy = require("passport-local");
 const { app } = require("./socket");
+const ApiError = require("./utils/ApiError");
 // const Redis = require('ioredis');
 
 app.use(passport.initialize());

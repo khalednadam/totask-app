@@ -65,7 +65,6 @@ const { mdAndUp } = useDisplay();
 const favoriteBoardsStore = useFavoriteBoardsStore();
 const route = useRoute();
 const toast = useToast();
-const workspaceAllMembers = ref();
 const isAdmin = ref(false);
 const { favoriteBoards } = storeToRefs(favoriteBoardsStore);
 const { addToFavorite, removeFromFavorite } = favoriteBoardsStore;

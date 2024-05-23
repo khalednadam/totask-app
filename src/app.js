@@ -88,4 +88,20 @@ app.get('/*', function(req, res) {
 });
 
 
+app.use((err, req, res, next) => {
+  // If the error is an instance of ApiError, use its properties
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+  }
+
+  // For unexpected errors, log the error for further analysis
+  console.error(err); // Log the error for further analysis
+  res.status(500).json({
+    status: 'error',
+    message: 'An unexpected error occurred!',
+  });
+});
 module.exports = app;

@@ -1,26 +1,28 @@
-class ApiError extends Error {
-  constructor(statusCode, message, isOperational = true, stack = '') {
-    super(message);
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-    if (stack) {
-      this.stack = stack;
-    } else {
-      Error.captureStackTrace(this, this.constructor);
-    }
+const httpStatus = require('http-status');
+const ExtendableError = require('./extandable-error');
+
+/**
+ * Class representing an API error.
+ * @extends ExtendableError
+ */
+class APIError extends ExtendableError {
+  /**
+   * Creates an API error.
+   * @param {string} message - Error message.
+   * @param {number} status - HTTP status code of error.
+   * @param {boolean} isPublic - Whether the message should be visible to user or not.
+   */
+  constructor({
+    errors,
+    message,
+    stack,
+    status = httpStatus.INTERNAL_SERVER_ERROR,
+    isPublic = false,
+  }) {
+    super({
+      message, errors, status, isPublic, stack,
+    });
   }
 }
-
-//
-// class ApiError extends Error {
-//   constructor(statusCode, message) {
-//     super(message);
-//     // console.log(this.message);
-//     this.statusCode = statusCode;
-//     this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
-//     this.isOperational = true;
-//     Error.captureStackTrace(this, this.constructor);
-//   }
-// }
 
 module.exports = ApiError;

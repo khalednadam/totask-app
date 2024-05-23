@@ -7,6 +7,7 @@ import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "../stores/auth";
 import axiosInstance from "../composables/axios";
 import { useToast } from "vue-toastification";
+import { toastError } from "../composables/helper.js"
 
 // INITS
 const router = useRouter();
@@ -63,7 +64,8 @@ const login = handleSubmit(async () => {
       router.push("/");
     })
     .catch((err) => {
-      toast.error("Incorrect email address and/or password.")
+      toastError(err);
+      console.log(err);
     }).finally(() => {
       isLoading.value = false;
     })
@@ -90,8 +92,8 @@ const login = handleSubmit(async () => {
         :error-messages="password.errorMessage.value" v-model="password.value.value"
         :type="showPassword ? 'text' : 'password'">
         <template #append-inner>
-          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-closed-bold" width="30" class="cursor-pointer"
-            v-if="showPassword" />
+          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-closed-bold" width="30"
+            class="cursor-pointer" v-if="showPassword" />
           <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-bold" width="30" class="cursor-pointer"
             v-else />
         </template>

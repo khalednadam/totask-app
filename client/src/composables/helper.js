@@ -7,9 +7,6 @@ const toast = useToast();
  * @param {Error} err - The error object containing the response data.
  */
 export const toastError = (err) => {
-  const errorMessage = err.response.data;
-  const regex = /<pre>Error: (.*?)<br>/;
-  const match = errorMessage.match(regex);
-  const extractedErrorMessage = match ? match[1] : null;
-  toast.error(extractedErrorMessage)
+  const errorMessage = err.response.data.message;
+  toast.error(errorMessage)
 }

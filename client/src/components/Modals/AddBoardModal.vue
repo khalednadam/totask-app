@@ -11,6 +11,7 @@ import {
 import { useToast } from "vue-toastification";
 import axiosInstance from "../../composables/axios";
 import { toastError } from "@/composables/helper.js"
+import { useTheme } from 'vuetify/lib/framework.mjs';
 
 
 const toast = useToast();
@@ -22,9 +23,11 @@ const props = defineProps({
 });
 
 const { lgAndUp } = useDisplay();
+const theme = useTheme();
 
 // PROPS & EMITS
 const emit = defineEmits(["toggleModal"]);
+
 
 // if it is being activated from outside of the workspace (workspace is not known)
 const chosenWorkspace = ref(undefined);
@@ -33,7 +36,7 @@ const chosenWorkspacePrivateMembers = ref([]);
 // const workspace = ref();
 
 // if the workspace being passed as props from the workspace
-const boardBackgroundColor = ref("");
+const boardBackgroundColor = ref("#BDBDBD");
 const boardDescription = ref("");
 const boardName = ref("");
 const isPrivate = ref(false);

@@ -1,9 +1,9 @@
 import { watch, onMounted, ref } from "vue";
 import { useWorkspaces } from "../stores/workspaces.js";
-import { socket } from "./socket.js"
+import { socket } from "./socket.js";
 import { storeToRefs } from "pinia";
 import { useCardSearchStore } from "../stores/cardSearch.js";
-import debounce from 'lodash.debounce'
+import debounce from "lodash.debounce";
 import { useBoardSearch } from "../stores/boardSearch.js";
 import axiosInstance from "./axios.js";
 
@@ -14,16 +14,16 @@ export const useUser = async () => {
     try {
       const response = await axiosInstance.get(`/users/user`, {
         withCredentials: true,
-      })
+      });
       user.value = response.data;
     } catch (err) {
       console.log(err);
     }
-  }
+  };
   // getUser();
   onMounted(getUser);
   return { user, getUser };
-}
+};
 
 /**
  * checks if the current logged in user is admins in a workspace
@@ -33,16 +33,16 @@ export const useUser = async () => {
  */
 export const amIAdmin = (workspace, userId) => {
   const isAdmin = ref(null);
-  if (workspace.admins.some(admin => admin.id === userId)) {
+  if (workspace.admins.some((admin) => admin.id === userId)) {
     isAdmin.value = true;
   } else {
-    isAdmin.value = false
+    isAdmin.value = false;
   }
   return { isAdmin };
 };
 
 /**
- * get the workspace 
+ * get the workspace
  * @param {ObjectId} workspaceId
  * @returns {Object}
  */
@@ -75,9 +75,10 @@ export const getRecentWorkspaces = () => {
     })
     .catch((err) => {
       console.log(err);
-    }).finally(() => {
-      isLoading.value = false;
     })
+    .finally(() => {
+      isLoading.value = false;
+    });
 
   return { recentWorkspaces, isLoading };
 };
@@ -142,7 +143,7 @@ export const useCloasedBoards = (workspaceId, sortBy = null, limit = null) => {
           sortBy,
           limit,
           name: " ",
-          isClosed: true
+          isClosed: true,
         },
       })
       .then((res) => {
@@ -150,13 +151,14 @@ export const useCloasedBoards = (workspaceId, sortBy = null, limit = null) => {
       })
       .catch((err) => {
         console.log(err);
-      }).finally(() => {
-        closedBoardsLoading.value = false;
       })
-  }
+      .finally(() => {
+        closedBoardsLoading.value = false;
+      });
+  };
   onMounted(() => {
     getBoards();
-  })
+  });
 
   return { closedBoards, closedBoardsLoading };
 };
@@ -175,7 +177,7 @@ export const useBoards = (workspaceId, sortBy, limit) => {
           sortBy,
           limit,
           name: searchWord.value || " ",
-          isClosed: false
+          isClosed: false,
         },
       })
       .then((res) => {
@@ -183,17 +185,21 @@ export const useBoards = (workspaceId, sortBy, limit) => {
       })
       .catch((err) => {
         console.log(err);
-      }).finally(() => {
-        isLoading.value = false;
       })
-  }
+      .finally(() => {
+        isLoading.value = false;
+      });
+  };
   onMounted(() => {
     getBoards();
-  })
+  });
 
-  watch(searchWord, debounce(() => {
-    getBoards();
-  }, 500))
+  watch(
+    searchWord,
+    debounce(() => {
+      getBoards();
+    }, 500)
+  );
   return { boards, isLoading };
 };
 
@@ -235,7 +241,6 @@ export const removeBoardFromFavorite = (boardId) => {
     });
 };
 
-
 export const getMyAdminWorkspaces = () => {
   const workspacesStore = useWorkspaces();
   const myAdminWorkspaces = ref();
@@ -254,7 +259,7 @@ export const getMyAdminWorkspaces = () => {
       console.log(err);
     });
   return myAdminWorkspaces;
-}
+};
 
 export const getBoardById = (boardId) => {
   const board = ref(null);
@@ -272,17 +277,17 @@ export const getBoardById = (boardId) => {
       status.value = err.response.status;
       console.log(err.response);
     } finally {
-      isLoading.value = false
+      isLoading.value = false;
     }
-  }
+  };
   onMounted(async () => {
     await getBoard();
-  })
-  socket.on('change-board-info', async () => {
+  });
+  socket.on("change-board-info", async () => {
     await getBoard();
-  })
+  });
   return { board, status, isLoading };
-}
+};
 
 export const useLists = async (boardId) => {
   const lists = ref([]);
@@ -290,7 +295,9 @@ export const useLists = async (boardId) => {
   async function getLists() {
     isLoading.value = true;
     try {
-      const response = await axiosInstance.get(`/list/listsOf/${boardId}`, { params: { sortBy: "position:asc", limit: 100 } });
+      const response = await axiosInstance.get(`/list/listsOf/${boardId}`, {
+        params: { sortBy: "position:asc", limit: 100 },
+      });
       lists.value = response.data.results;
     } catch (err) {
       console.log(err);
@@ -320,38 +327,43 @@ export const useLists = async (boardId) => {
 
   socket.on("update-lists", async (payload) => {
     lists.value = payload.results;
-  })
+  });
   onMounted(async () => {
     await getLists();
-  })
-
+  });
 
   return { lists, isLoading };
-}
+};
 
 export const isUserAdmin = (boardId) => {
   const isAdmin = ref(false);
-  axiosInstance.get(`/b/isUserAdmin/${boardId}`, {
-    withCredentials: true
-  }).then((res) => {
-    isAdmin.value = res.data;
-  }).catch((err) => {
-    console.log(err);
-  })
+  axiosInstance
+    .get(`/b/isUserAdmin/${boardId}`, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      isAdmin.value = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   return { isAdmin };
-}
+};
 
 export const isUserWorkspaceAdmin = (workspaceId) => {
   const isUserAdmin = ref(true);
-  axiosInstance.get(`/w/isUserAdmin/${workspaceId}`, {
-    withCredentials: true
-  }).then((res) => {
-    isUserAdmin.value = res.data;
-  }).catch((err) => {
-    console.log(err);
-  })
+  axiosInstance
+    .get(`/w/isUserAdmin/${workspaceId}`, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      isUserAdmin.value = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   return { isUserAdmin };
-}
+};
 
 export const useCard = async (cardId) => {
   const isCardLoading = ref(false);
@@ -360,7 +372,7 @@ export const useCard = async (cardId) => {
     try {
       isCardLoading.value = true;
       const response = await axiosInstance.get(`/card/${cardId}`, {
-        withCredentials: true
+        withCredentials: true,
       });
       card.value = response.data;
       return response.data;
@@ -371,40 +383,45 @@ export const useCard = async (cardId) => {
     }
   }
   await getCard();
-  socket.on('update-card', async (updatedCardId) => {
+  socket.on("update-card", async (updatedCardId) => {
     if (updatedCardId === cardId) {
       await getCard();
     }
-  })
+  });
   return { card, isCardLoading };
-}
+};
 export const useCardsOfList = (listId, boardId) => {
   const cards = ref([]);
   const isLoading = ref(false);
   const cardSearch = useCardSearchStore();
-  const { searchWord, searchAssignees, searchLabels, searchDate } = storeToRefs(cardSearch);
+  const { searchWord, searchAssignees, searchLabels, searchDate } =
+    storeToRefs(cardSearch);
 
   const getCards = () => {
     isLoading.value = true;
-    axiosInstance.get(`/card/cardsOf/${listId}`, {
-      withCredentials: true,
-      params: {
-        sortBy: "position:asc",
-        limit: 100,
-        title: searchWord.value || " ",
-        assignees: searchAssignees.value,
-        labels: searchLabels.value,
-        date: searchDate.value,
-        board: boardId,
-      }
-    }).then((res) => {
-      cards.value = res.data.results
-    }).catch((err) => {
-      console.log(err);
-    }).finally(() => {
-      isLoading.value = false;
-    })
-  }
+    axiosInstance
+      .get(`/card/cardsOf/${listId}`, {
+        withCredentials: true,
+        params: {
+          sortBy: "position:asc",
+          limit: 100,
+          title: searchWord.value || " ",
+          assignees: searchAssignees.value,
+          labels: searchLabels.value,
+          date: searchDate.value,
+          board: boardId,
+        },
+      })
+      .then((res) => {
+        cards.value = res.data.results;
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  };
 
   const debouncedGetCards = debounce(getCards, 500);
 
@@ -420,53 +437,62 @@ export const useCardsOfList = (listId, boardId) => {
     if (updateLists?.includes(listId) || !updateLists) {
       getCards();
     }
-  })
+  });
 
-  watch([searchWord, searchAssignees, searchLabels, searchDate], handleCardSearchChange, { deep: true });
+  watch(
+    [searchWord, searchAssignees, searchLabels, searchDate],
+    handleCardSearchChange,
+    { deep: true }
+  );
 
   return { cards, isLoading };
 };
 export const getMembersOfBoard = (boardId) => {
   const members = ref([]);
-  axiosInstance.get(`/b/membersOf/${boardId}`, {
-    withCredentials: true
-  }).then((res) => {
-    members.value = res.data;
-  }).catch((err) => {
-    console.log(err);
-  })
+  axiosInstance
+    .get(`/b/membersOf/${boardId}`, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      members.value = res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   return { members };
-}
+};
 
 /*
  * data fetcher
  * @param {string} url
- * @returns {Object} 
+ * @returns {Object}
  */
 export function useFetch(url) {
-  const data = ref(null)
-  const error = ref(null)
-  axiosInstance.get(url, { withCredentials: true })
+  const data = ref(null);
+  const error = ref(null);
+  axiosInstance
+    .get(url, { withCredentials: true })
     .then((res) => (data.value = res.data))
     .catch((err) => (error.value = err));
 
-  return { data, error }
+  return { data, error };
 }
-
 
 export const getWorkspaceMembersByBoardId = async (boardId) => {
   const workspaceMembers = ref(null);
   try {
-    const response = await axiosInstance.get(`/b/workspaceMembersOf/${boardId}`, {
-      withCredentials: true
-    })
+    const response = await axiosInstance.get(
+      `/b/workspaceMembersOf/${boardId}`,
+      {
+        withCredentials: true,
+      }
+    );
     workspaceMembers.value = response.data;
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
   }
   return { workspaceMembers };
-}
+};
 
 export const searchForUsers = async (email) => {
   const users = ref(null);
@@ -475,13 +501,12 @@ export const searchForUsers = async (email) => {
       withCredentials: true,
       params: {
         limit: 5,
-        email: email
-      }
-    })
+        email: email,
+      },
+    });
     users.value = response.data;
   } catch (err) {
     console.log(err);
   }
   return { users };
-}
-
+};

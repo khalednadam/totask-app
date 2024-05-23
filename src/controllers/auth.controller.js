@@ -1,4 +1,5 @@
 const httpStatus = require("http-status");
+require('express-async-errors');
 
 const {
   userService,

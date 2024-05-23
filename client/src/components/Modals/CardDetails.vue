@@ -19,6 +19,7 @@ import { useCurrentUser } from "../../stores/auth";
 import Attachment from "../Attachment.vue";
 import axiosInstance from "../../composables/axios";
 import Labels from "../Labels.vue";
+import { toastError } from "@/composables/helper.js"
 
 // INITS
 const props = defineProps({
@@ -369,7 +370,7 @@ const createLabel = () => {
       newLabelColor.value = null;
     })
     .catch((err) => {
-      toast.error("An error occurred")
+      toastError(err);
     }).finally(() => {
       addLabelLoading.value = false;
     })
@@ -453,7 +454,7 @@ const addComment = async () => {
     socket.emit("update-cards", card.value.board.id, null);
     socket.emit("update-card", card.value.id);
   } catch (err) {
-    toast.error("An error occurred")
+    toastError(err);
   } finally {
     addCommentLoading.value = false;
   }
@@ -594,12 +595,12 @@ const changeCoverMenu = ref(false);
               </div>
               <v-card v-if="(!card?.description || card.description.length === 0) &&
                 !changeCardDescription
-                " class="mt-2" variant="tonal" @click="changeCardDescription = true">
+              " class="mt-2" variant="tonal" @click="changeCardDescription = true">
                 <v-card-text> Add a more detailed description... </v-card-text>
               </v-card>
               <div class="h-32 mt-2 my-20" v-if="changeCardDescription" v-click-outside="onClickOutsideDescription">
-                <QuillEditor ref="quill" toolbar="essential" v-model:content="descriptionToChange" @text-change="setText"
-                  contentType="html" theme="snow" />
+                <QuillEditor ref="quill" toolbar="essential" v-model:content="descriptionToChange"
+                  @text-change="setText" contentType="html" theme="snow" />
                 <div class="flex gap-3 justify-end mt-3">
                   <v-btn color="primary" variant="outlined" @click="() => {
                     (changeCardDescription = false),
@@ -764,7 +765,8 @@ const changeCoverMenu = ref(false);
               <template v-slot:default="{ isActive }">
                 <v-card class="w-80">
                   <v-card-text>
-                    <v-file-input v-model="cardCover" accept="image/*" label="Cover" variant="solo-filled"></v-file-input>
+                    <v-file-input v-model="cardCover" accept="image/*" label="Cover"
+                      variant="solo-filled"></v-file-input>
                   </v-card-text>
                   <v-card-actions class="flex justify-end self-end justify-self-end">
                     <v-btn variant="outlined" color="primary" @click="isActive.value = false">

@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import axiosInstance from "../composables/axios";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
+import { toastError } from "@/composables/helper.js"
 
 const toast = useToast()
 const authStore = useCurrentUser();
@@ -21,7 +22,7 @@ const logout = () => {
       router.push("/home");
     })
     .catch((err) => {
-      toast.error("An error occurred");
+      toastError(err);
     }).finally(() => {
       loading.value = false;
     })

@@ -7,6 +7,7 @@ import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "../stores/auth";
 import axiosInstance from "../composables/axios";
 import { useToast } from "vue-toastification";
+import { toastError } from "@/composables/helper.js"
 
 // INITS
 const router = useRouter();
@@ -108,11 +109,11 @@ const register = handleSubmit(async () => {
           router.push("/");
         })
         .catch((err) => {
-          toast.error("An error occurred")
+          toastError(err)
         });
     })
     .catch((err) => {
-      toast.error("An error occurred")
+      toastError(err)
     }).finally(() => {
       isLoading.value = false;
     })
@@ -142,8 +143,8 @@ const register = handleSubmit(async () => {
       <v-text-field :rules="rules" v-model="password.value.value" :error-messages="password.errorMessage.value"
         :type="showPassword ? 'text' : 'password'">
         <template #append-inner>
-          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-closed-bold" width="30" class="cursor-pointer"
-            v-if="showPassword" />
+          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-closed-bold" width="30"
+            class="cursor-pointer" v-if="showPassword" />
           <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-bold" width="30" class="cursor-pointer"
             v-else />
         </template>

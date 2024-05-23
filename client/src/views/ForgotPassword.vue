@@ -6,6 +6,7 @@ import { useForm, useField } from "vee-validate";
 import { useToast } from "vue-toastification";
 import { Icon } from "@iconify/vue"
 import axiosInstance from "../composables/axios";
+import { toastError } from "@/composables/helper.js"
 
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const toast = useToast();
@@ -40,7 +41,7 @@ const sendPasswordEmail = handleSubmit(async () => {
       email.value.value = "";
     })
     .catch((err) => {
-      toast.error("An error occurred");
+      toastError(err);
     }).finally(() => {
       isSubmitting.value = false;
     })

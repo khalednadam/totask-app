@@ -8,6 +8,7 @@ import { useForm, useField } from "vee-validate";
 import { Icon } from "@iconify/vue";
 import DeleteModal from "../components/Modals/DeleteModal.vue";
 import axiosInstance from "../composables/axios";
+import { toastError } from "@/composables/helper.js"
 
 const authStore = useCurrentUser();
 const router = useRouter();
@@ -65,7 +66,7 @@ const changePassword = () => {
       changePasswordDialog.value = false;
     })
     .catch((err) => {
-      toast.error("An error occurred");
+      toastError(err);
     });
 };
 
@@ -170,7 +171,7 @@ const deleteProfilePic = handleSubmit(() => {
       profilePic.value = null;
     })
     .catch((err) => {
-      toast.error("An error occurred");
+      toastError(err);
     })
     .finally(() => {
       isLoading.value = false;
@@ -199,7 +200,7 @@ const updateProfilePic = handleSubmit(() => {
       profilePic.value = null;
     })
     .catch((err) => {
-      toast.error("An error occurred");
+      toastError(err);
     })
     .finally(() => {
       isLoading.value = false;
@@ -231,7 +232,7 @@ const updateProfile = handleSubmit(() => {
       profilePic.value = null;
     })
     .catch((err) => {
-      toast.error("An error occurred");
+      toastError(err);
     })
     .finally(() => {
       isLoading.value = false;

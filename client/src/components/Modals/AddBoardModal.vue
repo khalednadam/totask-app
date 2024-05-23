@@ -10,6 +10,7 @@ import {
 } from "../../composables/utils";
 import { useToast } from "vue-toastification";
 import axiosInstance from "../../composables/axios";
+import { toastError } from "@/composables/helper.js"
 
 
 const toast = useToast();
@@ -80,7 +81,7 @@ const addBoard = () => {
       emit("toggleModal");
     })
     .catch((err) => {
-      toast.error("An error occurred")
+      toastError(err);
     }).finally(() => {
       isLoading.value = false;
     })

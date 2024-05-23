@@ -16,6 +16,7 @@ import { useToast } from "vue-toastification";
 import DeleteModal from "../components/Modals/DeleteModal.vue";
 import UserProfile from "../components/UserProfile.vue";
 import axiosInstance from "../composables/axios";
+import { toastError } from "@/composables/helper.js"
 
 
 // GLOBAL
@@ -162,7 +163,7 @@ const removeMemberFromWorksapce = () => {
     removeMemberDialog.value = false;
     toast.success("User was removed successfully")
   }).catch((err) => {
-    toast.error("An error occurred");
+    toastError(err);
   }).finally(() => {
     removeMemberLoading.value = false;
   })
@@ -178,7 +179,7 @@ const promoteToAdmin = async (memberId) => {
     toast.success("User has been promoted");
     admins.value.push(response.data);
   } catch (err) {
-    toast.error("An error occurred");
+    toastError(err);
   } finally {
     promoteToAdminLoading.value = false;
   }
@@ -196,7 +197,7 @@ const makeAdminNormalMember = async (adminId) => {
     // admins.value.map(admin => console.log(admin._id != response.data._id))
     toast.success("User has been updated");
   } catch (err) {
-    toast.error("An error occurred");
+    toastError(err);
   } finally {
     promoteToAdminLoading.value = false;
   }
@@ -301,7 +302,8 @@ watch(isUserAdmin, () => {
                         Only admins
                       </p>
                     </v-list-item>
-                    <v-list-item @click="toggleAbilityToAddBoards(true)" :disabled="workspace.canMemberAddBoards == true">
+                    <v-list-item @click="toggleAbilityToAddBoards(true)"
+                      :disabled="workspace.canMemberAddBoards == true">
                       <p class="flex items-center gap-2">
                         <Icon v-if="workspace.canMemberAddBoards" icon="ph:check" width="20" />
                         Members and admins
@@ -325,7 +327,8 @@ watch(isUserAdmin, () => {
                   Normal
                 </v-btn>
                 <v-btn variant="flat" color="error" @click="() => activateRemvoeMemberDialog(admin)"
-                  :loading="removeMemberLoading" :disabled="removeMemberLoading || workspace.createdBy == store.user.id">
+                  :loading="removeMemberLoading"
+                  :disabled="removeMemberLoading || workspace.createdBy == store.user.id">
                   {{ store.user.id === admin.id ? "Leave" : "Remove from workspace" }}
                 </v-btn>
               </div>

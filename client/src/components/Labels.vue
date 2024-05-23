@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import axiosInstance from "../composables/axios";
 import { socket } from "../composables/socket";
 import { useToast } from "vue-toastification";
+import { toastError } from "@/composables/helper.js"
 
 const toast = useToast();
 
@@ -36,7 +37,7 @@ const updateCardLabels = async (labels) => {
     socket.emit("update-cards", props.boardId, [props.listId]);
     socket.emit("update-card", props.cardId);
   } catch (err) {
-    toast.error("An error occurred");
+    toastError(err);
   } finally {
     loading.value = false;
   }

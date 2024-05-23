@@ -2,6 +2,7 @@ const { User, Board } = require("../models/index");
 const ApiError = require("../utils/ApiError");
 const httpStatus = require("http-status");
 const googleStorage = require("../utils/googleStorage");
+require('express-async-errors');
 
 /**
  * Create a new user

@@ -101,7 +101,7 @@ const updateCardIsComplete = () => {
       socket.emit("update-card", card.value.id);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -124,7 +124,7 @@ const updateCardTitle = () => {
       socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -151,7 +151,7 @@ const updateCardDescription = () => {
       socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -178,7 +178,7 @@ const updateCardDates = () => {
       socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -216,7 +216,7 @@ const addCardCover = () => {
       socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     })
     .finally(() => {
       isLoading.value = false;
@@ -239,7 +239,7 @@ const deleteCardCover = () => {
       socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     })
     .finally(() => {
       isLoading.value = false;
@@ -270,7 +270,7 @@ const addAttachments = () => {
       attachments.value = [];
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     })
     .finally(() => {
       isLoading.value = false;
@@ -319,7 +319,7 @@ const deleteCard = () => {
       socket.emit("delete-card", cardId.value);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -341,7 +341,7 @@ const updateCardLabels = () => {
       socket.emit("update-card", card.value.id);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -398,7 +398,7 @@ const updateLabel = (labelId) => {
       socket.emit("update-card", card.value.id);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -423,7 +423,7 @@ const deleteLabel = (labelId) => {
       socket.emit("update-card", card.value.id);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 const openEditLabel = (label) => {

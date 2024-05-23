@@ -7,8 +7,7 @@ import axios from "axios";
 import { useToast } from "vue-toastification";
 import UserProfile from "../UserProfile.vue";
 import axiosInstance from "../../composables/axios";
-// env
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+import { toastError } from "../../composables/helper.js";
 
 // PROPS & EMITS
 const props = defineProps({
@@ -44,7 +43,7 @@ const inviteNewUser = () => {
       toast.success("User added successfully")
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     }).finally(() => {
       loading.value = false;
     })
@@ -63,7 +62,7 @@ const searchForUsers = async () => {
       users.value = response.data;
     }
   } catch (err) {
-    console.log(err);
+    toastError(err);
   }
 }
 watch(userToInvite, debounce(() => {

@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import axiosInstance from '../../composables/axios';
+import { toastError } from "@/composables/helper.js";
 
 const props = defineProps({
   workspace: Object
@@ -12,7 +13,7 @@ const toggleWorkspacePremium = async (val) => {
     await axiosInstance.put(`/w/${props.workspace.id}`, { isPremium: val }, {
     })
   } catch (err) {
-    console.log(err);
+    toastError(err);
   } finally {
     isLoading.value = false;
   }
@@ -33,12 +34,11 @@ const toggleWorkspacePremium = async (val) => {
           </p>
           <p v-else>
           </p>
-          <v-switch inset :loading="isLoading" :disabled="isLoading" @update:modelValue="(v) => toggleWorkspacePremium(v)"
-            label="Premium" color="primary" v-model="workspace.isPremium"></v-switch>
+          <v-switch inset :loading="isLoading" :disabled="isLoading"
+            @update:modelValue="(v) => toggleWorkspacePremium(v)" label="Premium" color="primary"
+            v-model="workspace.isPremium"></v-switch>
         </div>
       </v-card-text>
     </v-card>
   </div>
 </template>
-
-

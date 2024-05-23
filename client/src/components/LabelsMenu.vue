@@ -3,7 +3,8 @@ import { ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import axios from 'axios';
 import { socket } from '../composables/socket';
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+import { toastError } from "@/composables/helper.js"
+
 const props = defineProps({
   inDetails: Boolean,
   boardLabels: Array,
@@ -51,7 +52,7 @@ const deleteLabel = (labelId) => {
       socket.emit("update-cards", card.value.board.id, null)
       socket.emit("update-card", card.value.id);
     }).catch(err => {
-      console.log(err);
+      toastError(err);
     })
 }
 const createLabel = () => {
@@ -86,7 +87,7 @@ const updateCardLabels = () => {
     socket.emit("update-cards", res.data.board.id, [res.data.list.id])
     socket.emit("update-card", res.data.id);
   }).catch((err) => {
-    console.log(err);
+    toastError(err);
   })
 }
 const openEditLabel = (label) => {

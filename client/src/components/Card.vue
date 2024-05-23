@@ -11,8 +11,8 @@ import { storeToRefs } from "pinia";
 import axios from 'axios';
 import { useToast } from "vue-toastification";
 import axiosInstance from "../composables/axios";
+import { toastError } from "../composables/helper.js";
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const props = defineProps({
   card: Object,
   listName: String,
@@ -125,7 +125,7 @@ const copyCard = () => {
     socket.emit("update-cards", card.value.board, [props.card.list.id])
     toast.success("card copied");
   }).catch((err) => {
-    console.log(err);
+    toastError(err);
   })
 }
 
@@ -137,7 +137,7 @@ const copyCard = () => {
       <v-img v-if="card.cover" :src="card.cover" class="" cover height="90"></v-img>
       <v-card-title>
         <div v-if="card.labels && card.labels.length >= 1" class="flex gap-2 items-center flex-wrap">
-          <div v-for="label in  card.labels " class="h-2 w-10 rounded " :style="{ backgroundColor: label.color }">
+          <div v-for="label in card.labels " class="h-2 w-10 rounded " :style="{ backgroundColor: label.color }">
           </div>
         </div>
         <div class="flex justify-between items-center">
@@ -169,7 +169,7 @@ const copyCard = () => {
         </div>
         <div class="flex justify-between items-center">
           <div v-if="card.assignees.length > 0" class="flex pt-3 p-1 -space-x-2 overflow-hidden">
-            <UserAvatar v-for="   assignee    in    card.assignees   " :key="assignee.id" :user="assignee" />
+            <UserAvatar v-for="   assignee in card.assignees   " :key="assignee.id" :user="assignee" />
           </div>
           <div class="flex gap-3 items-center">
             <div class="inline-flex items-center gap-1" v-if="card.attachments.length > 0">
@@ -241,4 +241,3 @@ const copyCard = () => {
   background: rgba(0, 0, 0, 0.3);
 }
 </style>
-

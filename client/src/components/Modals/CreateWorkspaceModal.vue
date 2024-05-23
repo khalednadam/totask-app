@@ -4,6 +4,7 @@ import { ref, inject } from "vue";
 import { useDisplay } from "vuetify";
 import axiosInstance from "../../composables/axios";
 import { useRouter } from "vue-router";
+import { toastError } from "@/composables/helper.js";
 
 // GLOBAL
 const workspaceTypes = inject("WORKSPACETYPES");
@@ -44,7 +45,7 @@ const createWorkspace = async () => {
       emit("toggleModal");
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 </script>
@@ -63,7 +64,8 @@ const createWorkspace = async () => {
 
         <v-card-text class="">
           <v-text-field v-model="workspaceName" label="Workspace name"></v-text-field>
-          <v-select :items="workspaceTypes" v-model="workspaceType" label="Workspace type" variant="outlined"></v-select>
+          <v-select :items="workspaceTypes" v-model="workspaceType" label="Workspace type"
+            variant="outlined"></v-select>
           <v-textarea v-model="workspaceDescription" label="Workspace description"></v-textarea>
           <v-btn @click="createWorkspace" color="primary" class="w-full">Create</v-btn>
         </v-card-text>

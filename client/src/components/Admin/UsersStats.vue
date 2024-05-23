@@ -6,6 +6,8 @@ import { useTheme } from 'vuetify/lib/framework.mjs';
 import axios from 'axios';
 import { reactive } from 'vue';
 import axiosInstance from '../../composables/axios';
+import { toastError } from '@/composables/helper.js';
+
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement)
 
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -34,7 +36,7 @@ const getData = async () => {
     chartData.labels = response.data.map(d => `${d.month} ${d.year.toString()}`)
     chartData.datasets[0].data = [...response.data.map(d => d.count)]
   } catch (err) {
-    console.log(err);
+    toastError(err);
   } finally {
     isLoading.value = false;
   }

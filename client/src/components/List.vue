@@ -8,6 +8,7 @@ import { VueDraggable } from "vue-draggable-plus";
 import { useCardSearchStore } from "../stores/cardSearch.js";
 import { storeToRefs } from "pinia";
 import axiosInstance from "../composables/axios";
+import { toastError } from "@/composables/helper.js";
 
 const DeleteModal = defineAsyncComponent(
   () => import("./Modals/DeleteModal.vue")
@@ -84,7 +85,7 @@ const addCard = () => {
       toast.success("card added");
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     })
     .finally(() => {
       isAddingCardLoading.value = false;
@@ -103,7 +104,7 @@ const deleteCard = (cardId) => {
       socket.emit("delete-card", cardId);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -120,7 +121,7 @@ const updateList = () => {
       // socket.emit("update-lists", { boardId: res.data.board, results: res.data });
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -151,7 +152,7 @@ const updateCard = (cardId, newListId, oldListId, newPosition) => {
       socket.emit("update-card", cardId);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -223,7 +224,7 @@ const getCards = ({ done }) => {
       }
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 
@@ -240,7 +241,7 @@ const updateListColor = (color) => {
       // socket.emit("update-lists", { boardId: res.data.board, results: res.data });
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 }
 

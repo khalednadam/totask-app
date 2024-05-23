@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { Icon } from "@iconify/vue";
 import ChangeableText from "./ChangeableText.vue";
 import { socket } from "../composables/socket";
+import { toastError } from "@/composables/helper.js"
 
 const props = defineProps({
   checklistItem: Object,
@@ -37,27 +38,17 @@ const convertToCard = () => {
       socket.emit("update-cards", props.boardId, [props.listId]);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 </script>
 <template>
   <v-list-item density="compact" class="flex items-center justify-center">
     <template v-slot:prepend>
-      <v-checkbox
-        class="self-start"
-        @change="$emit('updateChecklistItem', title, checklistItem.isChecked)"
-        color="primary"
-        density="compact"
-        v-model="checklistItem.isChecked"
-        hide-details
-      ></v-checkbox>
+      <v-checkbox class="self-start" @change="$emit('updateChecklistItem', title, checklistItem.isChecked)"
+        color="primary" density="compact" v-model="checklistItem.isChecked" hide-details></v-checkbox>
     </template>
-    <ChangeableText
-      v-model="title"
-      class="w-full"
-      @update="() => updateTitle()"
-    />
+    <ChangeableText v-model="title" class="w-full" @update="() => updateTitle()" />
     <v-menu>
       <template v-slot:activator="{ props }">
         <v-btn v-bind="props" icon variant="text" size="x-small">
@@ -65,24 +56,14 @@ const convertToCard = () => {
         </v-btn>
       </template>
       <v-list>
-        <v-list-item
-          @click="convertToCard"
-          density="compact"
-          class="flex flex-row items-center"
-          :rounded="false"
-        >
+        <v-list-item @click="convertToCard" density="compact" class="flex flex-row items-center" :rounded="false">
           <div class="flex items-center">
             <Icon icon="ph:copy" width="25" />
             <p>Convert to card</p>
           </div>
         </v-list-item>
-        <v-list-item
-          @click="$emit('deleteChecklistItem', checklistItem.id)"
-          base-color="error"
-          density="compact"
-          class="flex flex-row items-center"
-          :rounded="false"
-        >
+        <v-list-item @click="$emit('deleteChecklistItem', checklistItem.id)" base-color="error" density="compact"
+          class="flex flex-row items-center" :rounded="false">
           <div class="flex items-center">
             <Icon icon="ph:trash" width="25" />
             <p>Delete</p>

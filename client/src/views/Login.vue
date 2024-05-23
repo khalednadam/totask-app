@@ -65,7 +65,6 @@ const login = handleSubmit(async () => {
     })
     .catch((err) => {
       toastError(err);
-      console.log(err);
     }).finally(() => {
       isLoading.value = false;
     })

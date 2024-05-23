@@ -29,6 +29,7 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import { useCardSearchStore } from "../stores/cardSearch";
 import axiosInstance from "../composables/axios";
 import { createDeviceDetector } from "next-vue-device-detector";
+import { toastError } from "@/composables/helper.js"
 
 const d = createDeviceDetector()
 const isMobile = ref(d.mobile);
@@ -101,7 +102,7 @@ const reopenBoard = (workspaceId) => {
       socket.emit("change-board-info", route.params.boardId);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     })
     .finally(() => {
       isLoading.value = false;
@@ -459,7 +460,8 @@ const handleDrawerShortcut = (e) => {
           </template>
         </Suspense>
       </v-dialog>
-      <DangerDeleteModal :is-loading="isLoading" v-model="deleteBoardDialog" :name="board?.name" @delete="deleteBoard" />
+      <DangerDeleteModal :is-loading="isLoading" v-model="deleteBoardDialog" :name="board?.name"
+        @delete="deleteBoard" />
     </v-main>
   </div>
 </template>

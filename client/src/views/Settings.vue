@@ -316,7 +316,7 @@ const sendVerificationEmail = async () => {
     </v-form>
     <p class="text-xl">Change password</p>
     <v-divider class="mt-2 border-2 border-black dark:border-white"></v-divider>
-    <v-btn @click="changePasswordDialog = true" class="mt-2">
+    <v-btn @click="changePasswordDialog = true" color="primary" class="mt-2">
       Change password
     </v-btn>
     <p class="text-xl text-error mt-5">Delete account</p>

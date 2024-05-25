@@ -99,10 +99,10 @@ app.use((err, req, res, next) => {
   }
 
   // For unexpected errors, log the error for further analysis
-  console.error(err); // Log the error for further analysis
   res.status(500).json({
     status: 'error',
     message: 'An unexpected error occurred!',
   });
 });
+
 module.exports = app;

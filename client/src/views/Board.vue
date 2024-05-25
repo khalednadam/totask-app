@@ -29,9 +29,9 @@ import VueDatePicker from "@vuepic/vue-datepicker";
 import { useCardSearchStore } from "../stores/cardSearch";
 import axiosInstance from "../composables/axios";
 import { createDeviceDetector } from "next-vue-device-detector";
-import { toastError } from "@/composables/helper.js"
+import { toastError } from "@/composables/helper.js";
 
-const d = createDeviceDetector()
+const d = createDeviceDetector();
 const isMobile = ref(d.mobile);
 
 const DangerDeleteModal = defineAsyncComponent(
@@ -55,7 +55,7 @@ const CardDetails = defineAsyncComponent(
 
 const InBoardWorkspaceBoards = defineAsyncComponent(
   () => import("../components/InBoardWorkspaceBoards.vue")
-)
+);
 
 const cardSearch = useCardSearchStore();
 const { searchAssignees, searchDate, searchLabels, isFilter } =
@@ -190,11 +190,10 @@ const toggleFavorite = (boardId) => {
 };
 
 const handleDrawerShortcut = (e) => {
-  if ((e.ctrlKey && e.code === 'Slash')) {
+  if (e.ctrlKey && e.code === "Slash") {
     toggleDrawer();
   }
-}
-
+};
 </script>
 
 <template>
@@ -406,7 +405,7 @@ const handleDrawerShortcut = (e) => {
           <Suspense v-if="board">
             <DraggableLists :is-workspace-premium="board.workspace.isPremium" />
           </Suspense>
-          <div class="min-w-[350px] ">
+          <div class="min-w-[350px]">
             <v-btn text="Add a new list" color="list" class="flex w-[272px] font-bold justify-start text-start rounded"
               height="60" rounded="lg" v-if="!showAddList" @click="() => (showAddList = true)" variant="flat"
               elevation="1">
@@ -437,8 +436,8 @@ const handleDrawerShortcut = (e) => {
       <!-- Board Settings  -->
       <v-navigation-drawer v-if="boardCopy" location="right" temporary v-model="boardSettingsDialog" width="500">
         <v-list v-if="isAdmin">
-          <BoardSettings :workspaceAllMembers="board.workspace.members" v-model="boardSettingsDialog" :board="board"
-            @success="() => success()" />
+          <BoardSettings :workspaceAllMembers="board.workspace.members"
+            v-model:boardSettingsDialog="boardSettingsDialog" v-model:board="board" @success="() => success()" />
         </v-list>
         <v-list v-else>
           <BoardInfo :board />

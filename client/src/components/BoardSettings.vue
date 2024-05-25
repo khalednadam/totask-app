@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue"
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
 import { socket } from "../composables/socket";
@@ -8,21 +8,22 @@ import axiosInstance from "../composables/axios";
 import { toastError } from "@/composables/helper.js";
 
 const props = defineProps({
-  board: Object,
-  workspaceAllMembers: Array
-})
+  workspaceAllMembers: Array,
+});
 
-const boardSettingsDialog = defineModel();
+const boardSettingsDialog = defineModel("boardSettingsDialog");
+const board = defineModel("board");
 
-const emit = defineEmits(["success"])
+const emit = defineEmits(["success"]);
 
 const deleteBoardDialog = ref(false);
+
 const route = useRoute();
-const newName = ref(props.board.name);
-const newDescription = ref(props.board.description);
-const newBackgroundColor = ref(props.board.backgroundColor);
-const newIsPrivate = ref(props.board.isPrivate);
-const newMembers = ref(props.board.members);
+const newName = ref(board.value.name);
+const newDescription = ref(board.value.description);
+const newBackgroundColor = ref(board.value.backgroundColor);
+const newIsPrivate = ref(board.value.isPrivate);
+const newMembers = ref(board.value.members);
 const nameOfBoardToDelete = ref("");
 const router = useRouter();
 const closeBoardDialog = ref(false);
@@ -30,67 +31,77 @@ const isLoading = ref(false);
 
 const closeBoard = () => {
   isLoading.value = true;
-  axiosInstance.put(`/b/${route.params.boardId}`,
-    {
-      workspace: props.board.workspace.id,
-      closed: true
-    }
-    ,
-    { withCredentials: true }).then((res) => {
+  axiosInstance
+    .put(
+      `/b/${route.params.boardId}`,
+      {
+        workspace: board.value.workspace.id,
+        closed: true,
+      },
+      { withCredentials: true }
+    )
+    .then((res) => {
       emit("success");
-      socket.emit("change-board-info", props.board.id)
-      router.go(`/workspace/${props.board.workspace.id}`);
-    }).catch((err) => {
-      console.log(err)
-    }).finally(() => {
-      isLoading.value = false;
+      socket.emit("change-board-info", board.value.id);
+      router.go(`/workspace/${board.value.workspace.id}`);
     })
-}
+    .catch((err) => {
+      toastError(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 const updateBoard = () => {
   isLoading.value = true;
-  axiosInstance.put(`/b/${route.params.boardId}`,
-    {
-      name: newName.value,
-      description: newDescription.value,
-      backgroundColor: newBackgroundColor.value,
-      isPrivate: newIsPrivate.value,
-      members: newMembers.value || [],
-      workspace: props.board.workspace.id
-    }
-    ,
-    { withCredentials: true }).then((res) => {
-      emit("success")
-      socket.emit("change-board-info", props.board.id)
-    }).catch((err) => {
-      console.log(err)
-    }).finally(() => {
-      isLoading.value = false;
+  axiosInstance
+    .put(
+      `/b/${route.params.boardId}`,
+      {
+        name: newName.value,
+        description: newDescription.value,
+        backgroundColor: newBackgroundColor.value,
+        isPrivate: newIsPrivate.value,
+        members: newMembers.value || [],
+        workspace: board.value.workspace.id,
+      },
+      { withCredentials: true }
+    )
+    .then((res) => {
+      socket.emit("change-board-info", board.value._id);
+      emit("success");
     })
-}
+    .catch((err) => {
+      toastError(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 
 const deleteBoard = () => {
   isLoading.value = true;
-  axiosInstance.delete(`/b/${route.params.boardId}`,
-    { withCredentials: true }).then((res) => {
-      emit("success")
-      socket.emit("change-board-info", props.board.id)
-      router.push("/")
-    }).catch((err) => {
-      console.log(err)
-    }).finally(() => {
-      isLoading.value = false;
+  axiosInstance
+    .delete(`/b/${route.params.boardId}`, { withCredentials: true })
+    .then((res) => {
+      emit("success");
+      socket.emit("change-board-info", board.value.id);
+      router.push("/");
     })
-}
-
+    .catch((err) => {
+      toastError(err);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
 </script>
 
 <template>
-  <div class="w-full flex items-center ">
-    <h2 class="text-xl text-center w-full">
-      Board Settings
-    </h2>
-    <v-btn variant="text" class="justify-self-end " icon size="35" @click="() => boardSettingsDialog = false">
+  <div class="w-full flex items-center">
+    <h2 class="text-xl text-center w-full">Board Settings</h2>
+    <v-btn variant="text" class="justify-self-end" icon size="35" @click="() => (boardSettingsDialog = false)">
       <Icon icon="ph:x"></Icon>
     </v-btn>
   </div>
@@ -110,8 +121,8 @@ const deleteBoard = () => {
           <div>
             <h3 class="text-xl font-bold">Public</h3>
             <p>
-              All members in the workspace can view this board and
-              contribute to it
+              All members in the workspace can view this board and contribute to
+              it
             </p>
           </div>
         </template></v-radio>
@@ -120,8 +131,8 @@ const deleteBoard = () => {
           <div>
             <h3 class="text-xl font-bold">Private</h3>
             <p>
-              Only members added to the board can view this board and
-              contribute to it
+              Only members added to the board can view this board and contribute
+              to it
             </p>
           </div>
         </template>
@@ -166,8 +177,7 @@ const deleteBoard = () => {
                 This is permanent and can't be undone.
               </li>
               <li>
-                All the data related to this board will be permanently
-                deleted
+                All the data related to this board will be permanently deleted
               </li>
             </ul>
             <p class="pt-5 pb-1">Enter the board name to delete it</p>
@@ -183,6 +193,6 @@ const deleteBoard = () => {
   <v-dialog v-model="closeBoardDialog" width="500">
     <DeleteModal title="Are you sure you want to close this board?"
       text="After closing this board you will not be able to modify it." action-btn-text="Close"
-      @delete="() => closeBoard()" @cancel="() => closeBoardDialog = false" />
+      @delete="() => closeBoard()" @cancel="() => (closeBoardDialog = false)" />
   </v-dialog>
 </template>

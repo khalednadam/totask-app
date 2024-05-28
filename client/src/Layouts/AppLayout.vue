@@ -7,10 +7,10 @@ import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "@/stores/auth";
 import CreateWorkspace from "@/components/Modals/CreateWorkspaceModal.vue";
 import AddMemberToWorkspaceModal from "@/components/Modals/AddMemberToWorkspaceModal.vue";
-import WorkspaceListItem from "../components/WorkspaceListItem.vue";
-import Header from "../components/Header.vue";
-import LogoutBtn from "../components/LogoutBtn.vue";
-import { getWorkspaces } from "../composables/utils";
+import WorkspaceListItem from "@/components/WorkspaceListItem.vue";
+import Header from "@/components/Header.vue";
+import LogoutBtn from "@/components/LogoutBtn.vue";
+import { getWorkspaces } from "@/composables/utils";
 import { createDeviceDetector } from "next-vue-device-detector";
 
 const d = createDeviceDetector()

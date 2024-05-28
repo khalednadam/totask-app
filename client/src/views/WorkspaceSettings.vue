@@ -11,11 +11,11 @@ import {
   // getWorkspaceMembers,
   // getWorkspace,
   isUserWorkspaceAdmin
-} from "../composables/utils";
+} from "@/composables/utils";
 import { useToast } from "vue-toastification";
-import DeleteModal from "../components/Modals/DeleteModal.vue";
-import UserProfile from "../components/UserProfile.vue";
-import axiosInstance from "../composables/axios";
+import DeleteModal from "@/components/Modals/DeleteModal.vue";
+import UserProfile from "@/components/UserProfile.vue";
+import axiosInstance from "@/composables/axios";
 import { toastError } from "@/composables/helper.js"
 
 
@@ -74,8 +74,7 @@ const requestPremium = async () => {
     })
     workspace.premiumRequested = true;
   } catch (err) {
-    // (err);
-    console.log(err);
+    toastError(err);
   } finally {
     loading.value = false;
     premiumDialog.value = false;

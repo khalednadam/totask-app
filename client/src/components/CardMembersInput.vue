@@ -32,7 +32,7 @@ const updateCardAssignees = () => {
       socket.emit("update-card", props.cardId);
     })
     .catch((err) => {
-      console.log(err);
+      toastError(err);
     });
 };
 </script>

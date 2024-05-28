@@ -1,25 +1,25 @@
 <script setup>
+import { toastError } from "@/composables/helper.js";
 import { Icon } from "@iconify/vue";
-import { ref, onMounted, computed, watch, onUnmounted } from "vue";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { QuillEditor } from "@vueup/vue-quill";
-import { getMembersOfBoard, useCard } from "../../composables/utils";
-import UserAvatar from "../UserAvatar.vue";
-import DatePicker from "../DatePicker.vue";
-import CardMembersInput from "../CardMembersInput.vue";
-import Checklist from "../Checklist.vue";
-import AddChecklistCard from "../AddChecklistCard.vue";
-import { socket } from "../../composables/socket";
-import { useCardDetailsStore } from "../../stores/cardDetails";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { storeToRefs } from "pinia";
-import DeleteModal from "./DeleteModal.vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useToast } from "vue-toastification";
-import Comment from "../Comment.vue";
-import { useCurrentUser } from "../../stores/auth";
-import Attachment from "../Attachment.vue";
-import axiosInstance from "../../composables/axios";
-import Labels from "../Labels.vue";
-import { toastError } from "@/composables/helper.js"
+import axiosInstance from "@/composables/axios";
+import { socket } from "@/composables/socket";
+import { getMembersOfBoard, useCard } from "@/composables/utils";
+import { useCurrentUser } from "@/stores/auth";
+import { useCardDetailsStore } from "@/stores/cardDetails";
+import AddChecklistCard from "@/components/AddChecklistCard.vue";
+import Attachment from "@/components/Attachment.vue";
+import CardMembersInput from "@/components/CardMembersInput.vue";
+import Checklist from "@/components/Checklist.vue";
+import Comment from "@/components/Comment.vue";
+import DatePicker from "@/components/DatePicker.vue";
+import Labels from "@/components/Labels.vue";
+import UserAvatar from "@/components/UserAvatar.vue";
+import DeleteModal from "@/components/Modals/DeleteModal.vue";
 
 // INITS
 const props = defineProps({
@@ -28,7 +28,6 @@ const props = defineProps({
 });
 const emit = defineEmits(["closeModal", "updateCard", "deleteCard"]);
 const cardDetails = useCardDetailsStore();
-const labelsMenu = ref(false);
 const { isActive, cardId } = storeToRefs(cardDetails);
 const deleteDialog = ref(false);
 const quill = ref("");
@@ -38,9 +37,6 @@ const setText = () => {
   text.value = quill.value.getText();
 };
 const { card, isCardLoading } = await useCard(cardId.value);
-const currentUser = useCurrentUser();
-// CONST
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 // REFS
 const changeCardTitle = ref(false);
 const descriptionToChange = ref(card?.value.description);
@@ -54,7 +50,6 @@ const toast = useToast();
 const date = ref();
 let attachments = ref([]);
 
-const membersMenu = ref(false);
 // Dialogs and menus
 const changeCardDescription = ref(false);
 const datesMenu = ref(false);

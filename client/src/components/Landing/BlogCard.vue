@@ -1,5 +1,5 @@
 <script setup>
-import { useCurrentUser } from '../../stores/auth';
+import { useCurrentUser } from '@/stores/auth';
 const authStore = useCurrentUser();
 
 const fullDateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };

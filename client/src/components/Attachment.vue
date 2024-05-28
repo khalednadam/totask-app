@@ -1,7 +1,6 @@
 <script setup>
-import axios from 'axios';
-import { socket } from '../composables/socket';
-import axiosInstance from '../composables/axios';
+import axiosInstance from '@/composables/axios';
+import { socket } from '@/composables/socket';
 
 const props = defineProps({
   src: String,

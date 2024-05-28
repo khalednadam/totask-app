@@ -1,13 +1,12 @@
 <script setup>
 
 // IMPORTS
-import { watch, ref } from "vue";
-import debounce from 'lodash.debounce'
-import axios from "axios";
+import UserProfile from "@/components/UserProfile.vue";
+import axiosInstance from "@/composables/axios";
+import { toastError } from "@/composables/helper.js";
+import debounce from 'lodash.debounce';
+import { ref, watch } from "vue";
 import { useToast } from "vue-toastification";
-import UserProfile from "../UserProfile.vue";
-import axiosInstance from "../../composables/axios";
-import { toastError } from "../../composables/helper.js";
 
 // PROPS & EMITS
 const props = defineProps({

@@ -8,6 +8,7 @@ import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import UserProfile from "./UserProfile.vue";
 import axiosInstance from "../composables/axios";
+import { toastError } from "../composables/helper";
 
 
 // PROPS & EMITS
@@ -39,8 +40,7 @@ const requestPremium = async () => {
     })
     props.workspace.premiumRequested = true;
   } catch (err) {
-    // (err);
-    console.log(err);
+    toastError(err);
   } finally {
     loading.value = false;
     premiumDialog.value = false;

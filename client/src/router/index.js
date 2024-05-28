@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import AppLayout from "../Layouts/AppLayout.vue";
-import AuthLayout from "../Layouts/AuthLayout.vue";
-import BoardLayout from "../Layouts/BoardLayout.vue"
-import LandingLayout from "../Layouts/LandingLayout.vue"
-import AdminLayout from "../Layouts/AdminLayout.vue"
+import AppLayout from "@/Layouts/AppLayout.vue";
+import AuthLayout from "@/Layouts/AuthLayout.vue";
+import BoardLayout from "@/Layouts/BoardLayout.vue"
+import LandingLayout from "@/Layouts/LandingLayout.vue"
+import AdminLayout from "@/Layouts/AdminLayout.vue"
 import { createPinia } from "pinia";
-import { useCurrentUser } from "../stores/auth";
+import { useCurrentUser } from "@/stores/auth";
 
 const pinia = createPinia();
 const currentUserStore = useCurrentUser(pinia);

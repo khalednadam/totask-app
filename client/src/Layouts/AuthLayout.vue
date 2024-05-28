@@ -1,13 +1,9 @@
 <script setup>
 // IMPPORTS
-import { Icon } from "@iconify/vue";
-import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 // INITS
-const router = useRouter();
 const { mdAndUp } = useDisplay();
 
-const goBack = () => router.go(-1);
 </script>
 
 <template>

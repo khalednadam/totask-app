@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import AddBoardModal from "./Modals/AddBoardModal.vue";
+import AddBoardModal from "@/components/Modals/AddBoardModal.vue";
 import { Icon } from "@iconify/vue";
 
 const props = defineProps({

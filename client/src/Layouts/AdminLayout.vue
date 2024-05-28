@@ -1,14 +1,14 @@
 <script setup>
 // IMPORTS
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "@/stores/auth";
 import CreateWorkspace from "@/components/Modals/CreateWorkspaceModal.vue";
 import AddMemberToWorkspaceModal from "@/components/Modals/AddMemberToWorkspaceModal.vue";
-import Header from "../components/Admin/Header.vue";
-import LogoutBtn from "../components/LogoutBtn.vue";
+import Header from "@/components/Admin/Header.vue";
+import LogoutBtn from "@/components/LogoutBtn.vue";
 
 // env
 
@@ -86,7 +86,8 @@ onMounted(() => {
           </v-list-item>
         </router-link>
         <router-link to="/admin/blog">
-          <v-list-item color="primary" title="Blog" :active="router.currentRoute.value.fullPath.includes('/admin/blog')">
+          <v-list-item color="primary" title="Blog"
+            :active="router.currentRoute.value.fullPath.includes('/admin/blog')">
             <template #prepend>
               <Icon icon="ph:newspaper" width="20"> </Icon>
             </template>
@@ -116,4 +117,3 @@ onMounted(() => {
   scrollbar-gutter: stable;
 }
 </style>
-

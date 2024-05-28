@@ -1,11 +1,11 @@
 <script setup>
+import DeleteModal from "@/components/Modals/DeleteModal.vue";
+import axiosInstance from "@/composables/axios";
+import { toastError } from "@/composables/helper.js";
+import { socket } from "@/composables/socket";
+import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { Icon } from "@iconify/vue";
-import { socket } from "../composables/socket";
-import DeleteModal from "./Modals/DeleteModal.vue";
-import axiosInstance from "../composables/axios";
-import { toastError } from "@/composables/helper.js";
 
 const props = defineProps({
   workspaceAllMembers: Array,

@@ -1,21 +1,18 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import AddBoardModal from "./Modals/AddBoardModal.vue";
-import { useDisplay } from "vuetify";
-import ModeSwitcher from "../components/ModeSwitcher.vue";
-import { ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useCardSearchStore } from "../stores/cardSearch"
-import Logo from "./Logo.vue";
+import { useRoute } from "vue-router";
+import { useDisplay } from "vuetify";
+import ModeSwitcher from "@/components/ModeSwitcher.vue";
+import { useCardSearchStore } from "@/stores/cardSearch";
+import Logo from "@/components/Logo.vue";
 
-const { lgAndUp, mdAndDown } = useDisplay();
+const { mdAndDown } = useDisplay();
 const route = useRoute();
 const props = defineProps({
   drawer: Boolean,
 });
 const emits = defineEmits(["toggleDrawer"]);
-const addNewBoardDialog = ref(false);
 const cardSearch = useCardSearchStore();
 
 const { searchWord } = storeToRefs(cardSearch);
@@ -96,7 +93,4 @@ const { searchWord } = storeToRefs(cardSearch);
     </v-row>
 
   </v-app-bar>
-  <v-dialog v-model="addNewBoardDialog">
-    <AddBoardModal :members="undefined" :workspace="undefined" @toggle-modal="() => (addNewBoardDialog = false)" />
-  </v-dialog>
 </template>

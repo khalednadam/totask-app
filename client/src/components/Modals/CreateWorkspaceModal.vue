@@ -1,21 +1,20 @@
 <script setup>
 // IMPORTS
-import { ref, inject } from "vue";
-import { useDisplay } from "vuetify";
-import axiosInstance from "../../composables/axios";
-import { useRouter } from "vue-router";
+import axiosInstance from "@/composables/axios";
 import { toastError } from "@/composables/helper.js";
+import { inject, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 
 // GLOBAL
 const workspaceTypes = inject("WORKSPACETYPES");
 
-// env
 
 // PROPS & EMITS
 const emit = defineEmits(["toggleModal"]);
 
 // INITS
-const { mdAndUp, lgAndUp, mdAndDown } = useDisplay();
+const { lgAndUp } = useDisplay();
 const router = useRouter();
 
 // REFS

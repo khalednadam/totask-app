@@ -1,9 +1,8 @@
 <script setup>
-import axios from "axios";
-import { Icon } from "@iconify/vue";
-import { ref, computed, onMounted } from "vue";
 import { useFavoriteBoardsStore } from "@/stores/favoriteBoards";
+import { Icon } from "@iconify/vue";
 import { storeToRefs } from "pinia";
+import { computed, ref } from "vue";
 
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 

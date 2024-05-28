@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
 import { Icon } from "@iconify/vue";
+import { ref } from 'vue';
 
 const model = defineModel();
 const emits = defineEmits(["delete"])
@@ -38,8 +38,8 @@ const nameOfTheDelete = ref("");
             <p class="pt-5 pb-1">Enter the board name to delete it</p>
             <v-text-field density="compact" v-model="nameOfTheDelete">
             </v-text-field>
-            <v-btn class="w-full" color="error" :loading="isLoading" :disabled="nameOfTheDelete !== name" variant="outlined"
-              @click="$emit('delete')">delete</v-btn>
+            <v-btn class="w-full" color="error" :loading="isLoading" :disabled="nameOfTheDelete !== name"
+              variant="outlined" @click="$emit('delete')">delete</v-btn>
           </v-card-text>
         </v-col>
       </v-row>

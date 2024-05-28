@@ -1,5 +1,5 @@
 <script setup>
-import UserAvatar from "../UserAvatar.vue";
+import UserAvatar from "@/components/UserAvatar.vue";
 const props = defineProps({
   user: Object
 })
@@ -33,5 +33,3 @@ const props = defineProps({
     </v-card-text>
   </v-card>
 </template>
-
-

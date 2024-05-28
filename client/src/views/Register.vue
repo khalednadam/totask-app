@@ -74,6 +74,7 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 const isLoading = ref(false);
 
+const goback = () => router.go(-1);
 // FUNCTIONS
 const register = handleSubmit(async () => {
   if (password !== password) {
@@ -122,7 +123,15 @@ const register = handleSubmit(async () => {
 </script>
 <template>
   <div>
-    <h1 class="text-7xl mb-10 text-primary">Register</h1>
+    <div class="flex flex-col gap-5">
+      <v-btn @click="goback" icon variant="tonal" size="small" color="primary" class="">
+        <Icon icon="ph:caret-left" class="text-primary" width="25" />
+      </v-btn>
+      <div>
+        <h1 class="text-7xl mb-10 text-primary">Register</h1>
+      </div>
+    </div>
+
     <v-form class="my-auto flex flex-col">
       <div>
         <p>Name</p>

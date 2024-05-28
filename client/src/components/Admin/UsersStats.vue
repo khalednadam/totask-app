@@ -1,16 +1,14 @@
 <script setup>
-import { Bar, Line } from 'vue-chartjs'
+import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js'
 import { onMounted, ref } from 'vue';
 import { useTheme } from 'vuetify/lib/framework.mjs';
-import axios from 'axios';
 import { reactive } from 'vue';
-import axiosInstance from '../../composables/axios';
+import axiosInstance from '@/composables/axios';
 import { toastError } from '@/composables/helper.js';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement)
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const theme = useTheme();
 const chartData = reactive({
   labels: null,

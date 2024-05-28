@@ -1,9 +1,8 @@
 <script setup>
-import { Icon } from "@iconify/vue";
 import { useDisplay } from "vuetify";
-import ModeSwitcher from "../../components/ModeSwitcher.vue";
+import ModeSwitcher from "@/components/ModeSwitcher.vue";
 import { useRoute } from "vue-router";
-import Logo from "../Logo.vue";
+import Logo from "@/components/Logo.vue";
 
 const { mdAndUp, smAndDown } = useDisplay();
 const route = useRoute();
@@ -35,4 +34,3 @@ const emits = defineEmits(["toggleDrawer"]);
     </v-row>
   </v-app-bar>
 </template>
-

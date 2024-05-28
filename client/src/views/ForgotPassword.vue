@@ -8,7 +8,7 @@ import { Icon } from "@iconify/vue"
 import axiosInstance from "../composables/axios";
 import { toastError } from "@/composables/helper.js"
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+const router = useRouter();
 const toast = useToast();
 const { handleSubmit, isSubmitting } = useForm({
   validationSchema: {
@@ -22,6 +22,7 @@ const { handleSubmit, isSubmitting } = useForm({
 
 // FIELDS
 const email = useField("email");
+const goback = () => router.go(-1);
 
 
 const sendPasswordEmail = handleSubmit(async () => {
@@ -49,7 +50,14 @@ const sendPasswordEmail = handleSubmit(async () => {
 </script>
 <template>
   <div>
-    <h1 class="text-7xl mb-10 text-primary">Forgot Passowrd</h1>
+    <div class="flex flex-col gap-5">
+      <v-btn @click="goback" icon variant="tonal" size="small" color="primary" class="">
+        <icon icon="ph:caret-left" class="text-primary" width="25" />
+      </v-btn>
+      <div>
+        <h1 class="text-7xl mb-10 text-primary">Forgot Password</h1>
+      </div>
+    </div>
     <v-form class="my-auto flex flex-col" @submit.prevent="sendPasswordEmail">
       <div>
         <p>Email</p>

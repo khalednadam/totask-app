@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import axiosInstance from '../../composables/axios';
+import axiosInstance from '@/composables/axios';
 import { toastError } from "@/composables/helper.js";
 
 const props = defineProps({

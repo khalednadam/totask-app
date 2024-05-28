@@ -1,10 +1,9 @@
 <script setup>
+import axiosInstance from '@/composables/axios';
+import { socket } from '@/composables/socket';
 import { Icon } from '@iconify/vue';
-import axios from 'axios';
 import { ref } from 'vue';
-import { useToast } from "vue-toastification"
-import { socket } from '../composables/socket';
-import axiosInstance from '../composables/axios';
+import { useToast } from "vue-toastification";
 
 const props = defineProps({
   checklist: Object,
@@ -14,7 +13,6 @@ const props = defineProps({
 })
 const emit = defineEmits(["addChecklist", "updateCard"])
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 const checklistName = ref("");
 const checklistMenu = ref(false);
 const toast = useToast();

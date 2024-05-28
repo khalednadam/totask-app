@@ -1,17 +1,15 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import DeleteModal from "@/components/Modals/DeleteModal.vue";
+import UserAvatar from "@/components/UserAvatar.vue";
+import axiosInstance from "@/composables/axios";
+import { toastError } from "@/composables/helper.js";
+import { socket } from "@/composables/socket";
+import { useCardDetailsStore } from "@/stores/cardDetails";
 import { Icon } from "@iconify/vue";
-import "../assets/override.css"
-import DeleteModal from "./Modals/DeleteModal.vue";
-import { defineAsyncComponent } from "vue";
-import UserAvatar from "./UserAvatar.vue";
-import { socket } from "../composables/socket";
-import { useCardDetailsStore } from "../stores/cardDetails";
 import { storeToRefs } from "pinia";
-import axios from 'axios';
+import { computed, onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
-import axiosInstance from "../composables/axios";
-import { toastError } from "../composables/helper.js";
+import "../assets/override.css";
 
 const props = defineProps({
   card: Object,

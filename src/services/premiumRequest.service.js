@@ -9,8 +9,10 @@ const { PremiumRequest, Workspace } = require("../models");
  * @returns {Promise<Object>} A Promise that resolves to the created premium request object.
  */
 const createPremiumRequest = async (requestBody) => {
-  console.log()
-
+  const workspace = await Workspace.findById(requestBody.workspace, ['premiumRequested', 'isPremium']);
+  if (workspace.premiumRequested || workspace.isPremium) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "This workspace has already a request pending.");
+  }
   await Workspace.findByIdAndUpdate(requestBody.workspace, { premiumRequested: true });
   return PremiumRequest.create(requestBody);
 }

@@ -353,7 +353,7 @@ watch(isUserAdmin, () => {
           </v-list>
         </div>
         <div class="flex flex-col w-max">
-          <v-btn v-if="workspace.isPremium" variant="flat" class="mt-5" color="primary" :loading="loading"
+          <v-btn v-if="!workspace.isPremium" variant="flat" class="mt-5" color="primary" :loading="loading"
             :disabled="loading || workspace.premiumRequested" @click="() => premiumDialog = true">
             <Icon icon="ph:crown-simple-fill" width="20" />
             Get premium

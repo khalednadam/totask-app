@@ -309,7 +309,7 @@ const sendVerificationEmail = async () => {
         <v-col cols="12" class="flex flex-col justify-end">
           <div class="flex justify-end gap-3">
             <v-btn color="primary" @click="() => router.go(-1)" variant="outlined">Cancel</v-btn>
-            <v-btn color="primary" @click="updateProfile">Save</v-btn>
+            <v-btn color="primary" @click="updateProfile" :disabled="isLoading" :loading="isLoading">Save</v-btn>
           </div>
         </v-col>
       </v-row>

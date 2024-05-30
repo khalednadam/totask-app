@@ -544,7 +544,8 @@ const changeCoverMenu = ref(false);
         <v-col cols="12" md="8">
           <!-- Labels -->
           <p class="mb-2">Labels</p>
-          <Labels :board-id="card.board.id" v-model:card-labels="card.labels" :list-id="card.list.id" :card-id="card.id"
+          <Labels @open-edit-label="(label) => openEditLabel(label)" :board-id="card.board.id"
+            v-model:card-labels="card.labels" :list-id="card.list.id" :card-id="card.id"
             @update-card="(newCard) => updateCard(newCard)" v-model:cardLabelsCopy="cardLabels"
             v-model:newLabelMenu="newLabelMenu" :board-labels="card.board.labels" />
           <!--  -->

@@ -4,7 +4,7 @@ const validate = require("../../middlewares/validate");
 const { cardValidation } = require("../../validations");
 const router = express.Router();
 const multer = require('multer');
-const checkCache = require("../../middlewares/redisCache");
+// const checkCache = require("../../middlewares/redisCache");
 const storage = multer.memoryStorage({
   destination: 'uploads/', // Specify the destination folder for uploaded files
   filename: (req, file, callback) => {

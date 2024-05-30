@@ -1,12 +1,10 @@
 <script setup>
+import axiosInstance from "@/composables/axios";
+import { toastError } from "@/composables/helper.js";
+import { socket } from "@/composables/socket";
 import { Icon } from '@iconify/vue';
 import { ref } from 'vue';
-import axiosInstance from "../composables/axios";
-import { socket } from "../composables/socket";
-import { useToast } from "vue-toastification";
-import { toastError } from "@/composables/helper.js"
 
-const toast = useToast();
 
 const cardLabelsCopy = defineModel('cardLabelsCopy');
 const cardLabels = defineModel('cardLabels');
@@ -19,7 +17,7 @@ const props = defineProps({
   listId: String,
 })
 
-const emit = defineEmits(["updateCard"])
+const emit = defineEmits(["updateCard", "openEditDialog"])
 const loading = ref(false);
 
 const updateCardLabels = async (labels) => {
@@ -80,7 +78,7 @@ const updateCardLabels = async (labels) => {
                     <Icon icon="ph:check" width="20" />
                   </template>
                 </v-btn>
-                <v-btn icon variant="text" size="small" @click="() => openEditLabel(label)">
+                <v-btn icon variant="text" size="small" @click="() => $emit('openEditDialog', label)">
                   <Icon icon="ph:pencil-simple" width="20" />
                 </v-btn>
               </div>

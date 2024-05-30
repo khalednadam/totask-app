@@ -17,7 +17,7 @@ const props = defineProps({
   listId: String,
 })
 
-const emit = defineEmits(["updateCard", "openEditDialog"])
+const emit = defineEmits(["updateCard", "openEditLabel"])
 const loading = ref(false);
 
 const updateCardLabels = async (labels) => {
@@ -78,7 +78,7 @@ const updateCardLabels = async (labels) => {
                     <Icon icon="ph:check" width="20" />
                   </template>
                 </v-btn>
-                <v-btn icon variant="text" size="small" @click="() => $emit('openEditDialog', label)">
+                <v-btn icon variant="text" size="small" @click="$emit('openEditLabel', label)">
                   <Icon icon="ph:pencil-simple" width="20" />
                 </v-btn>
               </div>

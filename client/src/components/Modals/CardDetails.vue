@@ -9,7 +9,6 @@ import { useToast } from "vue-toastification";
 import axiosInstance from "@/composables/axios";
 import { socket } from "@/composables/socket";
 import { getMembersOfBoard, useCard } from "@/composables/utils";
-import { useCurrentUser } from "@/stores/auth";
 import { useCardDetailsStore } from "@/stores/cardDetails";
 import AddChecklistCard from "@/components/AddChecklistCard.vue";
 import Attachment from "@/components/Attachment.vue";
@@ -422,6 +421,7 @@ const deleteLabel = (labelId) => {
     });
 };
 const openEditLabel = (label) => {
+  console.log(label)
   editLabel.value = true;
   labelToEdit.value = label;
 };
@@ -817,7 +817,16 @@ const changeCoverMenu = ref(false);
   </v-dialog>
   <v-dialog v-model="editLabel" :key="editLabel" width="350" class="w-max bg-red mx-auto">
     <v-card class="mx-auto" width="350">
-      <v-card-title class="text-center"> Edit label </v-card-title>
+      <v-card-title class="text-center">
+        <div class="flex justify-between items-center">
+          <p>
+            Edit label
+          </p>
+          <v-btn size="x-small" icon @click="() => editLabel = false">
+            <Icon icon="ph:x" width="25" />
+          </v-btn>
+        </div>
+      </v-card-title>
       <div class="bg-list mb-2 h-20 w-full flex justify-center items-center px-4">
         <v-btn :color="labelToEdit.color" variant="flat" class="w-full">
           <p v-if="labelToEdit.title">

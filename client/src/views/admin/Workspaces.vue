@@ -17,7 +17,7 @@ const getWorkspaces = async () => {
   try {
     const response = await axiosInstance.get(`/w/`, {
       params: {
-        limit: 12,
+        limit: 9,
         page: page.value,
         name: search.value,
         sortBy: "createdAt:desc"
@@ -70,5 +70,3 @@ watch(search, debounce(async () => {
       :length="workspaces.totalPages" rounded="large"></v-pagination>
   </div>
 </template>
-
-

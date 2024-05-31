@@ -18,7 +18,7 @@ const getUsers = async () => {
   try {
     const response = await axiosInstance.get(`/users/`, {
       params: {
-        limit: 12,
+        limit: 9,
         page: page.value,
         username: search.value,
         sortBy: "createdAt:desc"
@@ -71,5 +71,3 @@ watch(search, debounce(async () => {
       :length="users.totalPages" rounded="large"></v-pagination>
   </div>
 </template>
-
-

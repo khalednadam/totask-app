@@ -1,9 +1,8 @@
 <script setup>
-import axios from 'axios';
-import { ref, watchEffect } from 'vue';
-import BlogCard from '../../components/Landing/BlogCard.vue';
+import { ref, watchEffect, watch } from 'vue';
+import BlogCard from '@/components/Landing/BlogCard.vue';
 import { useRoute, useRouter } from 'vue-router';
-import axiosInstance from '../../composables/axios';
+import axiosInstance from '@/composables/axios';
 
 
 const route = useRoute();
@@ -11,13 +10,13 @@ const router = useRouter();
 
 const isLoading = ref(false);
 const posts = ref([]);
-const page = ref(route.query.page || 1)
+const page = ref(Number(route.query.page) || 1)
 const getBlogPosts = async () => {
   isLoading.value = true;
   try {
     const response = await axiosInstance.get(`/blog/posts`, {
       params: {
-        limit: 12,
+        limit: 9,
         page: page.value
       },
       withCredentials: true
@@ -32,6 +31,17 @@ const getBlogPosts = async () => {
 watchEffect(async () => {
   await getBlogPosts();
 })
+
+const selectPage = () => {
+  window.history.replaceState(null, '', `?page=${page.value}`)
+}
+
+watch(page, () => {
+  getBlogPosts();
+}, { deep: true, immediate: true, })
+
+
+
 </script>
 
 <template>
@@ -52,7 +62,7 @@ watchEffect(async () => {
       </template>
     </v-row>
 
-    <v-pagination v-model="page" color="primary" @update:model-value="router.replace({ query: { page: page } })"
+    <v-pagination v-model="page" color="primary" @update:model-value="(page) => selectPage(page)"
       :length="posts.totalPages" rounded="large"></v-pagination>
   </div>
 </template>

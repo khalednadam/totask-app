@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axiosInstance from '../../composables/axios';
 
@@ -9,13 +9,13 @@ const router = useRouter();
 const actionLoading = ref(false);
 const isLoading = ref(false);
 const requests = ref([]);
-const page = ref(route.query.page || 1)
+const page = ref(Number(route.query.page) || 1)
 const getRequests = async () => {
   isLoading.value = true;
   try {
     const response = await axiosInstance.get(`/premium-request/all`, {
       params: {
-        limit: 12,
+        limit: 9,
         page: page.value
       },
     })
@@ -59,6 +59,14 @@ const deleteReq = async (requestId) => {
     actionLoading.value = false;
   }
 }
+
+const selectPage = () => {
+  window.history.replaceState(null, '', `?page=${page.value}`)
+}
+
+watch(page, () => {
+  getRequests();
+}, { deep: true, immediate: true, })
 </script>
 
 <template>
@@ -98,7 +106,7 @@ const deleteReq = async (requestId) => {
       </template>
     </v-row>
 
-    <v-pagination v-model="page" color="primary" @update:model-value="(e) => changePage(e)" :length="requests.totalPages"
-      rounded="large"></v-pagination>
+    <v-pagination v-model="page" color="primary" @update:model-value="(page) => selectPage(page)"
+      :length="requests.totalPages" rounded="large"></v-pagination>
   </div>
 </template>

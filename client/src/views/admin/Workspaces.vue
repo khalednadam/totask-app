@@ -11,7 +11,7 @@ const route = useRoute();
 const search = ref(null);
 const isLoading = ref(false);
 const workspaces = ref({});
-const page = ref(route.query.page || 1);
+const page = ref(Number(route.query.page) || 1);
 const getWorkspaces = async () => {
   isLoading.value = true;
   try {
@@ -34,6 +34,14 @@ const getWorkspaces = async () => {
 onMounted(async () => {
   await getWorkspaces();
 })
+
+const selectPage = () => {
+  window.history.replaceState(null, '', `?page=${page.value}`)
+}
+
+watch(page, () => {
+  getWorkspaces();
+}, { deep: true, immediate: true, })
 
 
 watch(search, debounce(async () => {
@@ -66,7 +74,7 @@ watch(search, debounce(async () => {
       </v-row>
     </div>
 
-    <v-pagination v-model="page" color="primary" @update:model-value="$router.replace({ query: { page: page } })"
+    <v-pagination v-model="page" color="primary" @update:model-value="(page) => selectPage(page)"
       :length="workspaces.totalPages" rounded="large"></v-pagination>
   </div>
 </template>

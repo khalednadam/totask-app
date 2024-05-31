@@ -11,10 +11,9 @@ const route = useRoute();
 const search = ref(null);
 const isLoading = ref(false);
 const users = ref({});
-const page = ref(route.query.page || 1);
+const page = ref(Number(route.query.page) || 1);
 const getUsers = async () => {
   isLoading.value = true;
-  console.log(search.value || "hello");
   try {
     const response = await axiosInstance.get(`/users/`, {
       params: {
@@ -36,6 +35,13 @@ onMounted(async () => {
   await getUsers();
 })
 
+const selectPage = () => {
+  window.history.replaceState(null, '', `?page=${page.value}`)
+}
+
+watch(page, () => {
+  getUsers();
+}, { deep: true, immediate: true, })
 
 watch(search, debounce(async () => {
   if (search.value?.trim().length === 0 && typeof search.value === "string") {
@@ -60,14 +66,14 @@ watch(search, debounce(async () => {
       </div>
     </div>
     <div>
-      <v-row>
+      <v-row class="h-full">
         <v-col cols="12" md="4" v-for="user in users.results" :key="user._id">
           <UserCard :user="user" />
         </v-col>
       </v-row>
     </div>
 
-    <v-pagination v-model="page" color="primary" @update:model-value="$router.replace({ query: { page: page } })"
+    <v-pagination v-model="page" class="mt-32" color="primary" @update:model-value="(page) => selectPage(page)"
       :length="users.totalPages" rounded="large"></v-pagination>
   </div>
 </template>

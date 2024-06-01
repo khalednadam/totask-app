@@ -255,62 +255,65 @@ watch(cards, () => {
     <v-tooltip :text="list.name">
       <template v-slot:activator="{ props }">
         <v-card-title v-bind="props" class="flex sticky z-20 flex-row items-center justify-between header">
-          <div class="flex justify-between items-center">
-            <div @click="() => editName(listName)" v-if="!showRename"
-              class="w-max max-w-[88%] truncate cursor-pointer text-xl py-2 px-2 m-[0.5px]">
-              {{ list.name }}
-            </div>
-            <div v-click-outside="endEditName" v-else class="w-full">
-              <v-text-field class="text-2xl input" v-model="updateName" hide-details autofocus>
-              </v-text-field>
-            </div>
-            <v-menu rounded="lg">
-              <template v-slot:activator="{ props }">
-                <v-btn icon variant="text" size="30" class="bg-blue-200" v-if="!showRename" v-bind="props">
-                  <Icon icon="ph:dots-three-outline-fill" />
-                </v-btn>
-              </template>
-              <v-list rounded="lg">
-                <v-list-item v-if="isWorkspacePremium" :rounded="false">
-                  <p class="mb-2">
-                    Change list color
-                  </p>
-                  <div class="flex gap-2">
-                    <template v-for="color in listColors.slice(0, 4)">
-                      <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
-                        class="h-8 cursor-pointer flex w-12 rounded-lg">
-                      </v-btn>
-                    </template>
-                  </div>
-                  <div class="flex mt-2 gap-2">
-                    <template v-for="color in listColors.slice(4, 8)">
-                      <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
-                        class="h-8 cursor-pointer flex w-12 rounded-lg">
-                      </v-btn>
-                    </template>
-                  </div>
-                  <v-btn @click="() => updateListColor(null)" class="w-full mt-2" variant="tonal">
-                    Remove list color
+          <div class="">
+            <div class="flex items-center cursor-grab">
+              <Icon icon="ph:dots-six-vertical-bold" class="opacity-50 mr-1" width="30" />
+              <div @click="() => editName(listName)" v-if="!showRename"
+                class="w-full max-w-[90%] truncate items-center cursor-pointer text-xl py-2 pr-2 m-[0.5px]">
+                {{ list.name }}
+              </div>
+              <div v-click-outside="endEditName" v-else class="w-full">
+                <v-text-field class="text-2xl input" v-model="updateName" hide-details autofocus>
+                </v-text-field>
+              </div>
+              <v-menu rounded="lg">
+                <template v-slot:activator="{ props }">
+                  <v-btn icon variant="text" size="30" class="bg-blue-200" v-if="!showRename" v-bind="props">
+                    <Icon icon="ph:dots-three-outline-fill" />
                   </v-btn>
-                </v-list-item>
-                <v-list-item @click="() => (addCardInput = true)" density="compact" :rounded="false">
-                  <template v-slot:prepend>
-                    <Icon icon="ph:plus-circle" width="25" />
-                  </template>
-                  Add card
-                </v-list-item>
-                <v-list-item @click="deleteListDialog = true" :disabled="isDeleteLoading" :loading="isDeleteLoading"
-                  base-color="error" density="compact" :rounded="false">
-                  <template v-slot:prepend>
-                    <Icon icon="ph:trash" width="25" />
-                  </template>
-                  Delete this list
-                </v-list-item>
-              </v-list>
-            </v-menu>
-            <v-btn v-if="showRename" icon variant="tonal" color="primary" size="35" class="mx-1">
-              <Icon icon="ph:check" />
-            </v-btn>
+                </template>
+                <v-list rounded="lg">
+                  <v-list-item v-if="isWorkspacePremium" :rounded="false">
+                    <p class="mb-2">
+                      Change list color
+                    </p>
+                    <div class="flex gap-2">
+                      <template v-for="color in listColors.slice(0, 4)">
+                        <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
+                          class="h-8 cursor-pointer flex w-12 rounded-lg">
+                        </v-btn>
+                      </template>
+                    </div>
+                    <div class="flex mt-2 gap-2">
+                      <template v-for="color in listColors.slice(4, 8)">
+                        <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
+                          class="h-8 cursor-pointer flex w-12 rounded-lg">
+                        </v-btn>
+                      </template>
+                    </div>
+                    <v-btn @click="() => updateListColor(null)" class="w-full mt-2" variant="tonal">
+                      Remove list color
+                    </v-btn>
+                  </v-list-item>
+                  <v-list-item @click="() => (addCardInput = true)" density="compact" :rounded="false">
+                    <template v-slot:prepend>
+                      <Icon icon="ph:plus-circle" width="25" />
+                    </template>
+                    Add card
+                  </v-list-item>
+                  <v-list-item @click="deleteListDialog = true" :disabled="isDeleteLoading" :loading="isDeleteLoading"
+                    base-color="error" density="compact" :rounded="false">
+                    <template v-slot:prepend>
+                      <Icon icon="ph:trash" width="25" />
+                    </template>
+                    Delete this list
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+              <v-btn v-if="showRename" icon variant="tonal" color="primary" size="35" class="mx-1">
+                <Icon icon="ph:check" />
+              </v-btn>
+            </div>
           </div>
         </v-card-title>
       </template>

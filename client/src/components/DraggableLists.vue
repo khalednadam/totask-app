@@ -64,10 +64,10 @@ const deleteList = (listId) => {
 }
 </script>
 <template>
-  <div v-if='isLoading' v-for="i in 4" :key="i" class="px-5">
-    <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular>
-  </div>
-  <VueDraggable v-else ref="el" group="lists" handle=".header" v-model="lists" :animation="150" ghostClass="ghost"
+  <!-- <div v-if='isLoading' v-for="i in 4" :key="i" class="px-5"> -->
+  <!--   <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular> -->
+  <!-- </div> -->
+  <VueDraggable ref="el" group="lists" handle=".header" v-model="lists" :animation="150" ghostClass="ghost"
     class="justify-between mx-3 max-h-[90%] flex flex-1 gap-3 " scroll :scrollSensitivity="300" @update="onUpdate"
     bubbleScroll>
     <template v-for="(list, index) in lists" :key="list.id">

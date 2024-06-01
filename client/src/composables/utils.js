@@ -321,13 +321,14 @@ export const useLists = async (boardId) => {
     //   })
   }
 
-  // socket.on('update-lists', async (boardId) => {
-  //   await getLists();
-  // });
-
-  socket.on("update-lists", async (payload) => {
-    lists.value = payload.results;
+  socket.on('update-lists', async (boardId) => {
+    await getLists();
   });
+
+  // socket.on("update-lists", async (payload) => {
+  //   console.log(payload.results)
+  //   lists.value = payload.results;
+  // });
   onMounted(async () => {
     await getLists();
   });

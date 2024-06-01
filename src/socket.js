@@ -20,7 +20,8 @@ io.on("connection", (socket) => {
     // console.log("Joined to ", board);
   });
   socket.on("update-lists", (payload) => {
-    io.to(payload.boardId).emit("update-lists", payload.lists);
+    io.to(payload.boardId).emit("update-lists")
+    // io.to(payload.boardId).emit("update-lists", payload.lists);
   });
   socket.on("unsubscribe", (boardId) => {
     socket.leave(boardId);

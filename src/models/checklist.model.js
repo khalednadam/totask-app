@@ -55,16 +55,16 @@ checklistItemSchema.plugin(toJSON);
 //   next();
 // });
 //
-// checklistSchema.pre('save', function(next) {
-//   // Count the number of checked items
-//   const checkedItemsCount = this.checklistItems.reduce((count, item) => {
-//     return count + (item.isChecked ? 1 : 0);
-//   }, 0);
-//   // Update the checkedItemsCount field
-//   this.checkedItemsCount = checkedItemsCount;
-//
-//   next();
-// });
+checklistSchema.pre('save', function (next) {
+  // Count the number of checked items
+  const checkedItemsCount = this.checklistItems.reduce((count, item) => {
+    return count + (item.isChecked ? 1 : 0);
+  }, 0);
+  // Update the checkedItemsCount field
+  this.checkedItemsCount = checkedItemsCount;
+
+  next();
+});
 const Checklist = mongoose.model("Checklist", checklistSchema);
 
 module.exports = Checklist;

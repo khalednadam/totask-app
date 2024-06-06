@@ -13,7 +13,7 @@ const boardSchema = mongoose.Schema(
     backgroundColor: {
       type: String,
       required: true,
-      default: "default",
+      default: "#BDBDBD",
     },
     backgroundImage: {
       type: String,
@@ -79,7 +79,7 @@ const boardSchema = mongoose.Schema(
 );
 
 
-boardSchema.pre('deleteOne', async function(next) {
+boardSchema.pre('deleteOne', async function (next) {
   try {
     await listModel.deleteMany({ board: this._conditions._id });
     next();

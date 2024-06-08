@@ -478,14 +478,14 @@ const changeCoverMenu = ref(false);
 </script>
 
 <template>
-  <v-card v-if="isCardLoading" class="2xl:w-[35vw] xl:w-[50vw] w-[90vw] m-auto">
-    <v-card-text>
-      <div class="flex justify-center items-center w-full">
-        <v-progress-circular color="primary" indeterminate="disable-shrink" size="16" width="2"></v-progress-circular>
-      </div>
-    </v-card-text>
-  </v-card>
-  <v-card v-else class="2xl:w-[35vw] xl:w-[50vw] w-full mx-auto">
+  <!-- <v-card v-if="isCardLoading" class="2xl:w-[35vw] xl:w-[50vw] w-[90vw] m-auto"> -->
+  <!-- <v-card-text> -->
+  <!--   <div class="flex justify-center items-center w-full"> -->
+  <!--     <v-progress-circular color="primary" indeterminate="disable-shrink" size="16" width="2"></v-progress-circular> -->
+  <!--   </div> -->
+  <!-- </v-card-text> -->
+  <!-- </v-card> -->
+  <v-card class="2xl:w-[35vw] xl:w-[50vw] w-full mx-auto">
     <v-hover v-slot="{ isHovering, props }" :open-delay="200">
       <v-img v-bind="props" v-if="card.cover" :src="card.cover" cover height="200">
         <v-overlay :model-value="isHovering" scrim="black" class="align-end gap-2 flex space-x-4 justify-end" contained>

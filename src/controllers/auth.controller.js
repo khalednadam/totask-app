@@ -63,7 +63,7 @@ const emailAndPasswordLogin = catchAsync(async (req, res) => {
       console.error("Error saving session:", err);
       return res.status(500).send({ message: "Internal server error" });
     }
-    res.send({
+    res.status(httpStatus.OK).send({
       user: user.id,
       tokens: tokens,
     });

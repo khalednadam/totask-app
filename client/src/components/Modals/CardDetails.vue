@@ -852,7 +852,7 @@ const changeCoverMenu = ref(false);
 </template>
 <style scoped>
 :deep(.ql-container) {
-  font-family: "Lato", sans-serif !important;
+  font-family: "degular-text", sans-serif !important;
 }
 </style>
 

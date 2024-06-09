@@ -1,13 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 body {
-	font-family: "Lato", sans-serif !important;
+  font-family: "degular-text", sans-serif !important;
 }
+
 .v-btn {
   text-transform: unset !important;
-  font-family:"Lato", sans-serif !important;
-  letter-spacing: 0 !important; 
+  font-family: "degular-text", sans-serif !important;
+  letter-spacing: 0 !important;
 }
 
 /* width */
@@ -36,33 +38,39 @@ body {
   h1 {
     @apply text-3xl lg:text-3xl font-black;
   }
+
   h2 {
     @apply text-2xl lg:text-2xl font-bold;
   }
+
   h3 {
     @apply text-xl lg:text-xl font-bold;
   }
-  h4{
+
+  h4 {
     @apply text-lg lg:text-lg font-bold;
   }
 }
 
 /* Toast style */
-.Vue-Toastification__toast--success{
+.Vue-Toastification__toast--success {
   background-color: rgba(var(--v-theme-background), 1) !important;
   color: rgba(var(--v-theme-success), 1) !important;
 }
+
 .Vue-Toastification__close-button {
   color: rgba(var(--v-theme-success), 1) !important;
 }
 
-.Vue-Toastification__toast--error{
+.Vue-Toastification__toast--error {
   background-color: rgba(var(--v-theme-background), 1) !important;
   color: rgba(var(--v-theme-error), 1) !important;
 }
+
 .Vue-Toastification__close-button {
   color: rgba(var(--v-theme-error), 1) !important;
 }
+
 /* #app {
   max-width: 1280px;
   margin: 0 auto;

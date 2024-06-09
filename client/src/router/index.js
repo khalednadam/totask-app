@@ -88,7 +88,7 @@ const router = createRouter({
       name: "post",
       meta: {
         layout: LandingLayout,
-        auth: false,
+        auth: null,
         admin: false
       },
       component: () => import("../views/landing/BlogPost.vue")
@@ -98,7 +98,7 @@ const router = createRouter({
       name: "blogs",
       meta: {
         layout: LandingLayout,
-        auth: false,
+        auth: null,
         admin: false
       },
       component: () => import("../views/landing/Blogs.vue")

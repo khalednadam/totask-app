@@ -295,12 +295,12 @@ watch(cards, () => {
                       Remove list color
                     </v-btn>
                   </v-list-item>
-                  <v-list-item @click="() => (addCardInput = true)" density="compact" :rounded="false">
-                    <template v-slot:prepend>
-                      <Icon icon="ph:plus-circle" width="25" />
-                    </template>
-                    Add card
-                  </v-list-item>
+                  <!-- <v-list-item @click="() => (addCardInput.value = true)" density="compact" :rounded="false"> -->
+                  <!--   <template v-slot:prepend> -->
+                  <!--     <Icon icon="ph:plus-circle" width="25" /> -->
+                  <!--   </template> -->
+                  <!--   Add card -->
+                  <!-- </v-list-item> -->
                   <v-list-item @click="deleteListDialog = true" :disabled="isDeleteLoading" :loading="isDeleteLoading"
                     base-color="error" density="compact" :rounded="false">
                     <template v-slot:prepend>
@@ -354,8 +354,8 @@ watch(cards, () => {
         </v-btn>
         <div v-else class="flex flex-col gap-2 px-1 pt-2 pb-2" @keypress.enter="addCard()"
           @keydown.esc="addCardInput = false">
-          <v-text-field single-line autofocus v-model="newCardTitle" placeholder="Enter a title for this card" rows="2"
-            no-resize hide-details>
+          <v-text-field single-line v-model="newCardTitle" placeholder="Enter a title for this card" rows="2" no-resize
+            hide-details>
           </v-text-field>
           <div class="gap-2 flex">
             <v-btn color="primary" :loading="isAddingCardLoading" :disabled="isAddingCardLoading"

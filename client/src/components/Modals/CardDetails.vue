@@ -610,8 +610,9 @@ const changeCoverMenu = ref(false);
                   </v-btn>
                 </div>
               </div>
-              <div class="pt-2 max-w-full overflow-y-auto" v-if="card?.description && !changeCardDescription"
-                @click="changeCardDescription = true" v-html="card?.description"></div>
+              <div class="pt-2 max-w-full overflow-y-auto description"
+                v-if="card?.description && !changeCardDescription" @click="changeCardDescription = true"
+                v-html="card?.description"></div>
             </div>
             <!-- -->
 
@@ -850,12 +851,22 @@ const changeCoverMenu = ref(false);
     </v-card>
   </v-dialog>
 </template>
-<style scoped>
-:deep(.ql-container) {
+<style scoped>:deep(.ql-container) {
   font-family: "degular-text", sans-serif !important;
 }
-</style>
 
-<style>
-@import "../../assets/override.css";
-</style>
+:deep(.description ul) {
+  list-style: disc !important;
+  padding: 20px;
+}
+
+:deep(.description li) {
+  list-style: disc !important;
+}
+
+:deep(.description a) {
+  text-decoration: underline;
+  color: blue;
+}</style>
+
+<style>@import "../../assets/override.css";</style>

@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 axiosInstance.defaults.headers.post["Accept"] = "application/json";
 axiosInstance.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 // Fetch the CSRF token and set it in Axios headers
-async function fetchCsrfToken() {
+export async function fetchCsrfToken() {
   try {
     const response = await axiosInstance.get('/csrf-token');
     const csrfToken = response.data.csrfToken;
@@ -25,6 +25,6 @@ async function fetchCsrfToken() {
   }
 }
 
-await fetchCsrfToken();
+// await fetchCsrfToken();
 export default axiosInstance;
 

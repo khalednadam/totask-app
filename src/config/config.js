@@ -70,6 +70,7 @@ module.exports = {
   },
   baseURL: envVars.BASE_URL,
   sessionSecret: envVars.SESSION_SECRET,
+  csrfSecret: envVars.CSRF_SECRET,
   POSITION_GAP: envVars.POSITION_GAP,
   GC_ID: envVars.PROJECT_ID,
   GC_BUCKET: envVars.BUCKET_NAME,

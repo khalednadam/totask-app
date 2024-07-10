@@ -3,7 +3,6 @@ import { RouterView } from "vue-router";
 import { useTheme } from "vuetify";
 
 const theme = useTheme();
-
 </script>
 
 <template>

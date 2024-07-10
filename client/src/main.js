@@ -1,4 +1,5 @@
 import "./assets/main.css";
+import axiosInstance from './composables/axios';
 
 import { createApp } from "vue";
 import { createDeviceDetector } from "next-vue-device-detector";
@@ -46,4 +47,14 @@ app.use(router);
 app.use(vuetify);
 app.use(device);
 app.use(Toast, options);
-app.mount("#app");
+// app.mount("#app");
+// Fetch the CSRF token before mounting the app
+axiosInstance.get('/csrf-token').then(response => {
+  // const csrfToken = response.data.csrfToken;
+  // axiosInstance.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+
+  app.mount("#app");
+}).catch(error => {
+  console.error('Failed to fetch CSRF token:', error);
+  app.mount("#app"); // Mount the app even if the token fetch fails
+});

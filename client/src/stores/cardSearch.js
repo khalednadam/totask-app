@@ -12,9 +12,9 @@ export const useCardSearchStore = defineStore("cardSearch", () => {
   const searchAssignees = ref(route.query.assignees || []);
 
   const isFilter = computed(() => {
-    if (searchWord.value.length > 0) {
-      return true;
-    }
+    // if (searchWord.value.length > 0) {
+    //   return true;
+    // }
     if (searchLabels.value.length > 0) {
       return true;
     }
@@ -43,7 +43,7 @@ export const useCardSearchStore = defineStore("cardSearch", () => {
   // );
   const updateURL = debounce(() => {
     const queryString = new URLSearchParams({
-      title: searchWord.value,
+      // title: searchWord.value,
     });
 
     searchLabels.value.forEach(label => {

@@ -24,8 +24,6 @@ const register = catchAsync(async (req, res) => {
     },
     user.id
   );
-  // user.workspaces = [workspace._id];
-  // console.log(workspace);
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(
     user.id
   );
@@ -57,7 +55,6 @@ const emailAndPasswordLogin = catchAsync(async (req, res) => {
     isEmailVerified: user.isEmailVerified
   };
   req.session.user = sessionUser;
-  // req.session.save();
   req.session.save((err) => {
     if (err) {
       console.error("Error saving session:", err);
@@ -68,11 +65,6 @@ const emailAndPasswordLogin = catchAsync(async (req, res) => {
       tokens: tokens,
     });
   });
-
-  // res.send({
-  //   user: user.id,
-  //   tokens: tokens,
-  // });
 });
 
 /**
@@ -108,9 +100,6 @@ const forgotPassword = catchAsync(async (req, res) => {
  * reset password
  */
 const resetPassword = catchAsync(async (req, res) => {
-  // const resetPasswordToken = await tokenService.generateResetPasswordToken(
-  //   req.body.email
-  // );
   const verifiedToken = await tokenService.verifyToken(req.query.token, tokenTypes.RESET_PASSWORD);
   await authService.resetPassword(req.query.token, req.body.password);
   res.status(httpStatus.NO_CONTENT).send();

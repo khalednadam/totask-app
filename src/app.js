@@ -80,9 +80,6 @@ app.get('/v1/csrf-token', (req, res) => {
 app.use(doubleCsrfProtection);
 app.use("/v1", doubleCsrfProtection, routes);
 
-// Endpoint to get CSRF token
-
-
 const frontendPath = path.join(__dirname, "../client/dist/");
 app.use(express.static(frontendPath));
 app.get('/*', function (req, res) {

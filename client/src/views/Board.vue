@@ -197,15 +197,30 @@ const handleDrawerShortcut = (e) => {
 </script>
 
 <template>
-  <GlobalEvents @keyup.prevent="handleDrawerShortcut" @keyup.metaKey="() => toggleDrawer()"
-    @keyup.slash="() => toggleDrawer()" />
-  <v-main v-if="isLoading && !board" class="flex flex-col justify-center items-center gap-5 h-[95vh]">
-    <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular>
+  <GlobalEvents
+    @keyup.prevent="handleDrawerShortcut"
+    @keyup.metaKey="() => toggleDrawer()"
+    @keyup.slash="() => toggleDrawer()"
+  />
+  <v-main
+    v-if="isLoading && !board"
+    class="flex flex-col justify-center items-center gap-5 h-[95vh]"
+  >
+    <v-progress-circular
+      color="primary"
+      indeterminate="disable-shrink"
+      size="50"
+      width="5"
+    ></v-progress-circular>
   </v-main>
   <div v-else>
-    <v-navigation-drawer class="text-white backdrop-blur-3xl"
-      :style="{ backgroundColor: `rgba(var(--v-theme-background) , 0.2)` }" v-model="drawer" location="left"
-      v-if="status < 205 && board">
+    <v-navigation-drawer
+      class="text-white backdrop-blur-3xl"
+      :style="{ backgroundColor: `rgba(var(--v-theme-background) , 0.2)` }"
+      v-model="drawer"
+      location="left"
+      v-if="status < 205 && board"
+    >
       <template v-slot:prepend>
         <v-list-item lines="two">
           <template v-slot:title>
@@ -213,7 +228,12 @@ const handleDrawerShortcut = (e) => {
               <p class="max-w-[110px] truncate">
                 {{ board.workspace.name }}
               </p>
-              <Icon v-if="board.workspace.isPremium" icon="ph:crown-simple-fill" width="20" color="gold" />
+              <Icon
+                v-if="board.workspace.isPremium"
+                icon="ph:crown-simple-fill"
+                width="20"
+                color="gold"
+              />
             </div>
           </template>
           <template v-slot:prepend>
@@ -226,22 +246,35 @@ const handleDrawerShortcut = (e) => {
       <v-divider class="border-2 dark:border-white border-black"></v-divider>
       <v-list class="w-11/12 mx-auto space-y-2">
         <router-link :to="`/`">
-          <v-list-item :active="router.currentRoute.value.fullPath === `/`" color="primary" title="Home">
+          <v-list-item
+            :active="router.currentRoute.value.fullPath === `/`"
+            color="primary"
+            title="Home"
+          >
             <template #prepend>
               <Icon icon="ph:house" width="20" class="mr-1"> </Icon>
             </template>
           </v-list-item>
         </router-link>
         <router-link :to="`/w/${board?.workspace.id}`">
-          <v-list-item :active="router.currentRoute.value.fullPath === `/w/${board?.workspace.id}`
-            " color="primary" title="Boards">
+          <v-list-item
+            :active="
+              router.currentRoute.value.fullPath === `/w/${board?.workspace.id}`
+            "
+            color="primary"
+            title="Boards"
+          >
             <template #prepend>
               <Icon icon="ph:columns" width="20" class="mr-1"> </Icon>
             </template>
           </v-list-item>
         </router-link>
         <router-link :to="`/w/settings/${board?.workspace.id}`">
-          <v-list-item color="primary" title="Settings" :active="router.currentRoute.value.fullPath === '/settings'">
+          <v-list-item
+            color="primary"
+            title="Settings"
+            :active="router.currentRoute.value.fullPath === '/settings'"
+          >
             <template #prepend>
               <Icon icon="ph:gear" width="20" class="mr-1"> </Icon>
             </template>
@@ -272,46 +305,90 @@ const handleDrawerShortcut = (e) => {
         </v-row>
       </div>
     </v-main>
-    <v-main v-if="status < 205" :style="{ backgroundColor: board?.backgroundColor }" class="h-screen overflow-x-auto">
-      <div v-if="board?.closed" class="w-full h-full gap-2 flex flex-col justify-center items-center">
+    <v-main
+      v-if="status < 205"
+      :style="{ backgroundColor: board?.backgroundColor }"
+      class="h-screen overflow-x-auto"
+    >
+      <div
+        v-if="board?.closed"
+        class="w-full h-full gap-2 flex flex-col justify-center items-center"
+      >
         <h1>This Board is closed</h1>
         <div class="flex flex-col justify-center items-center gap-2">
-          <v-btn variant="flat" color="primary" @click="() => reopenBoard(board?.workspace.id)">
+          <v-btn
+            variant="flat"
+            color="primary"
+            @click="() => reopenBoard(board?.workspace.id)"
+          >
             Reopen board
           </v-btn>
-          <v-btn variant="text" color="primary" @click="deleteBoardDialog = true">
+          <v-btn
+            variant="text"
+            color="primary"
+            @click="deleteBoardDialog = true"
+          >
             Permanently delete board
           </v-btn>
         </div>
       </div>
       <div class="flex flex-col items-start justify-start" v-else>
-        <v-app-bar :elevation="0" density="compact" class="flex items-center px-10"
-          style="background-color: rgba(0, 0, 0, 0.3)">
+        <v-app-bar
+          :elevation="0"
+          density="compact"
+          class="flex items-center px-10"
+          style="background-color: rgba(0, 0, 0, 0.3)"
+        >
           <!-- <div class="flex justify-start items-center w-max cursor-pointer "> -->
           <v-row>
-            <v-col md="5" cols="5">
+            <v-col md="5" cols="5" class="flex flex-col justify-center">
               <div class="flex items-center">
                 <v-tooltip :text="board?.name">
                   <template v-slot:activator="{ props }">
-                    <h1 v-bind="props" class="text-3xl pt-1 text-white w-max cursor-pointer max-w-[200px] truncate">
+                    <h1
+                      v-bind="props"
+                      class="text-3xl text-white w-max cursor-pointer max-w-[200px] truncate"
+                    >
                       {{ board?.name }}
                     </h1>
                   </template>
                 </v-tooltip>
-                <v-btn @click="() => toggleFavorite(board?.id)" icon variant="text" size="x-small"
-                  class="ml-3 group/fav z-50" :ripple="false">
-                  <Icon :icon="isFavorite ? 'ph:star-fill' : 'ph:star'" width="25" class=""
-                    :class="isFavorite ? 'text-yellow-400' : 'text-white'" />
+                <v-btn
+                  @click="() => toggleFavorite(board?.id)"
+                  icon
+                  variant="text"
+                  size="x-small"
+                  class="ml-3 group/fav z-50"
+                  :ripple="false"
+                >
+                  <Icon
+                    :icon="isFavorite ? 'ph:star-fill' : 'ph:star'"
+                    width="25"
+                    :class="isFavorite ? 'text-yellow-400' : 'text-white'"
+                  />
                 </v-btn>
               </div>
             </v-col>
             <v-col cols="7" class="justify-end flex flex-col items-end">
               <div class="flex items-center">
                 <div class="mx-1">
-                  <v-menu :close-on-content-click="false" :close-on-back="false">
+                  <v-menu
+                    :close-on-content-click="false"
+                    :close-on-back="false"
+                  >
                     <template v-slot:activator="{ props }">
-                      <v-btn v-bind="props" color="white" variant="outlined" rounded>
-                        <v-badge v-if="isFilter" floating dot class="top-2 right-1 absolute">
+                      <v-btn
+                        v-bind="props"
+                        color="white"
+                        variant="outlined"
+                        rounded
+                      >
+                        <v-badge
+                          v-if="isFilter"
+                          floating
+                          dot
+                          class="top-2 right-1 absolute"
+                        >
                         </v-badge>
                         <template v-slot:append>
                           <Icon icon="ph:caret-down" width="20" />
@@ -321,25 +398,51 @@ const handleDrawerShortcut = (e) => {
                     </template>
                     <v-card class="min-w-[250px]">
                       <v-card-text class="space-y-5">
-                        <v-autocomplete multiple hide-details label="Members" v-model="searchAssignees"
-                          :items="board.members" item-title="name" item-value="id">
+                        <v-autocomplete
+                          multiple
+                          hide-details
+                          label="Members"
+                          v-model="searchAssignees"
+                          :items="board.members"
+                          item-title="name"
+                          item-value="id"
+                        >
                         </v-autocomplete>
                         <v-menu :close-on-content-click="false">
                           <template v-slot:activator="{ props }">
-                            <v-btn class="w-full flex text-start" variant="outlined" v-bind="props">
+                            <v-btn
+                              class="w-full flex text-start"
+                              variant="outlined"
+                              v-bind="props"
+                            >
                               Labels
                             </v-btn>
                           </template>
                           <v-card>
                             <v-card-text>
-                              <v-item-group v-model="searchLabels" multiple class="space-y-2 my-2 w-96">
-                                <v-item v-for="label in board.labels" :value="label.id" v-slot="{ isSelected, toggle }">
+                              <v-item-group
+                                v-model="searchLabels"
+                                multiple
+                                class="space-y-2 my-2 w-96"
+                              >
+                                <v-item
+                                  v-for="label in board.labels"
+                                  :value="label.id"
+                                  v-slot="{ isSelected, toggle }"
+                                >
                                   <div class="flex items-center">
-                                    <v-btn class="w-full" :color="label.color" @click="toggle">
+                                    <v-btn
+                                      class="w-full"
+                                      :color="label.color"
+                                      @click="toggle"
+                                    >
                                       <p v-if="label.title">
                                         {{ label.title }}
                                       </p>
-                                      <template v-slot:prepend v-if="isSelected">
+                                      <template
+                                        v-slot:prepend
+                                        v-if="isSelected"
+                                      >
                                         <Icon icon="ph:check" width="20" />
                                       </template>
                                     </v-btn>
@@ -349,15 +452,32 @@ const handleDrawerShortcut = (e) => {
                             </v-card-text>
                           </v-card>
                         </v-menu>
-                        <VueDatePicker range inline class="w-full" menu-class-name="absolute" v-model="searchDate"
-                          :dark="theme.global.name.value === 'dark'">
-                          <template #action-row="{ internalModelValue, selectDate }">
+                        <VueDatePicker
+                          range
+                          inline
+                          class="w-full"
+                          menu-class-name="absolute"
+                          v-model="searchDate"
+                          :dark="theme.global.name.value === 'dark'"
+                        >
+                          <template
+                            #action-row="{ internalModelValue, selectDate }"
+                          >
                             <div class="action-row flex gap-1 w-full">
-                              <v-btn class="select-button w-1/2" color="primary" variant="outlined"
-                                @click="searchDate = []">
+                              <v-btn
+                                class="select-button w-1/2"
+                                color="primary"
+                                variant="outlined"
+                                @click="searchDate = []"
+                              >
                                 Delete
                               </v-btn>
-                              <v-btn class="select-button w-1/2" color="primary" @click="selectDate">Select Date</v-btn>
+                              <v-btn
+                                class="select-button w-1/2"
+                                color="primary"
+                                @click="selectDate"
+                                >Select Date</v-btn
+                              >
                             </div>
                           </template>
                         </VueDatePicker>
@@ -366,10 +486,22 @@ const handleDrawerShortcut = (e) => {
                   </v-menu>
                 </div>
                 <div class="-space-x-2 flex">
-                  <UserAvatar class="z-50" v-for="user in board?.members.slice(0, 1)" :user v-if="mdAndUp" />
+                  <UserAvatar
+                    class="z-50"
+                    v-for="user in board?.members.slice(0, 1)"
+                    :user
+                    v-if="mdAndUp"
+                  />
                   <v-dialog>
                     <template v-slot:activator="{ props }">
-                      <v-btn rounded="full" v-bind="props" size="32" icon variant="flat" color="primary">
+                      <v-btn
+                        rounded="full"
+                        v-bind="props"
+                        size="32"
+                        icon
+                        variant="flat"
+                        color="primary"
+                      >
                         <Icon icon="ph:dots-three-outline-fill" />
                       </v-btn>
                     </template>
@@ -378,52 +510,106 @@ const handleDrawerShortcut = (e) => {
                         <v-card-text>
                           <div class="flex justify-between items-center">
                             <p class="text-lg">Board Members</p>
-                            <v-btn variant="text" class="" icon size="35" @click="() => (isActive.value = false)">
+                            <v-btn
+                              variant="text"
+                              class=""
+                              icon
+                              size="35"
+                              @click="() => (isActive.value = false)"
+                            >
                               <Icon icon="ph:x"></Icon>
                             </v-btn>
                           </div>
                           <v-list>
-                            <UserProfile v-for="user in board?.members" :member="user" />
+                            <UserProfile
+                              v-for="user in board?.members"
+                              :member="user"
+                            />
                           </v-list>
                         </v-card-text>
                       </v-card>
                     </template>
                   </v-dialog>
                 </div>
-                <v-btn variant="text" icon @click="() => (boardSettingsDialog = true)">
-                  <Icon icon="ph:gear" width="30" color="white" v-if="isAdmin === true" />
+                <v-btn
+                  variant="text"
+                  icon
+                  @click="() => (boardSettingsDialog = true)"
+                >
+                  <Icon
+                    icon="ph:gear"
+                    width="30"
+                    color="white"
+                    v-if="isAdmin === true"
+                  />
                   <Icon icon="ph:info" width="30" color="white" v-else />
                 </v-btn>
               </div>
             </v-col>
           </v-row>
         </v-app-bar>
-        <v-alert v-if="isMobile" colsable class="mx-1 z-50 ! my-5 !fixed" color="background"
+        <v-alert
+          v-if="isMobile"
+          colsable
+          class="mx-1 z-50 ! my-5 !fixed"
+          color="background"
           text="For optimal performance and full functionality, we recommend accessing totask on a desktop or laptop computer."
-          type="warning"></v-alert>
+          type="warning"
+        ></v-alert>
         <div class="flex max-h-[80vh] flex-1 mt-2">
           <Suspense v-if="board">
             <DraggableLists :is-workspace-premium="board.workspace.isPremium" />
           </Suspense>
           <div class="min-w-[350px]">
-            <v-btn text="Add a new list" color="list" class="flex w-[272px] font-bold justify-start text-start rounded"
-              height="60" rounded="lg" v-if="!showAddList" @click="() => (showAddList = true)" variant="flat"
-              elevation="1">
+            <v-btn
+              text="Add a new list"
+              color="list"
+              class="flex w-[272px] font-bold justify-start text-start rounded"
+              height="60"
+              rounded="lg"
+              v-if="!showAddList"
+              @click="() => (showAddList = true)"
+              variant="flat"
+              elevation="1"
+            >
               <template v-slot:prepend>
                 <Icon icon="ph:plus" class=""></Icon>
               </template>
             </v-btn>
-            <v-card color="list" rounded="lg" class="w-[272px]" v-else v-click-outside="() => (showAddList = false)"
-              @keypress.enter="addList()" @keydown.esc="showAddList = false">
+            <v-card
+              color="list"
+              rounded="lg"
+              class="w-[272px]"
+              v-else
+              v-click-outside="() => (showAddList = false)"
+              @keypress.enter="addList()"
+              @keydown.esc="showAddList = false"
+            >
               <div class="px-2 py-2">
-                <v-text-field autofocus placeholder="List name" hide-details v-model="newListName">
+                <v-text-field
+                  autofocus
+                  placeholder="List name"
+                  hide-details
+                  v-model="newListName"
+                >
                 </v-text-field>
                 <div class="space-x-2 mt-3">
-                  <v-btn color="primary" class="" :disabled="newListName.length === 0 || isAddingListLoading"
-                    :loading="isAddingListLoading" @click="() => addList()">
+                  <v-btn
+                    color="primary"
+                    class=""
+                    :disabled="newListName.length === 0 || isAddingListLoading"
+                    :loading="isAddingListLoading"
+                    @click="() => addList()"
+                  >
                     Add list
                   </v-btn>
-                  <v-btn variant="text" class="" icon size="35" @click="() => (showAddList = false)">
+                  <v-btn
+                    variant="text"
+                    class=""
+                    icon
+                    size="35"
+                    @click="() => (showAddList = false)"
+                  >
                     <Icon icon="ph:x"></Icon>
                   </v-btn>
                 </div>
@@ -434,32 +620,57 @@ const handleDrawerShortcut = (e) => {
       </div>
 
       <!-- Board Settings  -->
-      <v-navigation-drawer v-if="boardCopy" location="right" temporary v-model="boardSettingsDialog" width="500">
+      <v-navigation-drawer
+        v-if="boardCopy"
+        location="right"
+        temporary
+        v-model="boardSettingsDialog"
+        width="500"
+      >
         <v-list v-if="isAdmin">
-          <BoardSettings :workspaceAllMembers="board.workspace.members"
-            v-model:boardSettingsDialog="boardSettingsDialog" v-model:board="board" @success="() => success()" />
+          <BoardSettings
+            :workspaceAllMembers="board.workspace.members"
+            v-model:boardSettingsDialog="boardSettingsDialog"
+            v-model:board="board"
+            @success="() => success()"
+          />
         </v-list>
         <v-list v-else>
           <BoardInfo :board />
         </v-list>
       </v-navigation-drawer>
 
-      <v-dialog transition="dialog-bottom-transition" class="md:max-w-[90vw] w-full mx-auto" v-model="isActive"
-        :close-on-back="false" persistent>
+      <v-dialog
+        transition="dialog-bottom-transition"
+        class="md:max-w-[90vw] w-full mx-auto"
+        v-model="isActive"
+        :close-on-back="false"
+        persistent
+      >
         <Suspense>
           <CardDetails />
           <template #fallback>
-            <v-card class="2xl:w-[35vw] min-h-[60vh] xl:w-[50vw] w-full mx-auto flex justify-center items-center">
+            <v-card
+              class="2xl:w-[35vw] min-h-[60vh] xl:w-[50vw] w-full mx-auto flex justify-center items-center"
+            >
               <v-card-text class="mx-auto justify-center flex items-center">
-                <v-progress-circular color="primary" indeterminate="disable-shrink" size="50"
-                  width="5"></v-progress-circular>
+                <v-progress-circular
+                  color="primary"
+                  indeterminate="disable-shrink"
+                  size="50"
+                  width="5"
+                ></v-progress-circular>
               </v-card-text>
             </v-card>
           </template>
         </Suspense>
       </v-dialog>
-      <DangerDeleteModal :is-loading="isLoading" v-model="deleteBoardDialog" :name="board?.name"
-        @delete="deleteBoard" />
+      <DangerDeleteModal
+        :is-loading="isLoading"
+        v-model="deleteBoardDialog"
+        :name="board?.name"
+        @delete="deleteBoard"
+      />
     </v-main>
   </div>
 </template>

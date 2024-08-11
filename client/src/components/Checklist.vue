@@ -222,7 +222,7 @@ const onUpdate = (e) => {
         :title="precentage"
         :color="precentage < 100 ? '' : 'primary'"
         :model-value="precentage"
-        class="max-w-[90%] -ml-5"
+        class="max-w-[100%]"
         height="7"
         rounded
       >

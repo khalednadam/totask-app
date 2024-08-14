@@ -8,7 +8,7 @@ import { useForm, useField } from "vee-validate";
 import { Icon } from "@iconify/vue";
 import DeleteModal from "../components/Modals/DeleteModal.vue";
 import axiosInstance from "../composables/axios";
-import { toastError } from "@/composables/helper.js"
+import { toastError } from "@/composables/helper.js";
 
 const authStore = useCurrentUser();
 const router = useRouter();
@@ -183,7 +183,7 @@ const updateProfilePic = handleSubmit(() => {
     .put(
       `/users/${user.value.id}`,
       {
-        file: profilePic.value[0] ? profilePic.value[0] : null,
+        file: profilePic.value ? profilePic.value : null,
       },
       {
         headers: {
@@ -270,8 +270,18 @@ const sendVerificationEmail = async () => {
               <v-img :src="authStore.user?.profilePhotoUrl" v-else></v-img>
             </v-avatar>
             <div class="flex flex-col justify-between items-center gap-2">
-              <v-btn v-bind="props" color="primary" @click="changeAvatarDialog = true">Change</v-btn>
-              <v-btn color="error" @click="deleteAvatarDialog = true" :disabled="!user.profilePhotoUrl">Delete</v-btn>
+              <v-btn
+                v-bind="props"
+                color="primary"
+                @click="changeAvatarDialog = true"
+                >Change</v-btn
+              >
+              <v-btn
+                color="error"
+                @click="deleteAvatarDialog = true"
+                :disabled="!user.profilePhotoUrl"
+                >Delete</v-btn
+              >
             </div>
           </div>
         </v-col>
@@ -281,7 +291,11 @@ const sendVerificationEmail = async () => {
           <p class="text-xl">Full name</p>
         </v-col>
         <v-col md="8" cols="12">
-          <v-text-field name="name" v-model="name.value.value" :error-messages="name.errorMessage.value"></v-text-field>
+          <v-text-field
+            name="name"
+            v-model="name.value.value"
+            :error-messages="name.errorMessage.value"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row class="items-center">
@@ -289,8 +303,11 @@ const sendVerificationEmail = async () => {
           <p class="text-xl">username</p>
         </v-col>
         <v-col md="8" cols="12">
-          <v-text-field v-model="username.value.value" :error-messages="username.errorMessage.value"
-            prefix="@"></v-text-field>
+          <v-text-field
+            v-model="username.value.value"
+            :error-messages="username.errorMessage.value"
+            prefix="@"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row class="items-center">
@@ -298,9 +315,18 @@ const sendVerificationEmail = async () => {
           <p class="text-xl">Email</p>
         </v-col>
         <v-col md="8" cols="12">
-          <v-text-field v-model="email.value.value" :error-messages="email.errorMessage.value"></v-text-field>
-          <v-btn :disabled="emailVerificationLoading" :loading="emailVerificationLoading" @click="sendVerificationEmail"
-            v-if="!authStore.user.isEmailVerified" color="primary" variant="flat">
+          <v-text-field
+            v-model="email.value.value"
+            :error-messages="email.errorMessage.value"
+          ></v-text-field>
+          <v-btn
+            :disabled="emailVerificationLoading"
+            :loading="emailVerificationLoading"
+            @click="sendVerificationEmail"
+            v-if="!authStore.user.isEmailVerified"
+            color="primary"
+            variant="flat"
+          >
             Verify
           </v-btn>
         </v-col>
@@ -308,8 +334,19 @@ const sendVerificationEmail = async () => {
       <v-row class="items-center">
         <v-col cols="12" class="flex flex-col justify-end">
           <div class="flex justify-end gap-3">
-            <v-btn color="primary" @click="() => router.go(-1)" variant="outlined">Cancel</v-btn>
-            <v-btn color="primary" @click="updateProfile" :disabled="isLoading" :loading="isLoading">Save</v-btn>
+            <v-btn
+              color="primary"
+              @click="() => router.go(-1)"
+              variant="outlined"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="primary"
+              @click="updateProfile"
+              :disabled="isLoading"
+              :loading="isLoading"
+              >Save</v-btn
+            >
           </div>
         </v-col>
       </v-row>
@@ -331,42 +368,92 @@ const sendVerificationEmail = async () => {
       <v-card-text class="space-y-4 flex flex-col">
         <div>
           <p>Current Password</p>
-          <v-text-field :rules="rules" v-model="oldPassword" :type="showOldPassword ? 'text' : 'password'">
+          <v-text-field
+            :rules="rules"
+            v-model="oldPassword"
+            :type="showOldPassword ? 'text' : 'password'"
+          >
             <template #append-inner>
-              <Icon @click="() => (showOldPassword = !showOldPassword)" icon="ph:eye-closed-bold" width="30"
-                class="cursor-pointer" v-if="showOldPassword" />
-              <Icon @click="() => (showOldPassword = !showOldPassword)" icon="ph:eye-bold" width="30"
-                class="cursor-pointer" v-else />
+              <Icon
+                @click="() => (showOldPassword = !showOldPassword)"
+                icon="ph:eye-closed-bold"
+                width="30"
+                class="cursor-pointer"
+                v-if="showOldPassword"
+              />
+              <Icon
+                @click="() => (showOldPassword = !showOldPassword)"
+                icon="ph:eye-bold"
+                width="30"
+                class="cursor-pointer"
+                v-else
+              />
             </template>
           </v-text-field>
         </div>
         <div>
           <p>New Password</p>
-          <v-text-field :rules="rules" v-model="password" :type="showPassword ? 'text' : 'password'">
+          <v-text-field
+            :rules="rules"
+            v-model="password"
+            :type="showPassword ? 'text' : 'password'"
+          >
             <template #append-inner>
-              <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-closed-bold" width="30"
-                class="cursor-pointer" v-if="showPassword" />
-              <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-bold" width="30" class="cursor-pointer"
-                v-else />
+              <Icon
+                @click="() => (showPassword = !showPassword)"
+                icon="ph:eye-closed-bold"
+                width="30"
+                class="cursor-pointer"
+                v-if="showPassword"
+              />
+              <Icon
+                @click="() => (showPassword = !showPassword)"
+                icon="ph:eye-bold"
+                width="30"
+                class="cursor-pointer"
+                v-else
+              />
             </template>
           </v-text-field>
         </div>
         <div>
           <p>New Password Confirmation</p>
-          <v-text-field :rules="rules" v-model="confirmPassword" :type="showConfirmPassword ? 'text' : 'password'">
+          <v-text-field
+            :rules="rules"
+            v-model="confirmPassword"
+            :type="showConfirmPassword ? 'text' : 'password'"
+          >
             <template #append-inner>
-              <Icon @click="() => (showConfirmPassword = !showConfirmPassword)" icon="ph:eye-closed-bold" width="30"
-                class="cursor-pointer" v-if="showConfirmPassword" />
-              <Icon @click="() => (showConfirmPassword = !showConfirmPassword)" icon="ph:eye-bold" width="30"
-                class="cursor-pointer" v-else />
+              <Icon
+                @click="() => (showConfirmPassword = !showConfirmPassword)"
+                icon="ph:eye-closed-bold"
+                width="30"
+                class="cursor-pointer"
+                v-if="showConfirmPassword"
+              />
+              <Icon
+                @click="() => (showConfirmPassword = !showConfirmPassword)"
+                icon="ph:eye-bold"
+                width="30"
+                class="cursor-pointer"
+                v-else
+              />
             </template>
           </v-text-field>
         </div>
         <div class="flex justify-end gap-2">
-          <v-btn variant="outlined" color="primary" @click="changePasswordDialog = false">
+          <v-btn
+            variant="outlined"
+            color="primary"
+            @click="changePasswordDialog = false"
+          >
             Cancel
           </v-btn>
-          <v-btn color="primary" @click="changePassword" :disabled="!isPasswordMatch || !isDisabled">
+          <v-btn
+            color="primary"
+            @click="changePassword"
+            :disabled="!isPasswordMatch || !isDisabled"
+          >
             Change
           </v-btn>
         </div>
@@ -374,25 +461,46 @@ const sendVerificationEmail = async () => {
     </v-card>
   </v-dialog>
   <v-dialog v-model="deleteAvatarDialog" class="md:max-w-[50vw] w-full">
-    <DeleteModal :is-loading="isLoading" title="Delete Profile Picture" actionBtnText="Delete"
-      text="Your profile picture will be deleted" @cancel="deleteAvatarDialog = false" @delete="() => {
-        profilePic = null;
-        deleteProfilePic();
-      }
-        " />
+    <DeleteModal
+      :is-loading="isLoading"
+      title="Delete Profile Picture"
+      actionBtnText="Delete"
+      text="Your profile picture will be deleted"
+      @cancel="deleteAvatarDialog = false"
+      @delete="
+        () => {
+          profilePic = null;
+          deleteProfilePic();
+        }
+      "
+    />
   </v-dialog>
   <v-dialog v-model="changeAvatarDialog" class="md:max-w-[50vw] w-full">
     <v-card>
       <v-card-title> Change your profile picture </v-card-title>
       <v-card-text>
-        <v-file-input v-model="profilePic" accept="image/*" label="Profile Picture"
-          variant="solo-filled"></v-file-input>
+        <v-file-input
+          v-model="profilePic"
+          accept="image/*"
+          label="Profile Picture"
+          variant="solo-filled"
+        ></v-file-input>
       </v-card-text>
       <v-card-actions class="self-end">
-        <v-btn variant="outlined" color="primary" @click="changeAvatarDialog = false">
+        <v-btn
+          variant="outlined"
+          color="primary"
+          @click="changeAvatarDialog = false"
+        >
           Cancel
         </v-btn>
-        <v-btn @click="updateProfilePic" :disabled="isLoading" :loading="isLoading" variant="flat" color="primary">
+        <v-btn
+          @click="updateProfilePic"
+          :disabled="isLoading"
+          :loading="isLoading"
+          variant="flat"
+          color="primary"
+        >
           Update
         </v-btn>
       </v-card-actions>
@@ -404,22 +512,49 @@ const sendVerificationEmail = async () => {
       <v-card-title> Delete your account? </v-card-title>
       <v-card-text>
         Are you sure you want to delete you account?
-        <v-text-field :type="deleteAccountShowPassowrd ? 'text' : 'password'" class="mt-2" v-model="passwordForDeletion"
-          label="password">
+        <v-text-field
+          :type="deleteAccountShowPassowrd ? 'text' : 'password'"
+          class="mt-2"
+          v-model="passwordForDeletion"
+          label="password"
+        >
           <template #append-inner>
-            <Icon @click="() => (deleteAccountShowPassowrd = !deleteAccountShowPassowrd)
-              " icon="ph:eye-closed-bold" width="30" class="cursor-pointer" v-if="deleteAccountShowPassowrd" />
-            <Icon @click="() => (deleteAccountShowPassowrd = !deleteAccountShowPassowrd)
-              " icon="ph:eye-bold" width="30" class="cursor-pointer" v-else />
+            <Icon
+              @click="
+                () => (deleteAccountShowPassowrd = !deleteAccountShowPassowrd)
+              "
+              icon="ph:eye-closed-bold"
+              width="30"
+              class="cursor-pointer"
+              v-if="deleteAccountShowPassowrd"
+            />
+            <Icon
+              @click="
+                () => (deleteAccountShowPassowrd = !deleteAccountShowPassowrd)
+              "
+              icon="ph:eye-bold"
+              width="30"
+              class="cursor-pointer"
+              v-else
+            />
           </template>
         </v-text-field>
       </v-card-text>
       <v-card-actions class="self-end">
-        <v-btn variant="outlined" color="primary" @click="deleteAccountDialog = false">
+        <v-btn
+          variant="outlined"
+          color="primary"
+          @click="deleteAccountDialog = false"
+        >
           Cancel
         </v-btn>
-        <v-btn @click="deleteAccount" :disabled="isLoading || passwordForDeletion.length < 1" :loading="isLoading"
-          variant="flat" color="error">
+        <v-btn
+          @click="deleteAccount"
+          :disabled="isLoading || passwordForDeletion.length < 1"
+          :loading="isLoading"
+          variant="flat"
+          color="error"
+        >
           Delete
         </v-btn>
       </v-card-actions>

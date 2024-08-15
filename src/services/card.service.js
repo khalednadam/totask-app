@@ -205,6 +205,11 @@ const deleteCardById = async (cardId, userId) => {
   return card;
 }
 
+/**
+ * gets cards of a list by list id
+ * @param {ObjectId} listId 
+ * @returns {Array} 
+ */
 const getCardsByListId = async (listId) => {
   const options = pick({}, ["sortBy", "limit", "page"]);
   const cards = await queryCards({ list: listId }, options);

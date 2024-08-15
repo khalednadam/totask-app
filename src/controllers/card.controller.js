@@ -101,7 +101,6 @@ const getCardsByList = catchAsync(async (req, res) => {
 
   // Query cards based on filter and options
   const cards = await cardService.queryCards(filter, options);
-  //TODO: fix
   // Check user's membership in the board
   const isMember = await boardService.checkIfUserIsMember(req.query.board, req.session.user.id);
   if (!isMember) {

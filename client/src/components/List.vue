@@ -21,7 +21,7 @@ const props = defineProps({
   members: Array,
   isListLoading: Boolean,
   isDeleteLoading: Boolean,
-  isWorkspacePremium: Boolean
+  isWorkspacePremium: Boolean,
 });
 
 const cardSearch = useCardSearchStore();
@@ -55,8 +55,8 @@ const listColors = [
   "#6CC3E0",
   "#94C748",
   "#E774BB",
-  "#579DFF"
-]
+  "#579DFF",
+];
 
 const endEditName = () => {
   showRename.value = false;
@@ -110,15 +110,15 @@ const deleteCard = (cardId) => {
 
 const updateList = () => {
   axiosInstance
-    .put(
-      `/list/${props.list.id}`,
-      {
-        name: updateName.value,
-      },
-    )
+    .put(`/list/${props.list.id}`, {
+      name: updateName.value,
+    })
     .then((res) => {
       listName.value = res.data.name;
-      socket.emit("update-lists", { boardId: res.data.board, results: res.data });
+      socket.emit("update-lists", {
+        boardId: res.data.board,
+        results: res.data,
+      });
     })
     .catch((err) => {
       toastError(err);
@@ -201,16 +201,17 @@ const getCards = ({ done }) => {
   page.value++;
   const newCards = ref([]);
   axiosInstance
-    .get(`/card/cardsOf/${props?.list?.id}`, {
+    .get(`/card/cardsOf/${props.list.id}`, {
       withCredentials: true,
       params: {
         page: page.value,
         sortBy: "position:asc",
-        limit: 100,
+        limit: 5,
         title: searchWord.value || " ",
         assignees: searchAssignees.value || "",
         labels: searchLabels.value || "",
         date: searchDate.value || "",
+        board: props.list.board,
       },
     })
     .then((res) => {
@@ -230,68 +231,105 @@ const getCards = ({ done }) => {
 
 const updateListColor = (color) => {
   axiosInstance
-    .put(
-      `/list/${props.list.id}`,
-      {
-        color
-      },
-    )
+    .put(`/list/${props.list.id}`, {
+      color,
+    })
     .then((res) => {
       listName.value = res.data.name;
-      socket.emit("update-lists", { boardId: res.data.board, results: res.data });
+      socket.emit("update-lists", {
+        boardId: res.data.board,
+        results: res.data,
+      });
     })
     .catch((err) => {
       toastError(err);
     });
-}
+};
 
 watch(cards, () => {
   page.value = 1;
 });
 </script>
 <template>
-  <v-card variant="elevated" rounded="lg" :color="list.color || 'list'"
-    class="w-[272px] flex-1 flex h-max overflow-y-hidden " :id="list.id.toString()">
+  <v-card
+    variant="elevated"
+    rounded="lg"
+    :color="list.color || 'list'"
+    class="w-[272px] flex-1 flex h-max overflow-y-hidden"
+    :id="list.id.toString()"
+  >
     <v-tooltip :text="list.name">
       <template v-slot:activator="{ props }">
-        <v-card-title v-bind="props" class="flex sticky z-20 flex-row items-center justify-between header">
+        <v-card-title
+          v-bind="props"
+          class="flex sticky z-20 flex-row items-center justify-between header"
+        >
           <div class="">
             <div class="flex items-center cursor-grab">
-              <Icon icon="ph:dots-six-vertical-bold" class="opacity-50 mr-1" width="30" />
-              <div @click="() => editName(listName)" v-if="!showRename"
-                class="w-full max-w-[90%] truncate items-center cursor-pointer text-xl py-2 pr-2 m-[0.5px]">
+              <Icon
+                icon="ph:dots-six-vertical-bold"
+                class="opacity-50 mr-1"
+                width="30"
+              />
+              <div
+                @click="() => editName(listName)"
+                v-if="!showRename"
+                class="w-full max-w-[90%] truncate items-center cursor-pointer text-xl py-2 pr-2 m-[0.5px]"
+              >
                 {{ list.name }}
               </div>
               <div v-click-outside="endEditName" v-else class="w-full">
-                <v-text-field class="text-2xl input" v-model="updateName" hide-details autofocus>
+                <v-text-field
+                  class="text-2xl input"
+                  v-model="updateName"
+                  hide-details
+                  autofocus
+                >
                 </v-text-field>
               </div>
               <v-menu rounded="lg">
                 <template v-slot:activator="{ props }">
-                  <v-btn icon variant="text" size="30" class="bg-blue-200" v-if="!showRename" v-bind="props">
+                  <v-btn
+                    icon
+                    variant="text"
+                    size="30"
+                    class="bg-blue-200"
+                    v-if="!showRename"
+                    v-bind="props"
+                  >
                     <Icon icon="ph:dots-three-outline-fill" />
                   </v-btn>
                 </template>
                 <v-list rounded="lg">
                   <v-list-item v-if="isWorkspacePremium" :rounded="false">
-                    <p class="mb-2">
-                      Change list color
-                    </p>
+                    <p class="mb-2">Change list color</p>
                     <div class="flex gap-2">
                       <template v-for="color in listColors.slice(0, 4)">
-                        <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
-                          class="h-8 cursor-pointer flex w-12 rounded-lg">
+                        <v-btn
+                          @click="() => updateListColor(color)"
+                          flat
+                          :style="{ backgroundColor: color }"
+                          class="h-8 cursor-pointer flex w-12 rounded-lg"
+                        >
                         </v-btn>
                       </template>
                     </div>
                     <div class="flex mt-2 gap-2">
                       <template v-for="color in listColors.slice(4, 8)">
-                        <v-btn @click="() => updateListColor(color)" flat :style="{ backgroundColor: color }"
-                          class="h-8 cursor-pointer flex w-12 rounded-lg">
+                        <v-btn
+                          @click="() => updateListColor(color)"
+                          flat
+                          :style="{ backgroundColor: color }"
+                          class="h-8 cursor-pointer flex w-12 rounded-lg"
+                        >
                         </v-btn>
                       </template>
                     </div>
-                    <v-btn @click="() => updateListColor(null)" class="w-full mt-2" variant="tonal">
+                    <v-btn
+                      @click="() => updateListColor(null)"
+                      class="w-full mt-2"
+                      variant="tonal"
+                    >
                       Remove list color
                     </v-btn>
                   </v-list-item>
@@ -301,8 +339,14 @@ watch(cards, () => {
                   <!--   </template> -->
                   <!--   Add card -->
                   <!-- </v-list-item> -->
-                  <v-list-item @click="deleteListDialog = true" :disabled="isDeleteLoading" :loading="isDeleteLoading"
-                    base-color="error" density="compact" :rounded="false">
+                  <v-list-item
+                    @click="deleteListDialog = true"
+                    :disabled="isDeleteLoading"
+                    :loading="isDeleteLoading"
+                    base-color="error"
+                    density="compact"
+                    :rounded="false"
+                  >
                     <template v-slot:prepend>
                       <Icon icon="ph:trash" width="25" />
                     </template>
@@ -310,7 +354,14 @@ watch(cards, () => {
                   </v-list-item>
                 </v-list>
               </v-menu>
-              <v-btn v-if="showRename" icon variant="tonal" color="primary" size="35" class="mx-1">
+              <v-btn
+                v-if="showRename"
+                icon
+                variant="tonal"
+                color="primary"
+                size="35"
+                class="mx-1"
+              >
                 <Icon icon="ph:check" />
               </v-btn>
             </div>
@@ -319,32 +370,63 @@ watch(cards, () => {
       </template>
     </v-tooltip>
 
+    <!-- TODO: add lazy load -->
     <!-- VueDraggablePlus -->
     <div class="overflow-hidden flex-col flex max-h-[70vh]">
       <div class="overflow-y-auto px-2 flex-1 max-h-full">
-        <!-- <div v-if="isLoading || isListLoading"> -->
-        <!--   <template v-for="i in Math.floor(Math.random() * 3) + 1" :key="i"> -->
-        <!--     <v-skeleton-loader class="my-3" type="card-avatar"></v-skeleton-loader> -->
-        <!--   </template> -->
-        <!-- </div> -->
-        <!-- <v-infinite-scroll max-height="60vh" height="max" :items="cards" :onLoad="getCards"> -->
-        <!--   <template v-slot:empty> -->
-        <!--     <p> -->
-        <!--       s -->
-        <!--     </p> -->
-        <!--   </template> -->
-        <VueDraggable ref="el" group="cards" class="space-y-3 relative" v-model="cards" :animation="150"
-          dragClass="drag" ghostClass="ghost" @update="onUpdate" scroll :scrollSensitivity="300" bubbleScroll
-          @add="onAdd" :key="isLoading">
-          <template v-for="card in cards" :key="card.id">
-            <Card :listName="list.name" :card @delete-card="(cardId) => deleteCard(cardId)" />
+        <div v-if="isLoading || isListLoading">
+          <template v-for="i in Math.floor(Math.random() * 3) + 1" :key="i">
+            <v-skeleton-loader
+              class="my-3"
+              type="card-avatar"
+            ></v-skeleton-loader>
           </template>
-        </VueDraggable>
+        </div>
+        <v-infinite-scroll
+          max-height="60vh"
+          height="max"
+          :items="cards"
+          :onLoad="getCards"
+        >
+          <template v-slot:empty>
+            <p></p>
+          </template>
+          <VueDraggable
+            ref="el"
+            group="cards"
+            class="space-y-3 relative"
+            v-model="cards"
+            :animation="150"
+            dragClass="drag"
+            ghostClass="ghost"
+            @update="onUpdate"
+            scroll
+            :scrollSensitivity="300"
+            bubbleScroll
+            @add="onAdd"
+            :key="isLoading"
+          >
+            <template v-for="card in cards" :key="card.id">
+              <Card
+                :listName="list.name"
+                :card
+                @delete-card="(cardId) => deleteCard(cardId)"
+              />
+            </template>
+          </VueDraggable>
+        </v-infinite-scroll>
       </div>
-      <!-- </v-infinite-scroll> -->
-      <div class="px-2  z-50 mb-2" v-click-outside="() => (addCardInput = false)">
-        <v-btn v-if="!addCardInput" class="w-full my-1 flex justify-start p-1" height="40" variant="text"
-          @click="() => (addCardInput = true)">
+      <div
+        class="px-2 z-50 mb-2"
+        v-click-outside="() => (addCardInput = false)"
+      >
+        <v-btn
+          v-if="!addCardInput"
+          class="w-full my-1 flex justify-start p-1"
+          height="40"
+          variant="text"
+          @click="() => (addCardInput = true)"
+        >
           <div class="px-2">
             <Icon icon="ph:plus" width="20" />
           </div>
@@ -352,17 +434,36 @@ watch(cards, () => {
             <p class="text-start text-md">Add a card</p>
           </div>
         </v-btn>
-        <div v-else class="flex flex-col gap-2 px-1 pt-2 pb-2" @keypress.enter="addCard()"
-          @keydown.esc="addCardInput = false">
-          <v-text-field single-line v-model="newCardTitle" placeholder="Enter a title for this card" rows="2" no-resize
-            hide-details>
+        <div
+          v-else
+          class="flex flex-col gap-2 px-1 pt-2 pb-2"
+          @keypress.enter="addCard()"
+          @keydown.esc="addCardInput = false"
+        >
+          <v-text-field
+            single-line
+            v-model="newCardTitle"
+            placeholder="Enter a title for this card"
+            rows="2"
+            no-resize
+            hide-details
+          >
           </v-text-field>
           <div class="gap-2 flex">
-            <v-btn color="primary" :loading="isAddingCardLoading" :disabled="isAddingCardLoading"
-              @click="() => addCard()">
+            <v-btn
+              color="primary"
+              :loading="isAddingCardLoading"
+              :disabled="isAddingCardLoading"
+              @click="() => addCard()"
+            >
               Add
             </v-btn>
-            <v-btn variant="text" icon size="35" @click="() => (addCardInput = false)">
+            <v-btn
+              variant="text"
+              icon
+              size="35"
+              @click="() => (addCardInput = false)"
+            >
               <Icon icon="ph:x" width="25" />
             </v-btn>
           </div>
@@ -371,15 +472,19 @@ watch(cards, () => {
     </div>
 
     <v-dialog width="500" v-model="deleteListDialog">
-      <DeleteModal title="Are you sure you want to delete this list?" text="All cards in this list will be deleted"
-        action-btn-text="Delete" @cancel="() => (deleteListDialog = false)"
-        @delete="() => $emit('deleteList', list.id)" />
+      <DeleteModal
+        title="Are you sure you want to delete this list?"
+        text="All cards in this list will be deleted"
+        action-btn-text="Delete"
+        @cancel="() => (deleteListDialog = false)"
+        @delete="() => $emit('deleteList', list.id)"
+      />
     </v-dialog>
   </v-card>
 </template>
 
 <style scoped>
-.ghost>* {
+.ghost > * {
   background: rgba(0, 0, 0, 0.3) !important;
   border-radius: 8px;
   visibility: hidden;

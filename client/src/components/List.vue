@@ -374,14 +374,14 @@ watch(cards, () => {
     <!-- VueDraggablePlus -->
     <div class="overflow-hidden flex-col flex max-h-[70vh]">
       <div class="overflow-y-auto px-2 flex-1 max-h-full">
-        <div v-if="isLoading || isListLoading">
-          <template v-for="i in Math.floor(Math.random() * 3) + 1" :key="i">
-            <v-skeleton-loader
-              class="my-3"
-              type="card-avatar"
-            ></v-skeleton-loader>
-          </template>
-        </div>
+        <!-- <div v-if="isLoading || isListLoading"> -->
+        <!-- <template v-for="i in Math.floor(Math.random() * 3) + 1" :key="i"> -->
+        <!-- <v-skeleton-loader -->
+        <!-- class="my-3" -->
+        <!-- type="card-avatar" -->
+        <!-- ></v-skeleton-loader> -->
+        <!-- </template> -->
+        <!-- </div> -->
         <v-infinite-scroll
           max-height="60vh"
           height="max"

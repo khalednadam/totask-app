@@ -382,39 +382,39 @@ watch(cards, () => {
         <!-- ></v-skeleton-loader> -->
         <!-- </template> -->
         <!-- </div> -->
-        <v-infinite-scroll
+        <!-- <v-infinite-scroll
           max-height="60vh"
           height="max"
           :items="cards"
           :onLoad="getCards"
-        >
-          <template v-slot:empty>
+        > -->
+        <!-- <template v-slot:empty>
             <p></p>
+          </template> -->
+        <VueDraggable
+          ref="el"
+          group="cards"
+          class="space-y-3 relative"
+          v-model="cards"
+          :animation="150"
+          dragClass="drag"
+          ghostClass="ghost"
+          @update="onUpdate"
+          scroll
+          :scrollSensitivity="300"
+          bubbleScroll
+          @add="onAdd"
+          :key="isLoading"
+        >
+          <template v-for="card in cards" :key="card.id">
+            <Card
+              :listName="list.name"
+              :card
+              @delete-card="(cardId) => deleteCard(cardId)"
+            />
           </template>
-          <VueDraggable
-            ref="el"
-            group="cards"
-            class="space-y-3 relative"
-            v-model="cards"
-            :animation="150"
-            dragClass="drag"
-            ghostClass="ghost"
-            @update="onUpdate"
-            scroll
-            :scrollSensitivity="300"
-            bubbleScroll
-            @add="onAdd"
-            :key="isLoading"
-          >
-            <template v-for="card in cards" :key="card.id">
-              <Card
-                :listName="list.name"
-                :card
-                @delete-card="(cardId) => deleteCard(cardId)"
-              />
-            </template>
-          </VueDraggable>
-        </v-infinite-scroll>
+        </VueDraggable>
+        <!-- </v-infinite-scroll> -->
       </div>
       <div
         class="px-2 z-50 mb-2"

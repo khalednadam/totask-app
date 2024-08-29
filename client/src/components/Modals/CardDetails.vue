@@ -158,13 +158,13 @@ const onDeleteDate = () => {
   endDateToChange.value = new Date();
 };
 
-const addCardCover = () => {
+const addCardCover = (newCover) => {
   isLoading.value = true;
   axiosInstance
     .put(
       `/card/cover/${cardId.value}`,
       {
-        file: cardCover.value,
+        file: newCover,
       },
       {
         headers: {
@@ -410,11 +410,13 @@ onUnmounted(() => {
 <template>
   <v-card class="2xl:w-[35vw] xl:w-[50vw] w-full mx-auto">
     <CardCover
+      v-model="cardCover"
       :cover="card.cover"
       :cardId="cardId"
       :boardId="card.board.id"
       :listId="card.list.id"
       @update-card="(newCard) => updateCard(newCard)"
+      @add-card-cover="() => addCardCover(cardCover)"
     />
     <v-card-text>
       <div class="!flex justify-between mb-7">

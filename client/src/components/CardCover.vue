@@ -4,6 +4,8 @@ import axiosInstance from "@/composables/axios";
 import { ref } from "vue";
 import { socket } from "../composables/socket";
 
+const cardCover = defineModel();
+
 const props = defineProps({
   cover: String,
   cardId: String,
@@ -11,7 +13,7 @@ const props = defineProps({
   listId: String,
 });
 
-const emit = defineEmits("update-card");
+const emit = defineEmits("update-card", "add-card-cover");
 
 const changeCoverMenu = ref(false);
 const isLoading = ref(false);
@@ -89,7 +91,7 @@ const deleteCardCover = () => {
                   Cancel
                 </v-btn>
                 <v-btn
-                  @click="addCardCover"
+                  @click="emit('addCardCover')"
                   :disabled="isLoading"
                   :loading="isLoading"
                   variant="flat"

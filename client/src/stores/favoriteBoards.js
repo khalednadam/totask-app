@@ -14,18 +14,6 @@ export const useFavoriteBoardsStore = defineStore("favoriteBoards", () => {
     } catch (err) {
       console.log(err);
     }
-    // await axios(`api/users/getFav`, {
-    //   method: "GET",
-    //   withCredentials: true,
-    // })
-    //   .then((res) => {
-    //     // console.log(res);
-    //     favoriteBoards.value = res.data;
-    //     return favoriteBoards.value;
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }
 
   async function addToFavorite(boardId) {

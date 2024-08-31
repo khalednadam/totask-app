@@ -10,3 +10,4 @@ yarn-error.log
 totask-418519-ec8ce2c94795.json
 # Code coverage
 coverage
+.vscode/

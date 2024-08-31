@@ -1,10 +1,9 @@
 import debounce from "lodash.debounce";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 export const useCardSearchStore = defineStore("cardSearch", () => {
-  const router = useRouter();
   const route = useRoute();
   const searchWord = ref(route.query.title || "");
   const searchLabels = ref(route.query.labels || []);
@@ -12,9 +11,6 @@ export const useCardSearchStore = defineStore("cardSearch", () => {
   const searchAssignees = ref(route.query.assignees || []);
 
   const isFilter = computed(() => {
-    // if (searchWord.value.length > 0) {
-    //   return true;
-    // }
     if (searchLabels.value.length > 0) {
       return true;
     }
@@ -26,24 +22,8 @@ export const useCardSearchStore = defineStore("cardSearch", () => {
     }
     return false;
   });
-  // watch(
-  //   [searchWord, searchDate, searchLabels, searchAssignees],
-  //   debounce(() => {
-  //     window.history.replaceState(null, '', `?title=${searchWord.value}?assignees=${searchAssignees.value}?labels=${searchLabels.value}?date=${searchDate.value}`);
-
-  //     router.replace({
-  //       query: {
-  //         title: searchWord.value,
-  //         assignees: searchAssignees.value,
-  //         labels: searchLabels.value,
-  //         date: searchDate.value,
-  //       },
-  //     });
-  //   }, 500),
-  // );
   const updateURL = debounce(() => {
     const queryString = new URLSearchParams({
-      // title: searchWord.value,
     });
 
     searchLabels.value.forEach(label => {

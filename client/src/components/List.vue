@@ -125,7 +125,7 @@ const updateList = () => {
     });
 };
 
-/*
+/**
   Updates the card
   @param {String} cardId - the id of the card that will be updated
   @param {String} newListId - the list id that the card is moved to

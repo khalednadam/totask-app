@@ -1,16 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
 import { useForm, useField } from "vee-validate";
 import { useToast } from "vue-toastification";
 import { Icon } from "@iconify/vue";
 import axiosInstance from "../composables/axios";
 
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
-
 const route = useRoute();
-const router = useRouter()
+const router = useRouter();
 
 const toast = useToast();
 const { handleSubmit, isSubmitting } = useForm({
@@ -37,7 +34,7 @@ const showConfirmPassword = ref(false);
 // FIELDS
 const password = useField("password");
 const confirmPassword = useField("confirmPassword");
-const token = ref(route.query.token)
+const token = ref(route.query.token);
 
 const resetPassword = handleSubmit(async () => {
   axiosInstance
@@ -51,7 +48,7 @@ const resetPassword = handleSubmit(async () => {
           token: token.value,
         },
         headers: {
-          'Authorization': `Bearer ${token.value}`
+          Authorization: `Bearer ${token.value}`,
         },
         withCredentials: true,
       }
@@ -72,31 +69,63 @@ const resetPassword = handleSubmit(async () => {
       <div>
         <p>New password</p>
       </div>
-      <v-text-field autofocus :error-messages="password.errorMessage.value" v-model="password.value.value"
-        :type="showPassword ? 'text' : 'password'">
+      <v-text-field
+        autofocus
+        :error-messages="password.errorMessage.value"
+        v-model="password.value.value"
+        :type="showPassword ? 'text' : 'password'"
+      >
         <template #append-inner>
-          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-closed-bold" width="30" class="cursor-pointer"
-            v-if="showPassword" />
-          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-bold" width="30" class="cursor-pointer"
-            v-else />
+          <Icon
+            @click="() => (showPassword = !showPassword)"
+            icon="ph:eye-closed-bold"
+            width="30"
+            class="cursor-pointer"
+            v-if="showPassword"
+          />
+          <Icon
+            @click="() => (showPassword = !showPassword)"
+            icon="ph:eye-bold"
+            width="30"
+            class="cursor-pointer"
+            v-else
+          />
         </template>
       </v-text-field>
       <div>
         <p>New password confirmation</p>
       </div>
-      <v-text-field v-model="confirmPassword.value.value" :error-messages="confirmPassword.errorMessage.value"
-        :type="showConfirmPassword ? 'text' : 'password'">
+      <v-text-field
+        v-model="confirmPassword.value.value"
+        :error-messages="confirmPassword.errorMessage.value"
+        :type="showConfirmPassword ? 'text' : 'password'"
+      >
         <template #append-inner>
-          <Icon @click="() => (showConfirmPassword = !showConfirmPassword)" icon="ph:eye-closed-bold" width="30"
-            class="cursor-pointer" v-if="showConfirmPassword" />
-          <Icon @click="() => (showConfirmPassword = !showConfirmPassword)" icon="ph:eye-bold" width="30"
-            class="cursor-pointer" v-else />
+          <Icon
+            @click="() => (showConfirmPassword = !showConfirmPassword)"
+            icon="ph:eye-closed-bold"
+            width="30"
+            class="cursor-pointer"
+            v-if="showConfirmPassword"
+          />
+          <Icon
+            @click="() => (showConfirmPassword = !showConfirmPassword)"
+            icon="ph:eye-bold"
+            width="30"
+            class="cursor-pointer"
+            v-else
+          />
         </template>
       </v-text-field>
-      <v-btn class="self-end" @click="resetPassword" variant="tonal" :loading="isSubmitting" color="primary">
+      <v-btn
+        class="self-end"
+        @click="resetPassword"
+        variant="tonal"
+        :loading="isSubmitting"
+        color="primary"
+      >
         Submit
       </v-btn>
     </v-form>
   </div>
 </template>
-

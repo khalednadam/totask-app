@@ -1,35 +1,19 @@
 <script setup>
 import { useRouter, useRoute } from "vue-router";
-import {
-  getWorkspaceMembersByBoardId,
-  getBoardById,
-  useBoards,
-} from "../composables/utils";
-import {
-  watch,
-  defineAsyncComponent,
-  computed,
-  ref,
-  onMounted,
-  reactive,
-} from "vue";
+import { getBoardById } from "../composables/utils";
+import { watch, defineAsyncComponent, ref, onMounted, reactive } from "vue";
 import { Icon } from "@iconify/vue";
 import { useToast } from "vue-toastification";
 import { useFavoriteBoardsStore } from "@/stores/favoriteBoards";
 import { socket } from "../composables/socket";
-import UserAvatar from "../components/UserAvatar.vue";
-import BoardHeader from "../components/BoardHeader.vue";
 import { storeToRefs } from "pinia";
-import SidebarWorkspaceBoardItem from "../components/SidebarWorkspaceBoardItem.vue";
-import UserProfile from "../components/UserProfile.vue";
 import { useCardDetailsStore } from "../stores/cardDetails";
-import { useDisplay, useTheme } from "vuetify/lib/framework.mjs";
-import "@vuepic/vue-datepicker/dist/main.css";
-import VueDatePicker from "@vuepic/vue-datepicker";
-import { useCardSearchStore } from "../stores/cardSearch";
+import { useDisplay } from "vuetify/lib/framework.mjs";
 import axiosInstance from "../composables/axios";
 import { createDeviceDetector } from "next-vue-device-detector";
-import { toastError } from "@/composables/helper.js";
+import BoardNotFound from "../components/Board/BoardNotFound.vue";
+import BoardClosed from "../components/Board/BoardClosed.vue";
+import { useBoardStore } from "../stores/board";
 
 const d = createDeviceDetector();
 const isMobile = ref(d.mobile);
@@ -53,67 +37,49 @@ const CardDetails = defineAsyncComponent(
   () => import("../components/Modals/CardDetails.vue")
 );
 
-const InBoardWorkspaceBoards = defineAsyncComponent(
-  () => import("../components/InBoardWorkspaceBoards.vue")
-);
-
-const cardSearch = useCardSearchStore();
-const { searchAssignees, searchDate, searchLabels, isFilter } =
-  storeToRefs(cardSearch);
-const theme = useTheme();
 const { mdAndUp } = useDisplay();
 const favoriteBoardsStore = useFavoriteBoardsStore();
 const route = useRoute();
 const toast = useToast();
 const isAdmin = ref(false);
-const { favoriteBoards } = storeToRefs(favoriteBoardsStore);
-const { addToFavorite, removeFromFavorite } = favoriteBoardsStore;
 const router = useRouter();
 const { board, status, isLoading } = getBoardById(route.params.boardId);
 const showAddList = ref(false);
 const newListName = ref("");
-// const isFavorite = computed(() => favoriteBoards.value.some((favoriteBoard) => favoriteBoard.id === route.params.boardId));
 const boardSettingsDialog = ref(false);
 const isAddingListLoading = ref(false);
 const deleteBoardDialog = ref(false);
 const cardDetailsStore = useCardDetailsStore();
-// const { boards } = useBoards(route.params.boardId.workspace);
 const { isActive } = storeToRefs(cardDetailsStore);
-
-let boardCopy = reactive(board);
+const boardStore = useBoardStore();
+const {
+  currentBoard,
+  currentStatus,
+  sideDrawer,
+  currentBoardIsAdmin,
+  settingsDrawer,
+} = storeToRefs(boardStore);
 const drawer = ref(false);
 
-// TODO: refactor side drawer
+watch(board, () => {
+  currentBoard.value = board.value;
+  currentStatus.value = status.value;
+  isAdmin.value = board.value.isAdmin;
+  currentBoardIsAdmin.value = isAdmin.value;
+});
 
-const reopenBoard = (workspaceId) => {
-  isLoading.value = true;
-  axiosInstance
-    .put(
-      `/b/${route.params.boardId}`,
-      {
-        workspace: workspaceId,
-        closed: false,
-      },
-      { withCredentials: true }
-    )
-    .then((res) => {
-      success();
-      socket.emit("change-board-info", route.params.boardId);
-    })
-    .catch((err) => {
-      toastError(err);
-    })
-    .finally(() => {
-      isLoading.value = false;
-    });
-};
+watch(drawer, () => {
+  sideDrawer.value = drawer.value;
+});
+
+let boardCopy = reactive(board);
 
 const deleteBoard = () => {
   isLoading.value = true;
   axiosInstance
     .delete(`/b/${route.params.boardId}`, { withCredentials: true })
     .then((res) => {
-      emit("success");
+      success();
       socket.emit("change-board-info", route.params.boardId);
       router.push("/");
     })
@@ -139,7 +105,6 @@ const addList = () => {
       }
     )
     .then(() => {
-      // socket.emit("update-lists", { boardId: route.params.boardId });
       newListName.value = "";
       toast.success("List created");
     })
@@ -150,6 +115,10 @@ const addList = () => {
       isAddingListLoading.value = false;
     });
 };
+
+watch(boardSettingsDialog, () => {
+  settingsDrawer.value = boardSettingsDialog.value;
+});
 
 const success = () => {
   boardSettingsDialog.value = false;
@@ -169,25 +138,6 @@ onMounted(async () => {
       ? true
       : false;
 });
-
-watch(board, () => {
-  isAdmin.value = board.value.isAdmin;
-});
-
-const isFavorite = computed(() =>
-  favoriteBoards.value.some(
-    (favoriteBoard) => favoriteBoard.id === route.params.boardId
-  )
-);
-const toggleFavorite = (boardId) => {
-  if (board.value.isFavorite) {
-    removeFromFavorite(route.params.boardId);
-    board.value.isFavorite = false;
-  } else {
-    addToFavorite(route.params.boardId);
-    board.value.isFavorite = true;
-  }
-};
 
 const handleDrawerShortcut = (e) => {
   if (e.ctrlKey && e.code === "Slash") {
@@ -214,340 +164,20 @@ const handleDrawerShortcut = (e) => {
     ></v-progress-circular>
   </v-main>
   <div v-else>
-    <v-navigation-drawer
-      class="text-white backdrop-blur-3xl"
-      :style="{ backgroundColor: `rgba(var(--v-theme-background) , 0.2)` }"
-      v-model="drawer"
-      location="left"
-      v-if="status < 205 && board"
-    >
-      <template v-slot:prepend>
-        <v-list-item lines="two">
-          <template v-slot:title>
-            <div class="flex items-center gap-2">
-              <p class="max-w-[110px] truncate">
-                {{ board.workspace.name }}
-              </p>
-              <Icon
-                v-if="board.workspace.isPremium"
-                icon="ph:crown-simple-fill"
-                width="20"
-                color="gold"
-              />
-            </div>
-          </template>
-          <template v-slot:prepend>
-            <v-avatar color="primary" rounded="lg">
-              <Icon icon="ph:building-office" width="30" />
-            </v-avatar>
-          </template>
-        </v-list-item>
-      </template>
-      <v-divider class="border-2 dark:border-white border-black"></v-divider>
-      <v-list class="w-11/12 mx-auto space-y-2">
-        <router-link :to="`/`">
-          <v-list-item
-            :active="router.currentRoute.value.fullPath === `/`"
-            color="primary"
-            title="Home"
-          >
-            <template #prepend>
-              <Icon icon="ph:house" width="20" class="mr-1"> </Icon>
-            </template>
-          </v-list-item>
-        </router-link>
-        <router-link :to="`/w/${board?.workspace.id}`">
-          <v-list-item
-            :active="
-              router.currentRoute.value.fullPath === `/w/${board?.workspace.id}`
-            "
-            color="primary"
-            title="Boards"
-          >
-            <template #prepend>
-              <Icon icon="ph:columns" width="20" class="mr-1"> </Icon>
-            </template>
-          </v-list-item>
-        </router-link>
-        <router-link :to="`/w/settings/${board?.workspace.id}`">
-          <v-list-item
-            color="primary"
-            title="Settings"
-            :active="router.currentRoute.value.fullPath === '/settings'"
-          >
-            <template #prepend>
-              <Icon icon="ph:gear" width="20" class="mr-1"> </Icon>
-            </template>
-          </v-list-item>
-        </router-link>
-        <v-divider class="border-2 dark:border-white border-black"></v-divider>
-        <Suspense>
-          <InBoardWorkspaceBoards :workspace-id="board.workspace.id" />
-        </Suspense>
-      </v-list>
-    </v-navigation-drawer>
-    <BoardHeader @toggle-drawer="() => toggleDrawer()" :drawer="drawer" />
     <v-main v-if="status > 205">
-      <div class="mt-10">
-        <v-row>
-          <v-col>
-            <div class="flex flex-col gap-3 justify-center items-center">
-              <h1 class="text-center text-3xl">Board not found</h1>
-              <p class="md:w-2/6 w-full mx-auto text-center">
-                This board may be private. If someone gave you this link, they
-                may need to invite you to their Workspace.
-              </p>
-              <router-link to="/">
-                <v-btn color="primary" class="w-max"> Home </v-btn>
-              </router-link>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
+      <BoardNotFound />
     </v-main>
     <v-main
       v-if="status < 205"
       :style="{ backgroundColor: board?.backgroundColor }"
       class="h-screen overflow-x-auto"
     >
-      <div
+      <BoardClosed
         v-if="board?.closed"
-        class="w-full h-full gap-2 flex flex-col justify-center items-center"
-      >
-        <h1>This Board is closed</h1>
-        <div class="flex flex-col justify-center items-center gap-2">
-          <v-btn
-            variant="flat"
-            color="primary"
-            @click="() => reopenBoard(board?.workspace.id)"
-          >
-            Reopen board
-          </v-btn>
-          <v-btn
-            variant="text"
-            color="primary"
-            @click="deleteBoardDialog = true"
-          >
-            Permanently delete board
-          </v-btn>
-        </div>
-      </div>
+        :workspaceId="board?.workspace.id"
+        v-model="deleteBoardDialog"
+      />
       <div class="flex flex-col items-start justify-start" v-else>
-        <v-app-bar
-          :elevation="0"
-          density="compact"
-          class="flex items-center px-10"
-          style="background-color: rgba(0, 0, 0, 0.3)"
-        >
-          <!-- <div class="flex justify-start items-center w-max cursor-pointer "> -->
-          <v-row>
-            <v-col md="5" cols="5" class="flex flex-col justify-center">
-              <div class="flex items-center">
-                <v-tooltip :text="board?.name">
-                  <template v-slot:activator="{ props }">
-                    <h1
-                      v-bind="props"
-                      class="text-3xl text-white w-max cursor-pointer max-w-[200px] truncate"
-                    >
-                      {{ board?.name }}
-                    </h1>
-                  </template>
-                </v-tooltip>
-                <v-btn
-                  @click="() => toggleFavorite(board?.id)"
-                  icon
-                  variant="text"
-                  size="x-small"
-                  class="ml-3 group/fav z-50"
-                  :ripple="false"
-                >
-                  <Icon
-                    :icon="isFavorite ? 'ph:star-fill' : 'ph:star'"
-                    width="25"
-                    :class="isFavorite ? 'text-yellow-400' : 'text-white'"
-                  />
-                </v-btn>
-              </div>
-            </v-col>
-            <v-col cols="7" class="justify-end flex flex-col items-end">
-              <div class="flex items-center">
-                <div class="mx-1">
-                  <v-menu
-                    :close-on-content-click="false"
-                    :close-on-back="false"
-                  >
-                    <template v-slot:activator="{ props }">
-                      <v-btn
-                        v-bind="props"
-                        color="white"
-                        variant="outlined"
-                        rounded
-                      >
-                        <v-badge
-                          v-if="isFilter"
-                          floating
-                          dot
-                          class="top-2 right-1 absolute"
-                        >
-                        </v-badge>
-                        <template v-slot:append>
-                          <Icon icon="ph:caret-down" width="20" />
-                        </template>
-                        Filters
-                      </v-btn>
-                    </template>
-                    <v-card class="min-w-[250px]">
-                      <v-card-text class="space-y-5">
-                        <v-autocomplete
-                          multiple
-                          hide-details
-                          label="Members"
-                          v-model="searchAssignees"
-                          :items="board.members"
-                          item-title="name"
-                          item-value="id"
-                        >
-                        </v-autocomplete>
-                        <v-menu :close-on-content-click="false">
-                          <template v-slot:activator="{ props }">
-                            <v-btn
-                              class="w-full flex text-start"
-                              variant="outlined"
-                              v-bind="props"
-                            >
-                              Labels
-                            </v-btn>
-                          </template>
-                          <v-card>
-                            <v-card-text>
-                              <v-item-group
-                                v-model="searchLabels"
-                                multiple
-                                class="space-y-2 my-2 w-96"
-                              >
-                                <v-item
-                                  v-for="label in board.labels"
-                                  :value="label.id"
-                                  v-slot="{ isSelected, toggle }"
-                                >
-                                  <div class="flex items-center">
-                                    <v-btn
-                                      class="w-full"
-                                      :color="label.color"
-                                      @click="toggle"
-                                    >
-                                      <p v-if="label.title">
-                                        {{ label.title }}
-                                      </p>
-                                      <template
-                                        v-slot:prepend
-                                        v-if="isSelected"
-                                      >
-                                        <Icon icon="ph:check" width="20" />
-                                      </template>
-                                    </v-btn>
-                                  </div>
-                                </v-item>
-                              </v-item-group>
-                            </v-card-text>
-                          </v-card>
-                        </v-menu>
-                        <VueDatePicker
-                          range
-                          inline
-                          class="w-full"
-                          menu-class-name="absolute"
-                          v-model="searchDate"
-                          :dark="theme.global.name.value === 'dark'"
-                        >
-                          <template
-                            #action-row="{ internalModelValue, selectDate }"
-                          >
-                            <div class="action-row flex gap-1 w-full">
-                              <v-btn
-                                class="select-button w-1/2"
-                                color="primary"
-                                variant="outlined"
-                                @click="searchDate = []"
-                              >
-                                Delete
-                              </v-btn>
-                              <v-btn
-                                class="select-button w-1/2"
-                                color="primary"
-                                @click="selectDate"
-                                >Select Date</v-btn
-                              >
-                            </div>
-                          </template>
-                        </VueDatePicker>
-                      </v-card-text>
-                    </v-card>
-                  </v-menu>
-                </div>
-                <div class="-space-x-2 flex">
-                  <UserAvatar
-                    class="z-50"
-                    v-for="user in board?.members.slice(0, 1)"
-                    :user
-                    v-if="mdAndUp"
-                  />
-                  <v-dialog>
-                    <template v-slot:activator="{ props }">
-                      <v-btn
-                        rounded="full"
-                        v-bind="props"
-                        size="32"
-                        icon
-                        variant="flat"
-                        color="primary"
-                      >
-                        <Icon icon="ph:dots-three-outline-fill" />
-                      </v-btn>
-                    </template>
-                    <template v-slot:default="{ isActive }">
-                      <v-card class="md:max-w-[500px] md:min-w-[300px] mx-auto">
-                        <v-card-text>
-                          <div class="flex justify-between items-center">
-                            <p class="text-lg">Board Members</p>
-                            <v-btn
-                              variant="text"
-                              class=""
-                              icon
-                              size="35"
-                              @click="() => (isActive.value = false)"
-                            >
-                              <Icon icon="ph:x"></Icon>
-                            </v-btn>
-                          </div>
-                          <v-list>
-                            <UserProfile
-                              v-for="user in board?.members"
-                              :member="user"
-                            />
-                          </v-list>
-                        </v-card-text>
-                      </v-card>
-                    </template>
-                  </v-dialog>
-                </div>
-                <v-btn
-                  variant="text"
-                  icon
-                  @click="() => (boardSettingsDialog = true)"
-                >
-                  <Icon
-                    icon="ph:gear"
-                    width="30"
-                    color="white"
-                    v-if="isAdmin === true"
-                  />
-                  <Icon icon="ph:info" width="30" color="white" v-else />
-                </v-btn>
-              </div>
-            </v-col>
-          </v-row>
-        </v-app-bar>
         <v-alert
           v-if="isMobile"
           colsable
@@ -624,13 +254,13 @@ const handleDrawerShortcut = (e) => {
         v-if="boardCopy"
         location="right"
         temporary
-        v-model="boardSettingsDialog"
+        v-model="settingsDrawer"
         width="500"
       >
         <v-list v-if="isAdmin">
           <BoardSettings
             :workspaceAllMembers="board.workspace.members"
-            v-model:boardSettingsDialog="boardSettingsDialog"
+            v-model:boardSettingsDialog="settingsDrawer"
             v-model:board="board"
             @success="() => success()"
           />
@@ -640,6 +270,7 @@ const handleDrawerShortcut = (e) => {
         </v-list>
       </v-navigation-drawer>
 
+      <!-- Card details dialog -->
       <v-dialog
         transition="dialog-bottom-transition"
         class="md:max-w-[90vw] w-full mx-auto"
@@ -676,12 +307,6 @@ const handleDrawerShortcut = (e) => {
 </template>
 
 <style scoped>
-/* :deep(.v-field__input) { */
-/*   font-size: 1.25rem !important; */
-/*   padding: 0.5rem !important; */
-/*   margin: 0 !important; */
-/* } */
-
 :deep(.dp__input) {
   border-radius: 8px !important;
 }

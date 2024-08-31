@@ -115,15 +115,6 @@ const { searchWord } = storeToRefs(cardSearch);
               <Icon icon="ph:magnifying-glass" width="25"></Icon>
             </template>
           </v-text-field>
-          <!-- <v-btn color="onbackground" size="small" variant="outlined" rounded> -->
-          <!--   <p class="flex justify-center items-center text-primary font-bold"> -->
-          <!--     Filter -->
-          <!--     <Icon icon="ph:caret-down" width="25"></Icon> -->
-          <!--   </p> -->
-          <!-- </v-btn> -->
-          <!-- <v-btn variant="text" icon rounded="lg" size="small"> -->
-          <!--   <Icon icon="ph:bell" width="25" color="#79AC78"></Icon> -->
-          <!-- </v-btn> -->
         </div>
       </v-col>
       <v-col md="3" cols="2">

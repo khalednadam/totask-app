@@ -8,6 +8,7 @@ const drawer = defineModel();
 defineProps({
   workspaceName: String,
   isPremium: Boolean,
+  isAdmin: Boolean,
   workspaceId: String,
 });
 </script>
@@ -64,7 +65,7 @@ defineProps({
           </template>
         </v-list-item>
       </router-link>
-      <router-link :to="`/w/settings/${workspaceId}`">
+      <router-link :to="`/w/settings/${workspaceId}`" v-if="isAdmin">
         <v-list-item
           color="primary"
           title="Settings"

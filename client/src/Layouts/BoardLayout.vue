@@ -51,11 +51,13 @@ authStore.getUser();
     type="warning"
   ></v-alert>
   <BoardSideNavigationDrawer
+    :key="currentBoard"
     v-if="currentStatus < 205 && currentBoard"
     v-model="sideDrawer"
-    :workspace-name="currentBoard?.workspace.name"
-    :is-premium="currentBoard?.workspace.isPremium"
-    :workspace-id="currentBoard?.workspace.id"
+    :workspace-name="currentBoard.workspace.name"
+    :is-premium="currentBoard.workspace.isPremium"
+    :workspace-id="currentBoard.workspace.id"
+    :is-admin="currentBoardIsAdmin"
   />
   <BoardHeader @toggle-drawer="() => toggleDrawer()" :drawer="sideDrawer" />
   <BoardInfoHeader
@@ -87,7 +89,7 @@ authStore.getUser();
     </v-list>
   </v-navigation-drawer>
 
-  <slot> </slot>
+  <slot></slot>
   <v-dialog
     transition="dialog-bottom-transition"
     class="md:max-w-[90vw] w-full mx-auto"

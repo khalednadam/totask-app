@@ -6,13 +6,18 @@ const app = express();
 const config = require("./config/config");
 
 const server = http.createServer(app);
-const io = new Server(server, {
+// const io = new Server(server, {
+//   cors: {
+//     origin: [config.CLIENT_URL],
+//     methods: ["GET", "POST", "PUT", "DELETE"]
+//   }
+// })
+const io = new Server("3002", {
   cors: {
     origin: [config.CLIENT_URL],
     methods: ["GET", "POST", "PUT", "DELETE"]
   }
 })
-
 io.on("connection", (socket) => {
   console.log("Hello from the socket.");
   socket.on("subscribe", (board) => {

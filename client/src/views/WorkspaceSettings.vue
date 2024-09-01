@@ -216,7 +216,7 @@ watchEffect(() => {
   }
 });
 
-watch(removeMemberDialog.value, () => {
+watch(removeMemberDialog, () => {
   if (!removeMemberDialog.value) {
     memberToRemove.value = null;
   }

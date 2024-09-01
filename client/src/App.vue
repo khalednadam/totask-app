@@ -14,7 +14,7 @@ const theme = useTheme();
 </script>
 
 <template>
-  <v-app :theme="$route.path.includes('/home') ? 'light' : theme.current.value">
+  <v-app :theme="$route.path.includes('/home') ? 'light' : ''">
     <component :is="$route.meta.layout || 'div'">
       <RouterView :key="$route.fullPath" />
     </component>

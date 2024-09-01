@@ -76,7 +76,6 @@ const updateChecklistItemPosition = async (checklistItemId, position) => {
         withCredentials: true,
       }
     );
-    // emit("updateCardChecklist", response.data);
     socket.emit("update-cards", props.boardId, [props.listId]);
     socket.emit("update-card", props.cardId);
   } catch (err) {

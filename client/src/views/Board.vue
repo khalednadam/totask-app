@@ -26,11 +26,11 @@ const DraggableLists = defineAsyncComponent(
 );
 
 const BoardSettings = defineAsyncComponent(
-  () => import("../components/BoardSettings.vue")
+  () => import("../components/Board/BoardSettings.vue")
 );
 
 const BoardInfo = defineAsyncComponent(
-  () => import("../components/BoardInfo.vue")
+  () => import("../components/Board/BoardInfo.vue")
 );
 
 const CardDetails = defineAsyncComponent(

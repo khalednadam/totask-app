@@ -1,7 +1,7 @@
 <script setup>
 import { Icon } from "@iconify/vue/dist/iconify.js";
 import { useRoute } from "vue-router";
-import InBoardWorkspaceBoards from "../InBoardWorkspaceBoards.vue";
+import InBoardWorkspaceBoards from "./InBoardWorkspaceBoards.vue";
 
 const route = useRoute();
 const drawer = defineModel();

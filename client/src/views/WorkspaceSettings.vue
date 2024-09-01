@@ -191,9 +191,6 @@ const makeAdminNormalMember = async (adminId) => {
       workspaceId: workspaceId.value,
       member: adminId,
     });
-    // members.value.push(response.data);
-    // admins.value = admins.value.filter((admin) => admin._id != response.data._id);
-    // admins.value.map(admin => console.log(admin._id != response.data._id))
     toast.success("User has been updated");
   } catch (err) {
     toastError(err);

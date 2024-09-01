@@ -5,7 +5,7 @@ import BoardSideNavigationDrawer from "../components/Board/BoardSideNavigationDr
 import { useBoardStore } from "../stores/board";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import BoardHeader from "../components/BoardHeader.vue";
+import BoardHeader from "../components/Board/BoardHeader.vue";
 import BoardInfoHeader from "../components/Board/BoardInfoHeader.vue";
 
 // INITS

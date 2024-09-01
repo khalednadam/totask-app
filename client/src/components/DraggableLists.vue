@@ -6,6 +6,7 @@ import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 import axiosInstance from "../composables/axios";
 import { useLists } from "../composables/utils";
+import AddList from "./AddList.vue";
 
 const List = defineAsyncComponent(() => import("./List.vue"));
 const props = defineProps({
@@ -98,4 +99,5 @@ const deleteList = (listId) => {
       />
     </template>
   </VueDraggable>
+  <AddList />
 </template>

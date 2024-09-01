@@ -1,13 +1,13 @@
 <script setup>
-import { Icon } from '@iconify/vue';
-import axios from 'axios';
-import { onMounted } from 'vue';
-import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import axiosInstance from '../../composables/axios';
+import { Icon } from "@iconify/vue";
+import axios from "axios";
+import { onMounted } from "vue";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axiosInstance from "../../composables/axios";
 
 const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fullDateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+const fullDateOptions = { year: "numeric", month: "numeric", day: "numeric" };
 
 const route = useRoute();
 const router = useRouter();
@@ -18,40 +18,51 @@ const post = ref();
 const getPostById = async () => {
   isLoading.value = true;
   try {
-    const response = await axiosInstance.get(`/blog/${blogPostId.value}`, { withCredentials: true });
+    const response = await axiosInstance.get(`/blog/${blogPostId.value}`, {
+      withCredentials: true,
+    });
     post.value = response.data;
   } catch (err) {
     console.log(err);
   } finally {
     isLoading.value = false;
   }
-}
+};
 
 const goBack = () => router.go(-1);
 onMounted(async () => {
   await getPostById();
-})
-
+});
 </script>
 <template>
   <div>
-    <v-btn @click="goBack" icon variant="tonal" size="small" color="primary" class="!absolute top-20">
+    <v-btn
+      @click="goBack"
+      icon
+      variant="tonal"
+      size="small"
+      color="primary"
+      class="!absolute top-20"
+    >
       <Icon icon="ph:caret-left" class="text-primary" width="25" />
     </v-btn>
     <p v-if="isLoading">
-      <v-progress-circular color="primary" indeterminate="disable-shrink" size="16" width="2"></v-progress-circular>
+      <v-progress-circular
+        color="primary"
+        indeterminate="disable-shrink"
+        size="16"
+        width="2"
+      ></v-progress-circular>
     </p>
     <div class="text-center space-y-5" v-else>
-      <p class="text-xs mt-1 ">
+      <p class="text-xs mt-1">
         {{ new Date(post?.createdAt).toLocaleString("en-GB", fullDateOptions) }}
       </p>
       <h1 class="text-4xl">
         {{ post?.title }}
       </h1>
-      <v-img height="450" rounded="large" :src="post?.cover">
-      </v-img>
-      <p v-html="post?.text" class="text-start">
-      </p>
+      <v-img height="450" rounded="large" :src="post?.cover"> </v-img>
+      <p v-html="post?.text" class="text-start text-xl md:text-lg"></p>
     </div>
   </div>
 </template>

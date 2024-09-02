@@ -21,6 +21,7 @@ import CardCover from "../CardCover.vue";
 import ChangeableText from "../ChangeableText.vue";
 import CardDescription from "../CardDescription.vue";
 import AttachmentMenu from "../AttachmentMenu.vue";
+import CardCoverButton from "../CardCoverButton.vue";
 
 // INITS
 const props = defineProps({
@@ -52,8 +53,6 @@ const { members } = getMembersOfBoard(card?.value.board.id);
 const labelToEdit = ref(null);
 const editLabel = ref(false);
 const newCommentText = ref("");
-const cardCover = ref();
-const isLoading = ref(false);
 const addCommentLoading = ref(false);
 const addLabelLoading = ref(false);
 
@@ -156,34 +155,6 @@ const onDeleteDate = () => {
   card.value.isComplete = false;
   startDateToChange.value = new Date();
   endDateToChange.value = new Date();
-};
-
-const addCardCover = () => {
-  isLoading.value = true;
-  axiosInstance
-    .put(
-      `/card/cover/${cardId.value}`,
-      {
-        file: cardCover.value,
-      },
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      }
-    )
-    .then((res) => {
-      emit("updateCard", res.data);
-      socket.emit("update-card", card.value.id);
-      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
-    })
-    .catch((err) => {
-      toastError(err);
-    })
-    .finally(() => {
-      isLoading.value = false;
-    });
 };
 
 // computed
@@ -321,7 +292,6 @@ const addComment = async () => {
   try {
     await axiosInstance.post(`/comment/${card.value.id}/create`, {
       text: newCommentText.value,
-      // user: currentUser.user.id,
       boardId: card.value.board.id,
     });
 
@@ -358,13 +328,11 @@ onUnmounted(() => {
 <template>
   <v-card class="2xl:w-[35vw] xl:w-[50vw] w-full mx-auto">
     <CardCover
-      v-model="cardCover"
       :cover="card.cover"
       :cardId="cardId"
       :boardId="card.board.id"
       :listId="card.list.id"
       @update-card="(newCard) => updateCard(newCard)"
-      @add-card-cover="() => addCardCover(cardCover)"
     />
     <v-card-text>
       <div class="!flex justify-between mb-7">
@@ -602,48 +570,13 @@ onUnmounted(() => {
               @update-card="(newCard) => updateCard(newCard)"
             />
 
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" class="w-full" variant="tonal">
-                  <template v-slot:prepend>
-                    <Icon icon="ph:image" width="20" />
-                  </template>
-                  Cover
-                </v-btn>
-              </template>
-              <template v-slot:default="{ isActive }">
-                <v-card class="w-80">
-                  <v-card-text>
-                    <v-file-input
-                      v-model="cardCover"
-                      accept="image/*"
-                      label="Cover"
-                      variant="solo-filled"
-                    ></v-file-input>
-                  </v-card-text>
-                  <v-card-actions
-                    class="flex justify-end self-end justify-self-end"
-                  >
-                    <v-btn
-                      variant="outlined"
-                      color="primary"
-                      @click="isActive.value = false"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      @click="addCardCover"
-                      :disabled="isLoading"
-                      :loading="isLoading"
-                      variant="flat"
-                      color="primary"
-                    >
-                      Upload
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-menu>
+            <CardCoverButton
+              :cardId="cardId"
+              :boardId="card.board.id"
+              :listId="card.list.id"
+              @update-card="(newCard) => updateCard(newCard)"
+              :is-list-button="true"
+            />
             <v-divider class="bg-black opacity-100"></v-divider>
             <v-btn
               class="w-full"

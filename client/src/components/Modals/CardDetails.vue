@@ -20,6 +20,7 @@ import DeleteModal from "@/components/Modals/DeleteModal.vue";
 import CardCover from "../CardCover.vue";
 import ChangeableText from "../ChangeableText.vue";
 import CardDescription from "../CardDescription.vue";
+import AttachmentMenu from "../AttachmentMenu.vue";
 
 // INITS
 const props = defineProps({
@@ -41,7 +42,6 @@ const titleToChange = ref(card?.value.title);
 const assigneesToChange = ref(card?.value.assignees);
 const toast = useToast();
 const date = ref();
-let attachments = ref([]);
 
 // Dialogs and menus
 const datesMenu = ref(false);
@@ -158,13 +158,13 @@ const onDeleteDate = () => {
   endDateToChange.value = new Date();
 };
 
-const addCardCover = (newCover) => {
+const addCardCover = () => {
   isLoading.value = true;
   axiosInstance
     .put(
       `/card/cover/${cardId.value}`,
       {
-        file: newCover,
+        file: cardCover.value,
       },
       {
         headers: {
@@ -177,36 +177,6 @@ const addCardCover = (newCover) => {
       emit("updateCard", res.data);
       socket.emit("update-card", card.value.id);
       socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
-    })
-    .catch((err) => {
-      toastError(err);
-    })
-    .finally(() => {
-      isLoading.value = false;
-    });
-};
-
-const addAttachments = () => {
-  isLoading.value = true;
-  // Create FormData object
-  const formData = new FormData();
-
-  // Append each file to FormData
-  attachments.value.forEach((attachment) => {
-    formData.append("files", attachment); // Append the file directly, assuming 'files' is the expected field name by Multer
-  });
-  axiosInstance
-    .put(`/card/attachments/${cardId.value}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    })
-    .then((res) => {
-      emit("updateCard", res.data);
-      socket.emit("update-card", card.value.id);
-      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
-      attachments.value = [];
     })
     .catch((err) => {
       toastError(err);
@@ -246,28 +216,6 @@ const deleteCard = () => {
       socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
       toast.success("card was deleted");
       socket.emit("delete-card", cardId.value);
-    })
-    .catch((err) => {
-      toastError(err);
-    });
-};
-
-const updateCardLabels = () => {
-  axiosInstance
-    .put(
-      `/card/labels/${card.value.id}`,
-      {
-        labels: cardLabels.value.map((label) => label.id),
-      },
-      {
-        withCredentials: true,
-      }
-    )
-    .then((res) => {
-      emit("updateCard", res.data);
-      cardLabels.value = res.data.labels;
-      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
-      socket.emit("update-card", card.value.id);
     })
     .catch((err) => {
       toastError(err);
@@ -442,6 +390,7 @@ onUnmounted(() => {
         <v-col cols="12" md="8">
           <!-- Labels -->
           <p class="mb-2">Labels</p>
+
           <Labels
             @open-edit-label="(label) => openEditLabel(label)"
             :board-id="card.board.id"
@@ -453,6 +402,7 @@ onUnmounted(() => {
             v-model:newLabelMenu="newLabelMenu"
             :board-labels="card.board.labels"
           />
+
           <!--  -->
 
           <!--  Due Date -->
@@ -611,69 +561,18 @@ onUnmounted(() => {
               @update-card="(newCard) => updateCard(newCard)"
             />
 
-            <v-menu :close-on-content-click="false">
-              <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" class="w-full" variant="tonal">
-                  <template v-slot:prepend>
-                    <icon icon="ph:tag" width="20" />
-                  </template>
-                  Labels
-                </v-btn>
-              </template>
-              <v-card class="relative">
-                <v-card-title class="text-center relative">
-                  Labels
-                </v-card-title>
-                <v-card-text>
-                  <v-item-group
-                    v-model="cardLabels"
-                    multiple
-                    class="space-y-2 my-2 w-96"
-                  >
-                    <v-item
-                      v-for="label in card.board.labels"
-                      :value="label"
-                      v-slot="{ isSelected, toggle }"
-                    >
-                      <div class="flex items-center">
-                        <v-btn
-                          class="w-11/12"
-                          :color="label.color"
-                          @click="
-                            () => {
-                              toggle();
-                              updateCardLabels();
-                            }
-                          "
-                        >
-                          <p v-if="label.title">
-                            {{ label.title.toUpperCase() }}
-                          </p>
-                          <template v-slot:prepend v-if="isSelected">
-                            <Icon icon="ph:check" width="20" />
-                          </template>
-                        </v-btn>
-                        <v-btn
-                          icon
-                          variant="text"
-                          size="small"
-                          @click="() => openEditLabel(label)"
-                        >
-                          <Icon icon="ph:pencil-simple" width="20" />
-                        </v-btn>
-                      </div>
-                    </v-item>
-                  </v-item-group>
-                  <v-btn
-                    @click="newLabelMenu = true"
-                    variant="tonal"
-                    class="w-full"
-                  >
-                    Add a new label
-                  </v-btn>
-                </v-card-text>
-              </v-card>
-            </v-menu>
+            <Labels
+              @open-edit-label="(label) => openEditLabel(label)"
+              :board-id="card.board.id"
+              v-model:card-labels="card.labels"
+              :list-id="card.list.id"
+              :card-id="card.id"
+              @update-card="(newCard) => updateCard(newCard)"
+              v-model:cardLabelsCopy="cardLabels"
+              v-model:newLabelMenu="newLabelMenu"
+              :board-labels="card.board.labels"
+              :is-button="true"
+            />
             <AddChecklistCard
               :card-id="card.id"
               :list-id="card.list.id"
@@ -696,50 +595,12 @@ onUnmounted(() => {
               @on-delete-date="() => onDeleteDate()"
             />
 
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn v-bind="props" class="w-full" variant="tonal">
-                  <template v-slot:prepend>
-                    <Icon icon="ph:paperclip" width="20" />
-                  </template>
-                  Attachments
-                </v-btn>
-              </template>
-              <template v-slot:default="{ isActive }">
-                <v-card class="w-80">
-                  <v-card-text>
-                    <v-file-input
-                      multiple
-                      v-model="attachments"
-                      name="attachments"
-                      label="Attachments"
-                      accept="image/*, application/pdf"
-                      variant="solo-filled"
-                    ></v-file-input>
-                  </v-card-text>
-                  <v-card-actions
-                    class="flex justify-end self-end justify-self-end"
-                  >
-                    <v-btn
-                      variant="outlined"
-                      color="primary"
-                      @click="isActive.value = false"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      @click="addAttachments"
-                      :disabled="isLoading"
-                      :loading="isLoading"
-                      variant="flat"
-                      color="primary"
-                    >
-                      Upload
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-menu>
+            <AttachmentMenu
+              :cardId="cardId"
+              :boardId="card.board.id"
+              :listId="card.list.id"
+              @update-card="(newCard) => updateCard(newCard)"
+            />
 
             <v-menu>
               <template v-slot:activator="{ props }">

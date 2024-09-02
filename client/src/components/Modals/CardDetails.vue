@@ -22,6 +22,8 @@ import ChangeableText from "../ChangeableText.vue";
 import CardDescription from "../CardDescription.vue";
 import AttachmentMenu from "../AttachmentMenu.vue";
 import CardCoverButton from "../CardCoverButton.vue";
+import BoardLabels from "../BoardLabels.vue";
+import EditBoardLabels from "../EditBoardLabels.vue";
 
 // INITS
 const props = defineProps({
@@ -46,15 +48,12 @@ const date = ref();
 
 // Dialogs and menus
 const datesMenu = ref(false);
-const newLabelColor = ref();
-const newLabelTitle = ref();
 const newLabelMenu = ref(false);
 const { members } = getMembersOfBoard(card?.value.board.id);
 const labelToEdit = ref(null);
 const editLabel = ref(false);
 const newCommentText = ref("");
 const addCommentLoading = ref(false);
-const addLabelLoading = ref(false);
 
 // Funcitons
 const updateCard = (newCard) => {
@@ -193,90 +192,7 @@ const deleteCard = () => {
     });
 };
 
-const createLabel = () => {
-  addLabelLoading.value = true;
-  axiosInstance
-    .post(
-      `/label/create`,
-      {
-        title: newLabelTitle.value,
-        color: newLabelColor.value,
-      },
-      {
-        params: {
-          boardId: card.value.board.id,
-        },
-        withCredentials: true,
-      }
-    )
-    .then((res) => {
-      card.value.board.labels.push(res.data);
-      socket.emit("update-cards", card.value.board.id, [card.value.list.id]);
-      socket.emit("update-card", card.value.id);
-      newLabelMenu.value = false;
-      newLabelTitle.value = null;
-      newLabelColor.value = null;
-    })
-    .catch((err) => {
-      toastError(err);
-    })
-    .finally(() => {
-      addLabelLoading.value = false;
-    });
-};
-
-const updateLabel = (labelId) => {
-  axiosInstance
-    .put(
-      `/label/${labelId}`,
-      {
-        title: labelToEdit.value.title,
-        color: labelToEdit.value.color,
-      },
-      {
-        params: {
-          boardId: card.value.board.id,
-        },
-        withCredentials: true,
-      }
-    )
-    .then((res) => {
-      editLabel.value = false;
-      labelToEdit.value = null;
-      socket.emit("update-cards", card.value.board.id, null);
-      socket.emit("update-card", card.value.id);
-    })
-    .catch((err) => {
-      toastError(err);
-    });
-};
-
-const deleteLabel = (labelId) => {
-  axiosInstance
-    .delete(`/label/${labelId}`, {
-      params: {
-        boardId: card.value.board.id,
-      },
-      withCredentials: true,
-    })
-    .then((res) => {
-      editLabel.value = false;
-      labelToEdit.value = null;
-      card.value.board.labels = card.value.board.labels.filter(
-        (label) => label.id !== labelId
-      );
-      card.value.labels = card.value.labels.filter(
-        (label) => label.id !== labelId
-      );
-      socket.emit("update-cards", card.value.board.id, null);
-      socket.emit("update-card", card.value.id);
-    })
-    .catch((err) => {
-      toastError(err);
-    });
-};
 const openEditLabel = (label) => {
-  console.log(label);
   editLabel.value = true;
   labelToEdit.value = label;
 };
@@ -604,99 +520,24 @@ onUnmounted(() => {
       />
     </v-dialog>
   </v-card>
-  <v-dialog
-    v-model="newLabelMenu"
-    width="350"
-    class="w-max bg-red mx-auto"
-    :scrim="false"
-    :close-on-content-click="false"
-  >
-    <v-card class="mx-auto" width="350">
-      <v-card-title class="text-center"> Add label </v-card-title>
-      <div
-        class="bg-list mb-2 h-20 w-full flex justify-center items-center px-4"
-      >
-        <v-btn :color="newLabelColor" variant="flat" class="w-full">
-          <p v-if="newLabelTitle">
-            {{ newLabelTitle.toUpperCase() }}
-          </p>
-        </v-btn>
-      </div>
-      <v-card-text>
-        <v-text-field label="Title" v-model="newLabelTitle"> </v-text-field>
-        <v-color-picker
-          class="min-w-full"
-          hide-inputs
-          v-model="newLabelColor"
-          hide-canvas
-          show-swatches
-          elevation="0"
-        ></v-color-picker>
-        <v-btn
-          @click="createLabel"
-          :disabled="!newLabelColor"
-          color="primary"
-          class="mt-2"
-        >
-          Create
-        </v-btn>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
-  <v-dialog
-    v-model="editLabel"
-    :key="editLabel"
-    width="350"
-    class="w-max bg-red mx-auto"
-  >
-    <v-card class="mx-auto" width="350">
-      <v-card-title class="text-center">
-        <div class="flex justify-between items-center">
-          <p>Edit label</p>
-          <v-btn size="x-small" icon @click="() => (editLabel = false)">
-            <Icon icon="ph:x" width="25" />
-          </v-btn>
-        </div>
-      </v-card-title>
-      <div
-        class="bg-list mb-2 h-20 w-full flex justify-center items-center px-4"
-      >
-        <v-btn :color="labelToEdit.color" variant="flat" class="w-full">
-          <p v-if="labelToEdit.title">
-            {{ labelToEdit.title.toUpperCase() }}
-          </p>
-        </v-btn>
-      </div>
-      <v-card-text>
-        <v-text-field label="Title" v-model="labelToEdit.title"> </v-text-field>
-        <v-color-picker
-          class="min-w-full"
-          hide-inputs
-          v-model="labelToEdit.color"
-          hide-canvas
-          show-swatches
-          elevation="0"
-        ></v-color-picker>
-        <div class="flex items-center gap-2">
-          <v-btn
-            @click="() => deleteLabel(labelToEdit.id)"
-            color="error"
-            class="mt-2"
-          >
-            Delete
-          </v-btn>
-          <v-btn
-            @click="() => updateLabel(labelToEdit.id)"
-            :disabled="!labelToEdit.color"
-            color="primary"
-            class="mt-2"
-          >
-            Update
-          </v-btn>
-        </div>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
+  <BoardLabels
+    v-model:newLabelMenu="newLabelMenu"
+    v-model:boardLabels="card.board.labels"
+    :cardId="cardId"
+    :boardId="card.board.id"
+    :listId="card.list.id"
+    @update-card="(newCard) => updateCard(newCard)"
+  />
+  <EditBoardLabels
+    v-model:editLabel="editLabel"
+    v-model:boardLabels="card.board.labels"
+    v-model:cardLabels="card.labels"
+    v-model:labelToEdit="labelToEdit"
+    :cardId="cardId"
+    :boardId="card.board.id"
+    :listId="card.list.id"
+    @update-card="(newCard) => updateCard(newCard)"
+  />
 </template>
 
 <style>

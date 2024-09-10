@@ -61,7 +61,7 @@ onMounted(async () => {
         {{ post?.title }}
       </h1>
       <v-img height="450" rounded="large" :src="post?.cover"> </v-img>
-      <p v-html="post?.text" class="text-start"></p>
+      <p v-html="post?.text" class="text-start text-xl md:text-lg"></p>
     </div>
   </div>
 </template>

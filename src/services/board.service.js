@@ -115,8 +115,6 @@ const updateBoardById = async (boardId, boardBody, userId) => {
       "You are not allowed to modify this board"
     );
   }
-  // if(board.isPrivate )
-  // await boardBody.populate('members').execPopulate();
   const userIds = boardBody.members.map(user => user._id);
   boardBody.members = userIds;
   board.updatedAt = new Date();

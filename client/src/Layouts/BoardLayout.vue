@@ -1,107 +1,120 @@
 <script setup>
-// IMPORTS
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "@/stores/auth";
-import CreateWorkspace from "@/components/Modals/CreateWorkspaceModal.vue";
-import AddMemberToWorkspaceModal from "@/components/Modals/AddMemberToWorkspaceModal.vue";
-import BoardHeader from "../components/BoardHeader.vue";
-import LogoutBtn from "../components/LogoutBtn.vue";
+import BoardSideNavigationDrawer from "../components/Board/BoardSideNavigationDrawer.vue";
+import { useBoardStore } from "../stores/board";
 import { storeToRefs } from "pinia";
+import BoardHeader from "../components/Board/BoardHeader.vue";
+import BoardInfoHeader from "../components/Board/BoardInfoHeader.vue";
+import { useCardDetailsStore } from "../stores/cardDetails";
+import { createDeviceDetector } from "next-vue-device-detector";
+import { defineAsyncComponent, ref } from "vue";
 
+const BoardSettings = defineAsyncComponent(
+  () => import("../components/Board/BoardSettings.vue")
+);
+const BoardInfo = defineAsyncComponent(
+  () => import("../components/Board/BoardInfo.vue")
+);
+const CardDetails = defineAsyncComponent(
+  () => import("../components/Modals/CardDetails.vue")
+);
 
 // INITS
-const router = useRouter();
+const d = createDeviceDetector();
+const isMobile = ref(d.mobile);
 const authStore = useCurrentUser();
+const boardStore = useBoardStore();
+const {
+  currentBoard,
+  currentStatus,
+  sideDrawer,
+  currentBoardIsAdmin,
+  settingsDrawer,
+} = storeToRefs(boardStore);
+const toggleDrawer = () => {
+  sideDrawer.value = !sideDrawer.value;
+  localStorage.setItem("board-sidebar", sideDrawer.value);
+};
+const cardDetailsStore = useCardDetailsStore();
 
+const { isActive } = storeToRefs(cardDetailsStore);
 // REFS
-const workspace = ref();
-const { isLoading, user } = storeToRefs(authStore);
-const createWorkspaceDialog = ref(false);
-const addMembersDialog = ref(false);
-const drawer = ref(false);
-const workspaceInfo = ref({ name: undefined, id: undefined });
 authStore.getUser();
-
 </script>
 <template>
-  <slot>
-  </slot>
-  <!-- <v-main v-if="isLoading" class="flex flex-col justify-center items-center gap-5 h-[95vh]"> -->
-  <!--   <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular> -->
-  <!-- </v-main> -->
-  <!-- <div v-else> -->
-  <!--   <v-navigation-drawer v-model="drawer" location="left" color="base" v-if="status < 205"> -->
-  <!--     <template v-slot:prepend> -->
-  <!--       <v-list-item lines="two" :title="board?.workspace.name"> -->
-  <!--         <template v-slot:prepend> -->
-  <!--           <v-avatar color="primary" rounded="lg"> -->
-  <!--             {{ board?.workspace.name[0].toUpperCase() }} -->
-  <!--           </v-avatar> -->
-  <!--         </template> -->
-  <!--       </v-list-item> -->
-  <!--     </template> -->
-  <!--     <v-divider class="border-2 dark:border-white border-black"></v-divider> -->
-  <!--     <v-list class="w-11/12 mx-auto space-y-2"> -->
-  <!--       <router-link :to="`/`"> -->
-  <!--         <v-list-item :active="router.currentRoute.value.fullPath === `/`" color="primary" title="Home"> -->
-  <!--           <template #prepend> -->
-  <!--             <Icon icon="ph:house" width="20"> </Icon> -->
-  <!--           </template> -->
-  <!--         </v-list-item> -->
-  <!--       </router-link> -->
-  <!--       <router-link :to="`/w/${board?.workspace.id}`"> -->
-  <!--         <v-list-item :active="router.currentRoute.value.fullPath === `/w/${board?.workspace.id}`" color="primary" -->
-  <!--           title="Boards"> -->
-  <!--           <template #prepend> -->
-  <!--             <Icon icon="ph:columns" width="20"> </Icon> -->
-  <!--           </template> -->
-  <!--         </v-list-item> -->
-  <!--       </router-link> -->
-  <!--       <router-link :to="`/w/settings/${board?.workspace.id}`"> -->
-  <!--         <v-list-item color="primary" title="Settings" :active="router.currentRoute.value.fullPath === '/settings'"> -->
-  <!--           <template #prepend> -->
-  <!--             <Icon icon="ph:gear" width="20"> </Icon> -->
-  <!--           </template> -->
-  <!--         </v-list-item> -->
-  <!--       </router-link> -->
-  <!--       <v-divider class="border-2 dark:border-white border-black"></v-divider> -->
-  <!--       <v-list-item-subtitle class=""> -->
-  <!--         This workspace's boards -->
-  <!--       </v-list-item-subtitle> -->
-  <!--       <div class="mt-2 space-y-2"> -->
-  <!--         <SidebarWorkspaceBoardItem v-for="board in board?.workspace.boards" :board-id="board.id" -->
-  <!--           :board-background-color="board.backgroundColor" :board-name="board.name" /> -->
-  <!--       </div> -->
-  <!--     </v-list> -->
-  <!--   </v-navigation-drawer> -->
-  <!--   <BoardHeader @toggle-drawer="() => toggleDrawer()" :drawer="drawer" /> -->
-  <!--   <v-main v-if="status > 205"> -->
-  <!--     <div class="mt-10"> -->
-  <!--       <v-row> -->
-  <!--         <v-col> -->
-  <!--           <div class="flex flex-col gap-3 justify-center items-center"> -->
-  <!--             <h1 class="text-center text-3xl"> -->
-  <!--               Board not found -->
-  <!--             </h1> -->
-  <!--             <p class="md:w-2/6 w-full mx-auto text-center"> -->
-  <!--               This board may be private. If someone gave you this link, they may need to -->
-  <!--               invite you to their Workspace. -->
-  <!--             </p> -->
-  <!--             <router-link to="/"> -->
-  <!--               <v-btn color="primary" class="w-max"> -->
-  <!--                 Home -->
-  <!--               </v-btn> -->
-  <!--             </router-link> -->
-  <!--           </div> -->
-  <!--         </v-col> -->
-  <!--       </v-row> -->
-  <!--     </div> -->
-  <!--   </v-main> -->
-  <!--   <slot> -->
-  <!--   </slot> -->
-  <!-- </div> -->
+  <v-alert
+    v-if="isMobile"
+    closable
+    class="mx-1 !z-[9999] ! my-5 !fixed"
+    color="background"
+    text="For optimal performance and full functionality, we recommend accessing totask on a desktop or laptop computer."
+    type="warning"
+  ></v-alert>
+  <BoardSideNavigationDrawer
+    :key="currentBoard"
+    v-if="currentStatus < 205 && currentBoard"
+    v-model="sideDrawer"
+    :workspace-name="currentBoard.workspace.name"
+    :is-premium="currentBoard.workspace.isPremium"
+    :workspace-id="currentBoard.workspace.id"
+    :is-admin="currentBoardIsAdmin"
+  />
+  <BoardHeader @toggle-drawer="() => toggleDrawer()" :drawer="sideDrawer" />
+  <BoardInfoHeader
+    :board-members="currentBoard?.members"
+    :board-name="currentBoard?.name"
+    :board-labels="currentBoard?.labels"
+    :is-admin="currentBoardIsAdmin"
+    v-model:board-settings-drawer="settingsDrawer"
+    v-model:is-board-favorite="currentBoard.isFavorite"
+  />
+
+  <v-navigation-drawer
+    v-if="currentBoard"
+    location="right"
+    temporary
+    v-model="settingsDrawer"
+    width="500"
+  >
+    <v-list v-if="currentBoardIsAdmin">
+      <BoardSettings
+        :workspaceAllMembers="currentBoard.workspace.members"
+        v-model:boardSettingsDialog="settingsDrawer"
+        v-model:board="currentBoard"
+        @success="() => success()"
+      />
+    </v-list>
+    <v-list v-else>
+      <BoardInfo :board="currentBoard" />
+    </v-list>
+  </v-navigation-drawer>
+
+  <slot></slot>
+  <v-dialog
+    transition="dialog-bottom-transition"
+    class="md:max-w-[90vw] w-full mx-auto"
+    v-model="isActive"
+    :close-on-back="false"
+    persistent
+  >
+    <Suspense>
+      <CardDetails />
+      <template #fallback>
+        <v-card
+          class="2xl:w-[35vw] min-h-[60vh] xl:w-[50vw] w-full mx-auto flex justify-center items-center"
+        >
+          <v-card-text class="mx-auto justify-center flex items-center">
+            <v-progress-circular
+              color="primary"
+              indeterminate="disable-shrink"
+              size="50"
+              width="5"
+            ></v-progress-circular>
+          </v-card-text>
+        </v-card>
+      </template>
+    </Suspense>
+  </v-dialog>
 </template>
 <style scoped>
 :deep(.v-navigation-drawer__content) {

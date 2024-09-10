@@ -12,7 +12,6 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT", "DELETE"]
   }
 })
-
 io.on("connection", (socket) => {
   console.log("Hello from the socket.");
   socket.on("subscribe", (board) => {

@@ -6,19 +6,19 @@ import { useForm, useField } from "vee-validate";
 import { Icon } from "@iconify/vue";
 import { useCurrentUser } from "../stores/auth";
 import axiosInstance from "../composables/axios";
-import { useToast } from "vue-toastification";
-import { toastError } from "../composables/helper.js"
+import { toastError } from "../composables/helper.js";
 
 // INITS
 const router = useRouter();
 const authStore = useCurrentUser();
-const toast = useToast();
 
 const rules = [
-  value => !!value || 'Required.',
-  value => (value && value.length >= 8) || 'Min 8 characters',
-  value => (/\d/.test(value) && /[a-zA-Z]/.test(value)) || 'Password must contain at least one letter and one number'
-]
+  (value) => !!value || "Required.",
+  (value) => (value && value.length >= 8) || "Min 8 characters",
+  (value) =>
+    (/\d/.test(value) && /[a-zA-Z]/.test(value)) ||
+    "Password must contain at least one letter and one number",
+];
 // FORM VALIDATION
 const { handleSubmit, isSubmitting } = useForm({
   validationSchema: {
@@ -30,8 +30,9 @@ const { handleSubmit, isSubmitting } = useForm({
       }
     },
     email(value) {
-      // todo: check the regex 
-      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(value)) return true;
+      // todo: check the regex
+      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(value))
+        return true;
       return "Please enter a valid email";
     },
   },
@@ -51,13 +52,10 @@ const isLoading = ref(false);
 const login = handleSubmit(async () => {
   isLoading.value = true;
   axiosInstance
-    .post(
-      `/auth/login`,
-      {
-        email: email.value.value,
-        password: password.value.value,
-      }
-    )
+    .post(`/auth/login`, {
+      email: email.value.value,
+      password: password.value.value,
+    })
     .then((res) => {
       sessionID.value = res.session;
       authStore.getUser();
@@ -65,19 +63,26 @@ const login = handleSubmit(async () => {
     })
     .catch((err) => {
       toastError(err);
-    }).finally(() => {
-      isLoading.value = false;
     })
+    .finally(() => {
+      isLoading.value = false;
+    });
 });
 
 const goback = () => router.go(-1);
-
 </script>
 
 <template>
   <div>
     <div class="flex flex-col gap-5">
-      <v-btn @click="goback" icon variant="tonal" size="small" color="primary" class="">
+      <v-btn
+        @click="goback"
+        icon
+        variant="tonal"
+        size="small"
+        color="primary"
+        class=""
+      >
         <icon icon="ph:caret-left" class="text-primary" width="25" />
       </v-btn>
       <div>
@@ -88,22 +93,41 @@ const goback = () => router.go(-1);
       <div>
         <p>Email</p>
       </div>
-      <v-text-field autofocus @keydown.enter="() => passwordField.focus()" v-model="email.value.value"
-        :error-messages="email.errorMessage.value"></v-text-field>
+      <v-text-field
+        autofocus
+        @keydown.enter="() => passwordField.focus()"
+        v-model="email.value.value"
+        :error-messages="email.errorMessage.value"
+      ></v-text-field>
       <div class="w-full flex justify-between">
         <p>Password</p>
         <router-link to="/forgot-password">
           <p class="cursor-pointer">forgot your passowrd?</p>
         </router-link>
       </div>
-      <v-text-field :rules="rules" @keydown.enter="login" ref="passwordField"
-        :error-messages="password.errorMessage.value" v-model="password.value.value"
-        :type="showPassword ? 'text' : 'password'">
+      <v-text-field
+        :rules="rules"
+        @keydown.enter="login"
+        ref="passwordField"
+        :error-messages="password.errorMessage.value"
+        v-model="password.value.value"
+        :type="showPassword ? 'text' : 'password'"
+      >
         <template #append-inner>
-          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-closed-bold" width="30"
-            class="cursor-pointer" v-if="showPassword" />
-          <Icon @click="() => (showPassword = !showPassword)" icon="ph:eye-bold" width="30" class="cursor-pointer"
-            v-else />
+          <Icon
+            @click="() => (showPassword = !showPassword)"
+            icon="ph:eye-closed-bold"
+            width="30"
+            class="cursor-pointer"
+            v-if="showPassword"
+          />
+          <Icon
+            @click="() => (showPassword = !showPassword)"
+            icon="ph:eye-bold"
+            width="30"
+            class="cursor-pointer"
+            v-else
+          />
         </template>
       </v-text-field>
       <div>
@@ -114,8 +138,14 @@ const goback = () => router.go(-1);
           </span>
         </p>
       </div>
-      <v-btn class="self-end" @click="() => login()" variant="tonal" color="primary" :loading="isLoading"
-        :disabled="isLoading">
+      <v-btn
+        class="self-end"
+        @click="() => login()"
+        variant="tonal"
+        color="primary"
+        :loading="isLoading"
+        :disabled="isLoading"
+      >
         Login
       </v-btn>
     </v-form>

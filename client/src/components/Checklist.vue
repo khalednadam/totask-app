@@ -76,7 +76,6 @@ const updateChecklistItemPosition = async (checklistItemId, position) => {
         withCredentials: true,
       }
     );
-    // emit("updateCardChecklist", response.data);
     socket.emit("update-cards", props.boardId, [props.listId]);
     socket.emit("update-card", props.cardId);
   } catch (err) {
@@ -122,7 +121,6 @@ const deleteChecklistItem = async (checklistItemId) => {
     emit("updateCardChecklist", response.data);
     socket.emit("update-cards", props.boardId, [props.listId]);
     socket.emit("update-card", props.cardId);
-    // checklist.value = response.data
   } catch (err) {
     console.log(err);
   }

@@ -47,7 +47,6 @@ const updateCardDescription = () => {
     )
     .then((res) => {
       changeCardDescription.value = false;
-      // card.value.description = res.data.description;
       emit("updateCard", res.data);
       socket.emit("update-card", props.cardId);
       socket.emit("update-cards", props.boardId, [props.listId]);

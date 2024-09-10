@@ -1,13 +1,10 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import axios from "axios";
 import { onMounted } from "vue";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axiosInstance from "../../composables/axios";
-
-const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
-const fullDateOptions = { year: "numeric", month: "numeric", day: "numeric" };
+import FullDate from "../../components/FullDate.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -55,9 +52,11 @@ onMounted(async () => {
       ></v-progress-circular>
     </p>
     <div class="text-center space-y-5" v-else>
-      <p class="text-xs mt-1">
-        {{ new Date(post?.createdAt).toLocaleString("en-GB", fullDateOptions) }}
-      </p>
+      <FullDate
+        :date="post?.createdAt"
+        :include-time="false"
+        class="text-xs mt-1"
+      />
       <h1 class="text-4xl">
         {{ post?.title }}
       </h1>

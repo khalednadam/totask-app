@@ -270,10 +270,7 @@ const sendVerificationEmail = async () => {
               <v-img :src="authStore.user?.profilePhotoUrl" v-else></v-img>
             </v-avatar>
             <div class="flex flex-col justify-between items-center gap-2">
-              <v-btn
-                v-bind="props"
-                color="primary"
-                @click="changeAvatarDialog = true"
+              <v-btn color="primary" @click="changeAvatarDialog = true"
                 >Change</v-btn
               >
               <v-btn

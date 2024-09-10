@@ -10,6 +10,7 @@ import { storeToRefs } from "pinia";
 import { computed, onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
 import "../assets/override.css";
+import FullDate from "./FullDate.vue";
 
 const props = defineProps({
   card: Object,
@@ -22,7 +23,6 @@ const { isActive, cardId } = storeToRefs(cardDetails);
 const toast = useToast();
 
 const emits = defineEmits(["deleteCard"]);
-const chipOptions = { year: "numeric", month: "short", day: "numeric" };
 
 const date = ref();
 
@@ -220,14 +220,7 @@ const copyCard = () => {
                   :color="color"
                   rounded="lg"
                 >
-                  <p class="text-xs">
-                    {{
-                      new Date(card.endDate)?.toLocaleString(
-                        "en-GB",
-                        chipOptions
-                      ) || null
-                    }}
-                  </p>
+                  <FullDate :date="card.endDate" :include-time="false" />
                 </v-chip>
               </template>
             </v-tooltip>

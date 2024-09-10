@@ -5,6 +5,7 @@ import { useCurrentUser } from "../stores/auth";
 import { socket } from "../composables/socket";
 import { ref } from "vue";
 import axiosInstance from "../composables/axios";
+import FullDate from "./FullDate.vue";
 
 const currentUser = useCurrentUser();
 
@@ -13,14 +14,6 @@ const props = defineProps({
   boardId: String,
   cardId: String,
 });
-
-const fullDateOptions = {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-};
 
 const textTarget = ref(null);
 const isUpdate = ref(false);
@@ -81,7 +74,11 @@ const onClickOutside = () => {
           {{ comment.text }}
         </p>
         <div v-else ref="textTarget" v-click-outside="onClickOutside">
-          <v-text-field hide-details class="w-full min-w-full" v-model="commentText">
+          <v-text-field
+            hide-details
+            class="w-full min-w-full"
+            v-model="commentText"
+          >
           </v-text-field>
           <div class="mt-2 flex gap-2" @click="updateComment">
             <v-btn variant="tonal" color="primary"> Save </v-btn>
@@ -91,22 +88,23 @@ const onClickOutside = () => {
           </div>
         </div>
         <div class="text-xs flex items-center" v-if="!isUpdate">
-          <p>
-            {{
-              new Date(comment.createdAt).toLocaleString(
-                "en-GB",
-                fullDateOptions
-              )
-            }}
-          </p>
-          <v-btn @click="isUpdate = true" v-if="currentUser.user?.id === comment.user.id" size="small" density="compact"
-            variant="text">
+          <FullDate :date="comment.createdAt" :include-time="true" />
+          <v-btn
+            @click="() => (isUpdate = true)"
+            v-if="currentUser.user?.id === comment.user.id"
+            size="small"
+            density="compact"
+            variant="text"
+          >
             edit
           </v-btn>
         </div>
       </div>
     </div>
-    <div class="justify-self-end self-center" v-if="currentUser.user?.id === comment.user.id">
+    <div
+      class="justify-self-end self-center"
+      v-if="currentUser.user?.id === comment.user.id"
+    >
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn v-bind="props" variant="text" icon size="small">
@@ -114,7 +112,12 @@ const onClickOutside = () => {
           </v-btn>
         </template>
         <v-list>
-          <v-list-item @click="deleteComment" base-color="error" density="compact" :rounded="false">
+          <v-list-item
+            @click="deleteComment"
+            base-color="error"
+            density="compact"
+            :rounded="false"
+          >
             <template v-slot:prepend>
               <Icon icon="ph:trash" width="25" />
             </template>

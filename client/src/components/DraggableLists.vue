@@ -1,34 +1,40 @@
 <script setup>
 import { defineAsyncComponent, ref } from "vue";
 import { socket } from "../composables/socket";
-import { VueDraggable } from 'vue-draggable-plus'
+import { VueDraggable } from "vue-draggable-plus";
 import { useRoute } from "vue-router";
-// import { useLists } from "../composables/utils";
 import { useToast } from "vue-toastification";
 import axiosInstance from "../composables/axios";
 import { useLists } from "../composables/utils";
+import AddList from "./AddList.vue";
 
-const List = defineAsyncComponent(() => import("./List.vue"))
+const List = defineAsyncComponent(() => import("./List.vue"));
 const props = defineProps({
-  isWorkspacePremium: Boolean
-})
+  isWorkspacePremium: Boolean,
+});
 
 const isDeleteLoading = ref(false);
 const route = useRoute();
 const toast = useToast();
-const { lists, isLoading } = await useLists(route.params.boardId)
+const { lists, isLoading } = await useLists(route.params.boardId);
 const updateListPosition = (listId, newPosition) => {
-  axiosInstance.put(`/list/${listId}`, {
-    position: newPosition
-  }, {
-    withCredentials: true
-  }).then(() => {
-    socket.emit("update-lists", { boardId: route.params.boardId });
-  }).catch((err) => {
-    console.log(err);
-  })
-}
-
+  axiosInstance
+    .put(
+      `/list/${listId}`,
+      {
+        position: newPosition,
+      },
+      {
+        withCredentials: true,
+      }
+    )
+    .then(() => {
+      socket.emit("update-lists", { boardId: route.params.boardId });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const onUpdate = (e) => {
   let index = e.newIndex;
@@ -41,39 +47,57 @@ const onUpdate = (e) => {
   if (prevList && nextList) {
     position = (prevList.position + nextList.position) / 2;
   } else if (prevList) {
-    position = prevList.position + (prevList.position / 2);
+    position = prevList.position + prevList.position / 2;
   } else if (nextList) {
     position = nextList.position / 2;
   }
-  updateListPosition(e.item.id, position)
-}
+  updateListPosition(e.item.id, position);
+};
 
 const deleteList = (listId) => {
   isDeleteLoading.value = true;
-  axiosInstance.delete(`/list/${listId}`, {
-    withCredentials: true
-  }).then(() => {
-    toast.success("List was deleted");
-    // lists.value = lists.value.filter((list) => list.id !== listId);
-    socket.emit("update-lists", { boardId: route.params.boardId });
-  }).catch((err) => {
-    console.log(err);
-  }).finally(() => {
-    isDeleteLoading.value = false;
-  })
-}
+  axiosInstance
+    .delete(`/list/${listId}`, {
+      withCredentials: true,
+    })
+    .then(() => {
+      toast.success("List was deleted");
+      socket.emit("update-lists", { boardId: route.params.boardId });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      isDeleteLoading.value = false;
+    });
+};
 </script>
 <template>
-  <!-- <div v-if='isLoading' v-for="i in 4" :key="i" class="px-5"> -->
-  <!--   <v-progress-circular color="primary" indeterminate="disable-shrink" size="50" width="5"></v-progress-circular> -->
-  <!-- </div> -->
-  <VueDraggable ref="el" group="lists" handle=".header" v-model="lists" :animation="150" ghostClass="ghost"
-    class="justify-between mx-3 max-h-[90%] flex flex-1 gap-3 " scroll :scrollSensitivity="300" @update="onUpdate"
-    bubbleScroll>
+  <VueDraggable
+    ref="el"
+    group="lists"
+    handle=".header"
+    v-model="lists"
+    :animation="150"
+    ghostClass="ghost"
+    class="justify-between mx-3 max-h-[90%] flex flex-1 gap-3"
+    scroll
+    :scrollSensitivity="300"
+    @update="onUpdate"
+    bubbleScroll
+  >
     <template v-for="(list, index) in lists" :key="list.id">
-      <List :is-workspace-premium="isWorkspacePremium" :is-delete-loading="isDeleteLoading" :is-list-loading="isLoading"
-        :id="list.id.toString()" :list="list" @delete-list="(listId) => deleteList(listId)" :index="index"
-        @update-index="(index) => updateListPosition(list.id, index)" />
+      <List
+        :is-workspace-premium="isWorkspacePremium"
+        :is-delete-loading="isDeleteLoading"
+        :is-list-loading="isLoading"
+        :id="list.id.toString()"
+        :list="list"
+        @delete-list="(listId) => deleteList(listId)"
+        :index="index"
+        @update-index="(index) => updateListPosition(list.id, index)"
+      />
     </template>
   </VueDraggable>
+  <AddList />
 </template>

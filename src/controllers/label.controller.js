@@ -35,7 +35,7 @@ const deleteLabelById = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.NOT_FOUND, "Board not found");
   }
   board.labels = board.labels.filter(label => label != req.params.labelId);
-  await boardService.updateBoardById(board.id, { labels: board.labels }, req.session.user.id);
+  await boardService.updateBoardById(board.id, { ...board._doc, labels: board.labels }, req.session.user.id);
   await Card.updateMany(
     { board: board.id, labels: req.params.labelId },
     { $pull: { labels: req.params.labelId } }

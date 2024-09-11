@@ -1,16 +1,13 @@
 <script setup>
 import { RouterView } from "vue-router";
-import { useTheme } from "vuetify";
 import { onMounted } from "vue";
 import { fetchCsrfToken } from "./composables/axios";
 
-// Use an IIFE to call the async function
 onMounted(() => {
   (async () => {
     await fetchCsrfToken();
   })();
 });
-const theme = useTheme();
 </script>
 
 <template>
